@@ -1,0 +1,73 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Badge from '@/components/Badge.astro';
+import { getCollection } from 'astro:content';
+import { getPublished, urls } from '@/lib/content';
+
+const modules = (await getCollection('modules')).sort((a, b) => a.data.order - b.data.order);
+const units = await getPublished('learn');
+const unitsOf = (m: string) => units.filter((u) => u.data.module === m).sort((a, b) => a.data.order - b.data.order);
+const levels = ['입문', '중급', '고급'];
+---
+
+<BaseLayout title="학습 트랙" description="고전 장이론, 게이지 이론과 표준모형, 대통일이론, 양자중력까지 4개 모듈로 이어지는 통일장이론 학습 트랙">
+  <PageHeader title="학습 트랙" lead="모듈 순서대로 읽도록 설계되어 있습니다. 각 단원은 동기 → 핵심 수식 → 유도 → 예제 → 연습문제 → 더 읽기 순서를 따릅니다.">
+    <div class="mt-5 flex flex-wrap items-center gap-2 text-sm" role="group" aria-label="난이도 필터">
+      <span style="color: var(--fg-muted)">난이도</span>
+      <button type="button" data-level="all" class="rounded-full border px-3 py-1 font-medium" style="border-color: var(--line); background: var(--bg-2)" aria-pressed="true">전체</button>
+      {levels.map((l) => <button type="button" data-level={l} class="rounded-full border px-3 py-1" style="border-color: var(--line)" aria-pressed="false">{l}</button>)}
+    </div>
+  </PageHeader>
+
+  <ol class="space-y-10">
+    {
+      modules.map((m) => (
+        <li class="rounded-2xl border p-6" style="border-color: var(--line)">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-sm font-medium" style="color: var(--accent)">모듈 {m.data.order}</p>
+              <h2 class="mt-1 text-2xl font-bold"><a href={urls.module(m.id)} class="no-underline hover:underline" style="color: var(--fg)">{m.data.title}</a></h2>
+              <p class="mt-2 max-w-2xl" style="color: var(--fg-muted)">{m.data.summary}</p>
+            </div>
+            <Badge kind="difficulty" value={m.data.difficulty} />
+          </div>
+          {m.data.prerequisites.length > 0 && <p class="mt-3 text-sm" style="color: var(--fg-muted)">선행 지식: {m.data.prerequisites.join(', ')}</p>}
+          <ol class="mt-5 divide-y" style="border-color: var(--line)">
+            {unitsOf(m.id).length === 0 && <li class="py-3 text-sm" style="color: var(--fg-muted)">단원 준비 중</li>}
+            {unitsOf(m.id).map((u) => (
+              <li class="flex items-center gap-4 py-3" data-unit data-level={u.data.difficulty} style="border-color: var(--line)">
+                <span class="w-8 shrink-0 text-right text-sm tabular-nums" style="color: var(--fg-muted)">{u.data.order}</span>
+                <div class="min-w-0 flex-1">
+                  <a href={urls.unit(u.id)} class="font-medium">{u.data.title}</a>
+                  <p class="truncate text-sm" style="color: var(--fg-muted)">{u.data.summary}</p>
+                </div>
+                <div class="hidden shrink-0 items-center gap-2 text-xs sm:flex" style="color: var(--fg-muted)">
+                  {u.data.estimatedMinutes && <span>{u.data.estimatedMinutes}분</span>}
+                  <Badge kind="difficulty" value={u.data.difficulty} />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-level]');
+  const units = document.querySelectorAll<HTMLElement>('[data-unit]');
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const level = b.dataset.level!;
+      buttons.forEach((x) => {
+        const on = x === b;
+        x.setAttribute('aria-pressed', String(on));
+        x.style.background = on ? 'var(--bg-2)' : '';
+        x.style.fontWeight = on ? '600' : '';
+      });
+      units.forEach((u) => (u.hidden = level !== 'all' && u.dataset.level !== level));
+    }),
+  );
+</script>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { getAllArticles, collectTags, urls } from '@/lib/content';
+const tags = collectTags(await getAllArticles());
+---
+
+<BaseLayout title="태그" description="모든 태그 목록">
+  <PageHeader title="태그" lead="학습 단원, 연구 노트, 논문 요약, 위키 항목을 태그로 가로질러 찾습니다." />
+  <ul class="flex flex-wrap gap-2">
+    {
+      [...tags.entries()].map(([t, n]) => (
+        <li>
+          <a href={urls.tag(t)} class="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 no-underline hover:no-underline" style="border-color: var(--line)">
+            <span style="color: var(--fg)">#{t}</span>
+            <span class="text-xs tabular-nums" style="color: var(--fg-muted)">{n}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

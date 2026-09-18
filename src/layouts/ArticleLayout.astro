@@ -1,0 +1,63 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Badge from '@/components/Badge.astro';
+import TagList from '@/components/TagList.astro';
+import Toc from '@/components/Toc.astro';
+import { formatDate } from '@/lib/content';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  summary: string;
+  kicker?: string; // 예: "학습 · 모듈 1"
+  kickerHref?: string;
+  created: Date;
+  updated?: Date;
+  author?: string;
+  tags?: string[];
+  difficulty?: string;
+  status?: string;
+  headings?: MarkdownHeading[];
+  draft?: boolean;
+}
+const { title, summary, kicker, kickerHref, created, updated, author, tags = [], difficulty, status, headings = [], draft } = Astro.props;
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<BaseLayout title={title} description={summary} type="article" published={created} modified={updated} noindex={draft}>
+  <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+    <article class="min-w-0" data-pagefind-body>
+      <header class="mb-8 border-b pb-6" style="border-color: var(--line)">
+        {
+          kicker && (
+            <p class="mb-2 text-sm font-medium" style="color: var(--accent)">
+              {kickerHref ? <a href={kickerHref} class="no-underline hover:underline">{kicker}</a> : kicker}
+            </p>
+          )
+        }
+        <h1 class="text-3xl font-bold leading-tight tracking-tight sm:text-4xl" data-pagefind-meta="title">{title}</h1>
+        <p class="mt-3 text-lg" style="color: var(--fg-muted)">{summary}</p>
+        <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm" style="color: var(--fg-muted)">
+          {author && <span>{author}</span>}
+          <time datetime={created.toISOString()}>{formatDate(created)}</time>
+          {updated && <span>· 수정 {formatDate(updated)}</span>}
+          {difficulty && <Badge kind="difficulty" value={difficulty} />}
+          {status && <Badge kind="status" value={status} />}
+          {draft && <Badge kind="status" value="초안(비공개)" />}
+        </div>
+        {tags.length > 0 && <div class="mt-3"><TagList tags={tags} /></div>}
+        <slot name="meta" />
+      </header>
+      <div class="prose">
+        <slot />
+      </div>
+      <slot name="after" />
+    </article>
+    <aside class="no-print hidden lg:block">
+      <div class="sticky top-24">
+        {tocHeadings.length > 1 && <Toc headings={tocHeadings} />}
+        <slot name="aside" />
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

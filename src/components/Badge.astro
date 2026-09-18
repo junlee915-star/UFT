@@ -1,0 +1,24 @@
+---
+interface Props {
+  kind: 'difficulty' | 'status' | 'plain';
+  value: string;
+}
+const { kind, value } = Astro.props;
+const palette: Record<string, string> = {
+  입문: '#2e7d4f',
+  중급: '#2f5d8a',
+  고급: '#8a3d2f',
+  초안: '#7a6f5a',
+  '검토 중': '#a1701a',
+  '검토 완료': '#2e7d4f',
+};
+const color = palette[value] ?? 'var(--fg-muted)';
+---
+
+<span
+  class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+  style={`color: ${color}; border-color: color-mix(in srgb, ${color} 40%, transparent); background: color-mix(in srgb, ${color} 10%, transparent)`}
+  data-kind={kind}
+>
+  {value}
+</span>

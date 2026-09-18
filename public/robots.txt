@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://uft.example.com/sitemap-index.xml

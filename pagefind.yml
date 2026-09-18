@@ -1,0 +1,10 @@
+# Pagefind 검색 인덱스 설정 (npm run build 의 `pagefind --site dist` 가 읽음)
+site: dist
+# KaTeX 의 MathML/LaTeX 원문(중복 텍스트), 참고문헌, 수식·인용 번호 링크는 인덱스에서 제외
+exclude_selectors:
+  - ".katex-mathml"
+  - ".references"
+  - ".references-heading"
+  - "a.eqref"
+  - "a.cite"
+  - "nav"

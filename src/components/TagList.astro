@@ -1,0 +1,21 @@
+---
+import { urls } from '@/lib/content';
+interface Props {
+  tags: string[];
+  counts?: Map<string, number>;
+}
+const { tags, counts } = Astro.props;
+---
+
+<ul class="flex flex-wrap gap-1.5" aria-label="태그">
+  {
+    tags.map((t) => (
+      <li>
+        <a href={urls.tag(t)} class="inline-block rounded-md px-2 py-0.5 text-xs no-underline hover:underline" style="background: var(--bg-2); color: var(--fg-muted)">
+          #{t}
+          {counts && <span class="ml-1 opacity-70">{counts.get(t)}</span>}
+        </a>
+      </li>
+    ))
+  }
+</ul>

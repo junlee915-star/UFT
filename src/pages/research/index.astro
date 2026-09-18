@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Card from '@/components/Card.astro';
+import { getPublished, byNewest, urls } from '@/lib/content';
+import { loadBib } from '@/lib/bibtex.mjs';
+
+const notes = (await getPublished('notes')).sort(byNewest);
+const papers = (await getPublished('papers')).sort(byNewest);
+const bibCount = loadBib('./src/data/references.bib').length;
+---
+
+<BaseLayout title="연구" description="통일장이론 연구 노트, 논문 요약, 참고문헌 데이터베이스">
+  <PageHeader title="연구" lead="연구 노트와 논문 요약을 축적하는 공간입니다. 모든 글은 참고문헌 데이터베이스와 인용 키로 연결됩니다." />
+  <div class="grid gap-4 sm:grid-cols-3">
+    {
+      [
+        ['연구 노트', notes.length, '/research/notes', '날짜·태그별로 정리한 자유 형식 노트'],
+        ['논문 요약', papers.length, '/research/papers', 'arXiv·DOI 메타데이터와 한국어 요약'],
+        ['참고문헌', bibCount, '/research/bibliography', 'BibTeX 파일 하나로 관리하는 서지 목록'],
+      ].map(([t, n, href, d]) => (
+        <a href={href as string} class="rounded-xl border p-5 no-underline hover:no-underline" style="border-color: var(--line)">
+          <p class="text-sm" style="color: var(--fg-muted)">{t}</p>
+          <p class="mt-1 text-3xl font-bold tabular-nums" style="color: var(--fg)">{n}</p>
+          <p class="mt-2 text-sm" style="color: var(--fg-muted)">{d}</p>
+        </a>
+      ))
+    }
+  </div>
+  <section class="mt-12">
+    <h2 class="mb-4 text-2xl font-bold">최근 글</h2>
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {notes.slice(0, 4).map((n) => <li><Card href={urls.note(n.id)} kicker="연구 노트" title={n.data.title} summary={n.data.summary} date={n.data.updated ?? n.data.created} status={n.data.status} tags={n.data.tags} /></li>)}
+      {papers.slice(0, 4).map((p) => <li><Card href={urls.paper(p.id)} kicker={`논문 요약 · ${p.data.year}`} title={p.data.title} summary={p.data.summary} date={p.data.created} tags={p.data.tags} /></li>)}
+    </ul>
+  </section>
+</BaseLayout>

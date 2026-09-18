@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/Card.astro';
+import { getCollection } from 'astro:content';
+import { getPublished, byNewest, urls } from '@/lib/content';
+
+const modules = (await getCollection('modules')).sort((a, b) => a.data.order - b.data.order);
+const units = await getPublished('learn');
+const notes = (await getPublished('notes')).sort(byNewest).slice(0, 3);
+const papers = (await getPublished('papers')).sort(byNewest).slice(0, 3);
+const wiki = await getPublished('wiki');
+const unitCount = (m: string) => units.filter((u) => u.data.module === m).length;
+---
+
+<BaseLayout title="홈">
+  <section class="py-8 sm:py-14">
+    <p class="text-sm font-medium" style="color: var(--accent)">Unified Field Theory · 한국어 학습·연구 아카이브</p>
+    <h1 class="mt-2 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+      고전 장이론에서 양자중력까지, 한 갈래로 이어지는 통일장이론 공부길
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg" style="color: var(--fg-muted)">
+      순서대로 읽는 학습 트랙, 논문 요약과 연구 노트, 그리고 수식 하나하나를 항목으로 정리한 위키. 모든 글은
+      마크다운으로 작성되고 수식은 빌드 시점에 렌더링됩니다.
+    </p>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a href="/learn" class="rounded-lg px-4 py-2.5 font-semibold text-white no-underline hover:no-underline" style="background: var(--accent)">학습 시작하기</a>
+      <a href="/wiki" class="rounded-lg border px-4 py-2.5 font-semibold no-underline hover:no-underline" style="border-color: var(--line); color: var(--fg)">수식 위키 둘러보기</a>
+    </div>
+    <dl class="mt-10 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+      {
+        [
+          ['학습 단원', units.length],
+          ['위키 항목', wiki.length],
+          ['논문 요약', papers.length],
+          ['연구 노트', notes.length],
+        ].map(([k, v]) => (
+          <div class="rounded-lg border p-4" style="border-color: var(--line)">
+            <dt style="color: var(--fg-muted)">{k}</dt>
+            <dd class="mt-1 text-2xl font-bold tabular-nums">{v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="mt-8">
+    <div class="mb-4 flex items-baseline justify-between">
+      <h2 class="text-2xl font-bold">학습 트랙</h2>
+      <a href="/learn" class="text-sm">전체 보기 →</a>
+    </div>
+    <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        modules.map((m) => (
+          <li>
+            <Card href={urls.module(m.id)} kicker={`모듈 ${m.data.order}`} title={m.data.title} summary={m.data.summary} difficulty={m.data.difficulty} meta={`${unitCount(m.id)}개 단원`} />
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="mt-14 grid gap-10 lg:grid-cols-2">
+    <div>
+      <div class="mb-4 flex items-baseline justify-between">
+        <h2 class="text-2xl font-bold">최근 연구 노트</h2>
+        <a href="/research/notes" class="text-sm">전체 보기 →</a>
+      </div>
+      <ul class="grid gap-4">
+        {notes.map((n) => <li><Card href={urls.note(n.id)} title={n.data.title} summary={n.data.summary} date={n.data.updated ?? n.data.created} status={n.data.status} tags={n.data.tags} /></li>)}
+      </ul>
+    </div>
+    <div>
+      <div class="mb-4 flex items-baseline justify-between">
+        <h2 class="text-2xl font-bold">최근 논문 요약</h2>
+        <a href="/research/papers" class="text-sm">전체 보기 →</a>
+      </div>
+      <ul class="grid gap-4">
+        {papers.map((p) => <li><Card href={urls.paper(p.id)} kicker={`${p.data.authors[0]}${p.data.authors.length > 1 ? ' 외' : ''} · ${p.data.year}`} title={p.data.title} summary={p.data.summary} date={p.data.created} tags={p.data.tags} /></li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

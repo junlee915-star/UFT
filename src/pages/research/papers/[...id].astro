@@ -1,0 +1,46 @@
+---
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import Backlinks from '@/components/Backlinks.astro';
+import { render } from 'astro:content';
+import { getPublished, getAllArticles, findBacklinks, urls } from '@/lib/content';
+
+export async function getStaticPaths() {
+  return (await getPublished('papers')).map((p) => ({ params: { id: p.id }, props: { entry: p } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const backlinks = findBacklinks(await getAllArticles(), urls.paper(entry.id), entry);
+const d = entry.data;
+---
+
+<ArticleLayout
+  title={d.title}
+  summary={d.summary}
+  kicker="논문 요약"
+  kickerHref="/research/papers"
+  created={d.created}
+  updated={d.updated}
+  author={d.author}
+  tags={d.tags}
+  difficulty={d.difficulty}
+  status={d.status}
+  headings={headings}
+  draft={d.draft}
+>
+  <Fragment slot="meta">
+    <dl class="mt-5 grid gap-x-6 gap-y-2 rounded-xl border p-4 text-sm sm:grid-cols-[auto_1fr]" style="border-color: var(--line); background: var(--bg-2)">
+      <dt style="color: var(--fg-muted)">원제</dt><dd class="font-medium">{d.titleEn}</dd>
+      <dt style="color: var(--fg-muted)">저자</dt><dd>{d.authors.join(', ')}</dd>
+      <dt style="color: var(--fg-muted)">발표</dt><dd>{d.year}{d.venue && ` · ${d.venue}`}</dd>
+      <dt style="color: var(--fg-muted)">원문</dt>
+      <dd class="flex flex-wrap gap-3">
+        {d.arxiv && <a href={`https://arxiv.org/abs/${d.arxiv}`} rel="noopener">arXiv:{d.arxiv}</a>}
+        {d.doi && <a href={`https://doi.org/${d.doi}`} rel="noopener">doi:{d.doi}</a>}
+        {d.url && <a href={d.url} rel="noopener">{d.url}</a>}
+      </dd>
+      {d.bibKey && <><dt style="color: var(--fg-muted)">인용 키</dt><dd><code>[@{d.bibKey}]</code> · <a href={`/research/bibliography#ref-${d.bibKey}`}>참고문헌에서 보기</a></dd></>}
+    </dl>
+  </Fragment>
+  <Content />
+  <Fragment slot="after"><Backlinks entries={backlinks} title="이 요약을 참조하는 글" /></Fragment>
+</ArticleLayout>

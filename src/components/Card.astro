@@ -1,0 +1,34 @@
+---
+import Badge from './Badge.astro';
+import { formatDate } from '@/lib/content';
+interface Props {
+  href: string;
+  title: string;
+  summary?: string;
+  kicker?: string;
+  date?: Date;
+  difficulty?: string;
+  status?: string;
+  tags?: string[];
+  meta?: string;
+}
+const { href, title, summary, kicker, date, difficulty, status, tags = [], meta } = Astro.props;
+---
+
+<a
+  href={href}
+  class="group flex h-full flex-col rounded-xl border p-5 no-underline transition-colors hover:no-underline"
+  style="border-color: var(--line); background: var(--bg)"
+  data-difficulty={difficulty}
+>
+  {kicker && <p class="mb-1 text-xs font-medium" style="color: var(--accent)">{kicker}</p>}
+  <h3 class="text-lg font-semibold leading-snug group-hover:underline" style="color: var(--fg)">{title}</h3>
+  {summary && <p class="mt-2 line-clamp-3 text-sm" style="color: var(--fg-muted)">{summary}</p>}
+  <div class="mt-auto flex flex-wrap items-center gap-2 pt-4 text-xs" style="color: var(--fg-muted)">
+    {date && <time datetime={date.toISOString()}>{formatDate(date)}</time>}
+    {meta && <span>{meta}</span>}
+    {difficulty && <Badge kind="difficulty" value={difficulty} />}
+    {status && status !== '초안' && <Badge kind="status" value={status} />}
+    {tags.slice(0, 3).map((t) => <span>#{t}</span>)}
+  </div>
+</a>

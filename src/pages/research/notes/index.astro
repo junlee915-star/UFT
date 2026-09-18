@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Badge from '@/components/Badge.astro';
+import TagList from '@/components/TagList.astro';
+import { getPublished, byNewest, urls, formatDate, collectTags } from '@/lib/content';
+
+const notes = (await getPublished('notes')).sort(byNewest);
+const tags = collectTags(notes);
+const byYear = new Map<number, typeof notes>();
+for (const n of notes) {
+  const y = (n.data.updated ?? n.data.created).getFullYear();
+  byYear.set(y, [...(byYear.get(y) ?? []), n]);
+}
+---
+
+<BaseLayout title="연구 노트" description="통일장이론 연구 노트 목록">
+  <PageHeader kicker="연구" title="연구 노트" lead="날짜순 목록입니다. 초안 상태의 노트는 배포에서 제외됩니다.">
+    {tags.size > 0 && <div class="mt-4"><TagList tags={[...tags.keys()]} counts={tags} /></div>}
+  </PageHeader>
+  {
+    [...byYear.entries()].map(([year, list]) => (
+      <section class="mb-10">
+        <h2 class="mb-3 text-sm font-semibold tabular-nums" style="color: var(--fg-muted)">{year}</h2>
+        <ul class="divide-y" style="border-color: var(--line)">
+          {list.map((n) => (
+            <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6" style="border-color: var(--line)">
+              <time class="shrink-0 text-sm tabular-nums sm:w-32" style="color: var(--fg-muted)" datetime={(n.data.updated ?? n.data.created).toISOString()}>{formatDate(n.data.updated ?? n.data.created)}</time>
+              <div class="min-w-0 flex-1">
+                <a href={urls.note(n.id)} class="font-semibold">{n.data.title}</a>
+                <p class="text-sm" style="color: var(--fg-muted)">{n.data.summary}</p>
+                <div class="mt-1 flex flex-wrap items-center gap-2 text-xs" style="color: var(--fg-muted)">
+                  <Badge kind="status" value={n.data.status} />
+                  {n.data.tags.map((t) => <a href={urls.tag(t)}>#{t}</a>)}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+  {notes.length === 0 && <p style="color: var(--fg-muted)">아직 발행된 노트가 없습니다.</p>}
+</BaseLayout>

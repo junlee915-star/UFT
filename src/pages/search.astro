@@ -1,0 +1,59 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+---
+
+<BaseLayout title="검색" description="사이트 전체 검색" noindex>
+  <PageHeader title="검색" lead="제목, 본문, 태그를 대상으로 검색합니다. 한국어 형태소 분리는 지원하지 않으므로 어절 단위로 입력하세요." />
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="search" class="pagefind-wrap"></div>
+  <p id="search-fallback" hidden class="rounded-lg border p-4 text-sm" style="border-color: var(--line); color: var(--fg-muted)">
+    검색 인덱스를 찾을 수 없습니다. 개발 서버에서는 검색이 동작하지 않으며, <code>npm run build</code> 후 <code>npm run preview</code>로 확인할 수 있습니다.
+  </p>
+  <script is:inline>
+    (async () => {
+      try {
+        const mod = await import('/pagefind/pagefind-ui.js');
+        const PagefindUI = mod?.PagefindUI ?? window.PagefindUI;
+        new PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          showImages: false,
+          autofocus: true,
+          translations: {
+            placeholder: '검색어 입력 (예: 게이지 대칭)',
+            zero_results: '"[SEARCH_TERM]"에 대한 결과가 없습니다',
+            many_results: '"[SEARCH_TERM]"에 대한 결과 [COUNT]개',
+            one_result: '"[SEARCH_TERM]"에 대한 결과 1개',
+            load_more: '더 보기',
+            search_label: '사이트 검색',
+            clear_search: '지우기',
+          },
+        });
+        const q = new URLSearchParams(location.search).get('q');
+        if (q) {
+          const input = document.querySelector('#search input');
+          if (input) {
+            input.value = q;
+            input.dispatchEvent(new Event('input'));
+          }
+        }
+      } catch (e) {
+        document.getElementById('search-fallback').hidden = false;
+      }
+    })();
+  </script>
+  <style is:global>
+    .pagefind-wrap {
+      --pagefind-ui-scale: 0.9;
+      --pagefind-ui-primary: var(--accent);
+      --pagefind-ui-text: var(--fg);
+      --pagefind-ui-background: var(--bg);
+      --pagefind-ui-border: var(--line);
+      --pagefind-ui-tag: var(--bg-2);
+      --pagefind-ui-border-width: 1px;
+      --pagefind-ui-border-radius: 0.6rem;
+      --pagefind-ui-font: inherit;
+    }
+  </style>
+</BaseLayout>
