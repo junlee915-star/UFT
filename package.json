@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "build:clean": "astro build --force && pagefind --site dist",
-    "format": "prettier --write \"src/**/*.{astro,ts,mjs,css,md,mdx}\""
+    "format": "prettier --write \"src/**/*.{astro,ts,mjs,css,md,mdx}\"",
+    "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",
@@ -26,7 +27,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.135.0"
   },
   "engines": {
     "node": ">=22"

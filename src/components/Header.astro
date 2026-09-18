@@ -1,5 +1,5 @@
 ---
-import { withBase } from '@/lib/content';
+import { withBase, canonicalPath } from '@/lib/content';
 import ThemeToggle from './ThemeToggle.astro';
 const nav = [
   { href: '/learn', label: '학습' },
@@ -7,7 +7,7 @@ const nav = [
   { href: '/wiki', label: '위키' },
   { href: '/tags', label: '태그' },
 ];
-const path = Astro.url.pathname;
+const path = canonicalPath(Astro.url.pathname);
 const isActive = (href: string) => path === withBase(href) || path.startsWith(withBase(href) + '/');
 ---
 

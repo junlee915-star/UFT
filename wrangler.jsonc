@@ -1,0 +1,11 @@
+{
+  // Cloudflare Pages 프로젝트 설정. `wrangler pages deploy` 가 이 파일을 읽는다.
+  //
+  // name: Pages 프로젝트 이름. 기본 배포 주소는 https://<name>.pages.dev 이며
+  //       이 주소는 전역에서 고유해야 한다. 이름이 이미 쓰이고 있으면 여기와
+  //       .github/workflows/deploy-cloudflare.yml 의 SITE_URL 기본값을 함께 바꾼다.
+  "name": "uft-study",
+  "compatibility_date": "2026-09-18",
+  // npm run build 의 출력 디렉터리. Pages 는 이 폴더를 그대로 업로드한다.
+  "pages_build_output_dir": "./dist"
+}

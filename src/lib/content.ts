@@ -33,6 +33,15 @@ export function withBase(path: string): string {
   return BASE + path;
 }
 
+/**
+ * 빌드 출력이 `format: 'file'` 이라 Astro.url.pathname 에 붙는 `.html` / `index.html` 을 떼어
+ * 실제 공개 URL 경로로 되돌린다. canonical, og:url, 네비게이션 활성 판정에 쓴다.
+ */
+export function canonicalPath(pathname: string): string {
+  const p = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+  return p === '' ? '/' : p;
+}
+
 /** 콘텐츠 본문이 쓰는 루트 기준 경로(역링크 탐색용, base 없음) */
 export const paths = {
   unit: (id: string) => `/learn/${id}`,

@@ -1,0 +1,68 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: cloudflare-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # 커스텀 도메인을 붙이면 저장소 Variables 에 SITE_URL 을 등록한다.
+      # (Settings → Secrets and variables → Actions → Variables)
+      SITE_URL: ${{ vars.SITE_URL || 'https://uft-study.pages.dev' }}
+      # Cloudflare Pages 는 도메인 루트에서 서비스하므로 하위 경로가 없다.
+      BASE_PATH: /
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 타입·템플릿 검사
+        run: npx astro check
+
+      - name: 빌드 (Pagefind 인덱스 포함)
+        run: npm run build
+
+      - name: Cloudflare 자격 증명 확인
+        id: creds
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID 시크릿이 없어 배포를 건너뜁니다. README 의 배포 절을 참고하세요."
+          fi
+
+      # main 은 프로덕션, 그 밖의 브랜치·PR 은 미리보기 배포로 올라간다.
+      - name: Cloudflare Pages 배포
+        id: cf
+        if: steps.creds.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy --branch=${{ github.head_ref || github.ref_name }}
+
+      - name: 배포 주소 요약
+        if: steps.creds.outputs.ready == 'true'
+        run: echo "배포 주소 ${{ steps.cf.outputs.deployment-url }}" >> "$GITHUB_STEP_SUMMARY"

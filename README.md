@@ -53,12 +53,44 @@ docs/templates/        새 글 템플릿 (복사해서 시작)
 
 ## 배포
 
-`main`에 푸시하면 GitHub Actions(`.github/workflows/deploy.yml`)가 빌드해 GitHub Pages에 배포한다.
+프로덕션은 **Cloudflare Pages**다. `main`에 푸시하면 GitHub Actions(`.github/workflows/deploy-cloudflare.yml`)가 검사·빌드한 뒤 Cloudflare에 직접 업로드한다. PR은 미리보기 배포로 올라간다.
 
-- 주소: https://junlee915-star.github.io/UFT/
-- 프로젝트 사이트라 `/UFT` 하위 경로로 서비스된다. 워크플로가 `BASE_PATH=/UFT`, `SITE_URL`을 넣어 빌드하고, 템플릿은 `withBase()`, 마크다운 링크는 `rehype-base-links`가 경로를 붙인다. 콘텐츠 파일에는 항상 `/wiki/...`처럼 루트 기준으로 쓴다.
-- 로컬에서 같은 조건으로 확인: `BASE_PATH=/UFT npm run build && npm run preview` 후 http://localhost:4321/UFT
-- 커스텀 도메인이나 Vercel/Cloudflare Pages로 옮길 때는 `BASE_PATH`를 `/`로, `SITE_URL`을 실제 도메인으로 바꾸고 `public/robots.txt`의 Sitemap 주소를 고친다. 빌드 명령 `npm run build`, 출력 `dist`.
+### 최초 1회 설정
+
+Cloudflare 자격 증명이 저장소에 없으면 워크플로는 빌드까지만 하고 배포 단계를 건너뛴다(경고 표시). 아래를 한 번 해 두면 이후로는 자동이다.
+
+1. **Pages 프로젝트 생성** — 로컬에서 `npx wrangler login` 후
+   ```bash
+   npx wrangler pages project create uft-study --production-branch=main
+   ```
+   이름 `uft-study`는 `wrangler.jsonc`의 `name`과 같아야 하고, `<name>.pages.dev` 주소는 전역에서 고유해야 한다. 이미 쓰이는 이름이면 `wrangler.jsonc`와 워크플로의 `SITE_URL` 기본값을 함께 바꾼다.
+2. **API 토큰 발급** — Cloudflare 대시보드 → My Profile → API Tokens → Create Token, 권한은 **Account · Cloudflare Pages · Edit**.
+3. **GitHub 시크릿 등록** — 저장소 Settings → Secrets and variables → Actions:
+   ```bash
+   gh secret set CLOUDFLARE_API_TOKEN
+   gh secret set CLOUDFLARE_ACCOUNT_ID   # 대시보드 우측 또는 `npx wrangler whoami`
+   ```
+
+대시보드에서 Git 저장소를 직접 연결하는 방법(빌드 명령 `npm run build`, 출력 `dist`)도 쓸 수 있지만, 그 경우 이 워크플로와 배포가 중복되므로 둘 중 하나만 쓴다.
+
+### 로컬에서 수동 배포
+
+```bash
+npx wrangler login
+npm run deploy      # 빌드 후 wrangler pages deploy
+```
+
+### 도메인과 경로
+
+- 기본 주소는 `https://uft-study.pages.dev`이며 **도메인 루트**에서 서비스된다(`BASE_PATH=/`).
+- 커스텀 도메인을 붙이면 저장소 Variables에 `SITE_URL`을 등록한다(`gh variable set SITE_URL`). canonical URL, sitemap, RSS, robots.txt가 모두 이 값을 따른다.
+- 하위 경로 배포(GitHub Pages 프로젝트 사이트 등)는 `BASE_PATH=/UFT`처럼 지정한다. 템플릿은 `withBase()`, 마크다운 본문 링크는 `rehype-base-links`가 경로를 붙이므로 콘텐츠 파일에는 항상 `/wiki/...`처럼 루트 기준으로 쓴다.
+- 하위 경로로 로컬 확인: `BASE_PATH=/UFT npm run build && npm run preview` 후 http://localhost:4321/UFT
+- `public/_headers`는 Cloudflare Pages 전용 캐시·보안 헤더다. 다른 호스트에서는 무시된다.
+
+### 예전 배포 대상
+
+GitHub Pages 워크플로(`deploy-github-pages.yml`)는 남겨 두었지만 수동 실행(workflow_dispatch)으로만 동작한다. 기존 주소 https://junlee915-star.github.io/UFT/ 는 마지막 배포 내용 그대로 남아 있으므로, Cloudflare 배포를 확인한 뒤 저장소 Settings → Pages에서 정리하면 된다.
 
 ## 기술 스택
 

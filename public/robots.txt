@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://junlee915-star.github.io/UFT/sitemap-index.xml

@@ -1,8 +1,8 @@
-name: Build and deploy to GitHub Pages
+# 예전 배포 대상. 현재 프로덕션은 Cloudflare Pages(deploy-cloudflare.yml)이며,
+# 두 곳이 동시에 배포되면 같은 내용이 두 주소에 올라가므로 자동 실행을 껐다.
+# GitHub Pages 로 돌아가려면 아래 on: 에 push 트리거를 다시 추가한다.
+name: Deploy to GitHub Pages (manual)
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -23,20 +23,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: npm
       - run: npm ci
       - run: npx astro check
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
   deploy:
-    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -44,4 +43,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

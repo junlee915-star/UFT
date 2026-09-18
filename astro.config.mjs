@@ -10,7 +10,7 @@ import { remarkEquations } from './src/lib/remark-equations.mjs';
 import { remarkCite } from './src/lib/remark-cite.mjs';
 import { rehypeBaseLinks } from './src/lib/rehype-base-links.mjs';
 
-const site = process.env.SITE_URL || 'https://uft.example.com';
+const site = process.env.SITE_URL || 'https://uft-study.pages.dev';
 // 하위 경로 배포(GitHub Pages 프로젝트 사이트 등)는 BASE_PATH=/UFT 처럼 지정한다. 기본은 루트.
 const base = process.env.BASE_PATH || '/';
 

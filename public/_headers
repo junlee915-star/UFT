@@ -1,0 +1,21 @@
+# Cloudflare Pages 응답 헤더. dist 루트에 그대로 복사되어 적용된다.
+# (GitHub Pages 등 다른 호스트에서는 무시되는 일반 파일이다.)
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# Astro 가 파일명에 해시를 붙이므로 영구 캐시해도 안전하다.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Pagefind 검색 인덱스는 빌드마다 바뀌므로 짧게 캐시한다.
+/pagefind/*
+  Cache-Control: public, max-age=3600
+
+/favicon.svg
+  Cache-Control: public, max-age=86400
+
+/og-default.svg
+  Cache-Control: public, max-age=86400
