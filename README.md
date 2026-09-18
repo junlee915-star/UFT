@@ -2,6 +2,7 @@
 
 통일장이론(Unified Field Theory)을 **물리학**과 **종교·철학** 두 갈래로 가르치고, 통합은 전용 트랙에서만 하는 한국어 정적 사이트.
 설계 근거는 [docs/PRD.md](docs/PRD.md), 글 쓰는 규칙은 [docs/AUTHORING.md](docs/AUTHORING.md)에 있다.
+대체된 초기 PRD 는 [docs/PRD-v1.md](docs/PRD-v1.md) 에 기록으로 남아 있다.
 
 - 사이트: https://uft-study.pages.dev
 - 저장소: https://github.com/junlee915-star/UFT
