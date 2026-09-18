@@ -1,0 +1,8 @@
+track: synthesis
+order: 1
+title: 통일의 개념사
+summary: 물리학에서 통일이 무엇을 뜻했는지 대칭군 포함 관계로 정리하고, 형이상학의 세 일원론을 구분한 뒤, 두 "하나"가 각각 주장하는 것과 주장하지 않는 것을 나눠 쓴다.
+goal: 물리적 통일과 형이상학적 일원론을 혼동 없이 대조한다.
+level: intermediate
+prereqModules: [a1, b1]
+checkpoint: 산출물 제출. 대조표와 500자 요지.

@@ -1,0 +1,160 @@
+---
+id: a1-2
+track: physics
+module: a1
+order: 2
+title: 스칼라장과 클라인-고든
+summary: 로렌츠 불변과 국소성만 요구해 가장 단순한 장의 라그랑지안을 고르고, 작용에서 클라인-고든 방정식과 질량의 물리적 의미를 끌어낸다.
+level: intro
+status: review
+prereq: [a1-1]
+wikiRefs: [klein-gordon-equation, lagrangian-density, energy-momentum-tensor, spontaneous-symmetry-breaking]
+citations: [peskin1995, srednicki2007, schwartz2014, klein1926]
+estMinutes: 120
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [스칼라장, 클라인-고든, 질량, 유카와]
+---
+
+<Gist>
+장이론의 재료를 고르는 일은 요리와 비슷하다. 재료를 아무렇게나 넣을 수는 없고 몇 가지 규칙을 지켜야 한다. 이 단원은 관측자가 바뀌어도 같은 값이어야 한다는 조건과 상호작용이 한 점에서만 일어나야 한다는 조건, 둘만으로 가장 단순한 장의 식이 거의 하나로 정해지는 과정을 보인다. 결과로 나오는 방정식에는 질량이라는 숫자가 하나 들어 있는데, 이 숫자는 그 장이 만드는 힘이 얼마나 멀리까지 미치는지를 결정한다. 질량이 없으면 힘은 무한히 멀리 가고, 질량이 있으면 그 역수만큼의 거리에서 끊긴다.
+</Gist>
+
+## 동기 · 왜 가장 단순한 장부터인가
+
+스칼라장은 로렌츠 변환 아래에서 값이 그대로인 장, 즉 $\phi'(x') = \phi(x)$ 인 장이다. 지표가 없으므로 다룰 것이 가장 적다. 그러나 이 단원의 내용은 연습이 아니다.
+
+첫째, 어떤 이론이든 상호작용을 끄면 자유장 부분이 남고 그 부분의 구조가 여기서 얻는 식과 같다. 전파인자, 정규화, 섭동 전개의 출발점이 모두 여기에 있다 [@srednicki2007]. 둘째, 표준모형에서 실제로 관측된 기본 스칼라장이 하나 있다. 힉스장이다. 셋째, 뒤에 게이지 이론에서 만나는 벡터장과 텐서장의 계산은 대부분 지표가 붙은 클라인-고든 계산이다.
+
+역사적으로 이 방정식은 상대론적 한 입자 파동함수의 방정식으로 제안되었다가 음의 확률 밀도 문제로 버려졌고 [@klein1926], 장으로 재해석된 뒤에야 제자리를 찾았다. 이 실패의 내용은 아래 연습문제 3에서 다룬다.
+
+## 핵심 수식
+
+작용은 라그랑지안 밀도 하나로 정해진다.
+
+$$
+\lag = \tfrac12\,\partial_\mu\phi\,\partial^\mu\phi - \tfrac12 m^2\phi^2 \label{kglag}
+$$
+
+계량 규약은 $\eta_{\mu\nu} = \operatorname{diag}(+,-,-,-)$ 이고, 이 규약에서 첫 항은 $\tfrac12\dot\phi^2 - \tfrac12(\nabla\phi)^2$ 로 운동 에너지에서 위치 에너지를 뺀 형태다 [@peskin1995]. 오일러-라그랑주 방정식은
+
+$$
+\big(\partial_\mu\partial^\mu + m^2\big)\phi = 0 \label{kg}
+$$
+
+이며, 평면파 $\phi \propto e^{-ik\cdot x}$ 를 넣으면 분산 관계
+
+$$
+k^2 = m^2 \quad\Longleftrightarrow\quad \omega^2 = |\mathbf k|^2 + m^2 \label{disp}
+$$
+
+를 얻는다. 상호작용을 넣으려면 $-\tfrac12 m^2\phi^2$ 를 일반 퍼텐셜 $-V(\phi)$ 로 바꾼다.
+
+## 유도 · 생략 없이
+
+### 라그랑지안을 고르는 규칙
+
+$\lag$ 에 들어갈 수 있는 항을 다음 네 조건으로 거른다.
+
+- 로렌츠 스칼라일 것. 그래서 $\partial_\mu\phi$ 는 홀로 못 들어오고 $\partial_\mu\phi\,\partial^\mu\phi$ 로만 들어온다.
+- 미분 2계 이하일 것. 앞 단원에서 본 안정성 요구다.
+- $\phi \to -\phi$ 대칭을 가정하면 홀수 거듭제곱이 빠진다. 이 가정은 선택이며, 버리면 $\phi^3$ 항이 허용된다.
+- 재규격화 가능성을 요구하면 4차원에서 $\phi^4$ 까지만 남는다. $\lag$ 의 질량 차원이 4이고 $\phi$ 의 차원이 1이므로, $\phi^n$ 의 계수는 차원 $4-n$ 을 가지며 $n > 4$ 이면 음의 차원이 되어 이론이 유효 이론으로 격하된다 [@schwartz2014].
+
+남는 것은 $\tfrac12(\partial\phi)^2$, $-\tfrac12 m^2\phi^2$, $-\tfrac{\lambda}{4!}\phi^4$ 세 항뿐이다. 자유장은 앞의 둘이다. 계수 $\tfrac12$ 은 관례이며, 이 값을 택해야 @eq:kg 에 불필요한 인수가 붙지 않는다.
+
+### 방정식
+
+@eq:kglag 에서
+
+$$
+\frac{\partial\lag}{\partial\phi} = -m^2\phi, \qquad
+\frac{\partial\lag}{\partial(\partial_\mu\phi)} = \partial^\mu\phi \notag
+$$
+
+이다. 두 번째 식에서 $\tfrac12$ 이 사라진 이유는 $\partial_\mu\phi\,\partial^\mu\phi$ 가 $\partial_\mu\phi$ 에 대해 2차라서 미분하면 2가 나오기 때문이다. 오일러-라그랑주 방정식 $\partial_\mu(\partial\lag/\partial(\partial_\mu\phi)) - \partial\lag/\partial\phi = 0$ 에 넣으면 곧바로 @eq:kg 이 나온다.
+
+### 질량은 무엇을 정하는가
+
+@eq:disp 에서 $m$ 은 정지 에너지다. 그러나 고전 장이론 수준에서 더 직접적인 의미는 도달 거리다. 정적인 점 원천이 있는 방정식
+
+$$
+\big(-\nabla^2 + m^2\big)\phi = g\,\delta^3(\mathbf x) \notag
+$$
+
+을 푸리에 변환으로 풀면 $\tilde\phi(\mathbf k) = g/(|\mathbf k|^2 + m^2)$ 이고, 역변환은
+
+$$
+\phi(r) = \frac{g}{4\pi r}\,e^{-mr} \label{yukawa}
+$$
+
+를 준다. 질량이 지수적 감쇠를 낳는다. $m \to 0$ 이면 쿨롱 형태 $g/4\pi r$ 로 돌아간다. 유카와가 핵력의 도달 거리 $1\,\mathrm{fm}$ 에서 매개 입자의 질량을 $200\,\mathrm{MeV}$ 규모로 추정한 것이 바로 이 식이다. 뒤에 약한 상호작용이 왜 "약하고 짧은가"를 물을 때도 답은 @eq:yukawa 의 $m$ 이 $W$ 보손의 질량이라는 것이다.
+
+## 예제 1 · 무한개의 조화진동자
+
+$\phi$ 를 공간 푸리에 모드로 전개하면
+
+$$
+\phi(t,\mathbf x) = \int\frac{\dd^3k}{(2\pi)^3}\; \phi_{\mathbf k}(t)\, e^{i\mathbf k\cdot\mathbf x} \notag
+$$
+
+이고 @eq:kg 은 각 모드에 대해 $\ddot\phi_{\mathbf k} + (|\mathbf k|^2 + m^2)\phi_{\mathbf k} = 0$ 이 된다. 모드끼리 섞이지 않는다. 자유 스칼라장은 진동수 $\omega_{\mathbf k} = \sqrt{|\mathbf k|^2+m^2}$ 를 가진 독립적인 조화진동자의 무한 모음이다.
+
+이 그림이 양자화의 전부를 결정한다. 각 진동자를 양자화하면 에너지가 $\omega_{\mathbf k}$ 단위로 쌓이고, 그 단위를 입자라고 부른다. 상호작용 항 $\phi^4$ 는 모드를 섞는 항이며, 그때 비로소 입자 수가 바뀐다.
+
+## 예제 2 · 부호를 뒤집으면
+
+$m^2$ 을 $-\mu^2$ 로 바꾸어 $V(\phi) = -\tfrac12\mu^2\phi^2 + \tfrac{\lambda}{4!}\phi^4$ 를 쓰면 $\phi = 0$ 은 더 이상 최소가 아니라 극대다. 최솟값은 $\phi = \pm v$, $v = \sqrt{6\mu^2/\lambda}$ 에 있다. 장이 둘 중 하나를 고르면 $\phi \to -\phi$ 대칭이 방정식에는 남아 있지만 바닥 상태에는 없다. [자발적 대칭 깨짐](/wiki/spontaneous-symmetry-breaking)의 가장 단순한 예이며, 힉스 기작의 뼈대가 이 한 줄이다.
+
+## 연습문제
+
+<Problem n={1} type="계산형">
+$\lag = \tfrac12(\partial\phi)^2 - \tfrac12 m^2\phi^2 - \tfrac{\lambda}{4!}\phi^4$ 의 장 방정식을 구하고, 예제 2의 $v$ 주변에서 $\phi = v + \chi$ 로 전개해 $\chi$ 의 질량을 구하시오.
+
+<Solution>
+장 방정식은 $(\partial^2 + m^2)\phi + \tfrac{\lambda}{3!}\phi^3 = 0$ 이다. $\phi^4$ 를 미분하면 $4\phi^3$ 이고 $4/4! = 1/3!$ 이다.
+
+부호를 뒤집은 퍼텐셜에서 $V''(\phi) = -\mu^2 + \tfrac{\lambda}{2}\phi^2$ 이므로 $\phi = v$ 에서 $V''(v) = -\mu^2 + \tfrac{\lambda}{2}\cdot\tfrac{6\mu^2}{\lambda} = 2\mu^2$ 이다. 즉 $\chi$ 의 질량 제곱은 $2\mu^2$ 로 양수다.
+
+흔한 오류는 $\lambda$ 앞의 $1/4!$ 을 잊고 $v^2 = \mu^2/\lambda$ 로 쓰는 것이다. 교과서마다 $\phi^4$ 계수 관례가 $\lambda/4!$, $\lambda/4$, $\lambda$ 로 갈리기 때문에 그럴듯하다. 관례는 자유롭지만 한 계산 안에서 섞으면 안 되고, 물리적 결과인 $m_\chi^2 = 2\mu^2$ 는 관례와 무관하다는 점으로 검산할 수 있다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="유도형">
+@eq:yukawa 를 직접 유도하시오. 또 $m \to 0$ 극한에서 쿨롱 퍼텐셜이 나오는 것이 왜 "광자가 질량이 없다"는 실험적 진술과 같은지 설명하시오.
+
+<Solution>
+$\tilde\phi(\mathbf k) = g/(|\mathbf k|^2+m^2)$ 의 역변환은 각도 적분을 먼저 해서
+
+$$
+\phi(r) = \frac{g}{(2\pi)^3}\int \dd^3k\, \frac{e^{i\mathbf k\cdot\mathbf x}}{|\mathbf k|^2+m^2}
+= \frac{g}{2\pi^2 r}\int_0^\infty \dd k\, \frac{k\sin kr}{k^2+m^2} \notag
+$$
+
+가 되고, 마지막 적분은 복소평면에서 $k = im$ 의 유수로 $\tfrac{\pi}{2}e^{-mr}$ 을 준다. 결과가 @eq:yukawa 다.
+
+쿨롱 법칙이 정확히 $1/r$ 이라는 것은 $e^{-mr}$ 의 지수가 0이라는 것과 같으므로, 쿨롱 법칙의 정밀 측정은 광자 질량의 상한이 된다. 실험은 $m_\gamma$ 가 $10^{-18}\,\mathrm{eV}$ 아래임을 말한다.
+
+흔한 오류는 $1/r^{2+\epsilon}$ 형태의 멱법칙 이탈을 찾는 것이 광자 질량을 재는 방법이라고 보는 것이다. 멱법칙 검증이 익숙하니 그럴듯하지만, 질량이 낳는 이탈은 멱이 아니라 지수다. 두 이탈은 거리 의존성이 전혀 다르므로 실험 설계도 달라진다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+클라인-고든 방정식을 "상대론적 슈뢰딩거 방정식"으로 읽으면 어떤 문제가 생기는지, 장으로 읽으면 왜 그 문제가 사라지는지 설명하시오.
+
+<Solution>
+한 입자 파동함수로 읽으면 확률 밀도로 쓸 후보가 $\rho = i(\psi^*\dot\psi - \psi\dot\psi^*)$ 인데, @eq:kg 이 시간에 대해 2계라서 $\psi$ 와 $\dot\psi$ 를 독립적으로 줄 수 있고 따라서 $\rho$ 가 음수인 초기 조건이 존재한다. 또 @eq:disp 는 $\omega = \pm\sqrt{|\mathbf k|^2+m^2}$ 로 음의 에너지 해를 허용한다.
+
+장으로 읽으면 두 문제가 함께 풀린다. $\rho$ 는 확률 밀도가 아니라 전하 밀도이므로 음수여도 된다. 반대 부호 전하를 가진 반입자를 뜻할 뿐이다. 음의 진동수 해도 소멸 연산자와 생성 연산자로 나뉘어 해석되므로 에너지는 아래로 유계다.
+
+흔한 오류는 음의 확률 문제가 "클라인-고든 방정식이 틀렸다"는 뜻이라고 결론짓는 것이다. 역사적으로 디랙도 한동안 그렇게 보았으니 그럴듯하지만, 틀린 것은 방정식이 아니라 해석이다. 방정식은 그대로 두고 $\phi$ 의 지위를 파동함수에서 연산자값 장으로 바꾸면 된다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 자유 스칼라장의 모드 전개와 양자화는 [@peskin1995] 2.3절이 표준이다.
+- 스칼라장만으로 장이론 전체를 먼저 훑는 구성은 [@srednicki2007] 1부에 있다. 지표 없는 계산으로 구조를 익히기 좋다.
+- 어떤 항이 허용되는지를 차원으로 거르는 논의는 [@schwartz2014] 22장이 자세하다.
+- 원래 제안의 맥락은 [@klein1926]이다.

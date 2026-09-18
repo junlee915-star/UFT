@@ -1,13 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/PageHeader.astro';
-import { getPublished, urls } from '@/lib/content';
+import Badge from '@/components/Badge.astro';
+import { getPapers, urls } from '@/lib/content';
 
-const papers = (await getPublished('papers')).sort((a, b) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title, 'ko'));
+const papers = await getPapers();
 ---
 
-<BaseLayout title="논문 요약" description="통일장이론 관련 논문의 한국어 요약 목록">
-  <PageHeader kicker="연구" title="논문 요약" lead="발표 연도 역순입니다. 각 요약은 원문 링크(arXiv 또는 DOI)를 반드시 포함합니다." />
+<BaseLayout title="논문 요약" description="통일장이론 관련 논문의 한국어 요약 목록" wide>
+  <PageHeader kicker="연구" title="논문 요약" lead="발표 연도 역순. 모든 요약은 원문 링크(arXiv 또는 DOI)를 반드시 포함한다." />
   <div class="overflow-x-auto rounded-xl border" style="border-color: var(--line)">
     <table class="w-full text-sm">
       <thead style="background: var(--bg-2)">
@@ -16,6 +17,7 @@ const papers = (await getPublished('papers')).sort((a, b) => b.data.year - a.dat
           <th class="px-4 py-2.5 font-semibold">제목</th>
           <th class="hidden px-4 py-2.5 font-semibold md:table-cell">저자</th>
           <th class="hidden px-4 py-2.5 font-semibold lg:table-cell">게재</th>
+          <th class="px-4 py-2.5 font-semibold">상태</th>
           <th class="px-4 py-2.5 font-semibold">원문</th>
         </tr>
       </thead>
@@ -25,15 +27,18 @@ const papers = (await getPublished('papers')).sort((a, b) => b.data.year - a.dat
             <tr style="border-color: var(--line)">
               <td class="px-4 py-3 tabular-nums" style="color: var(--fg-muted)">{p.data.year}</td>
               <td class="px-4 py-3">
-                <a href={urls.paper(p.id)} class="font-medium">{p.data.title}</a>
-                <p class="text-xs" style="color: var(--fg-muted)">{p.data.titleEn}</p>
+                <a href={urls.paper(p.id)} class="font-medium">{p.data.titleKo}</a>
+                <p class="text-xs" style="color: var(--fg-muted)">{p.data.titleOriginal}</p>
               </td>
-              <td class="hidden px-4 py-3 md:table-cell" style="color: var(--fg-muted)">{p.data.authors.slice(0, 2).join(', ')}{p.data.authors.length > 2 ? ' 외' : ''}</td>
+              <td class="hidden px-4 py-3 md:table-cell" style="color: var(--fg-muted)">
+                {p.data.authors.slice(0, 2).join(', ')}{p.data.authors.length > 2 ? ' 외' : ''}
+              </td>
               <td class="hidden px-4 py-3 lg:table-cell" style="color: var(--fg-muted)">{p.data.venue}</td>
+              <td class="px-4 py-3"><Badge kind="status" value={p.data.status} small /></td>
               <td class="px-4 py-3 whitespace-nowrap">
-                {p.data.arxiv && <a href={`https://arxiv.org/abs/${p.data.arxiv}`} rel="noopener">arXiv</a>}
+                {p.data.arxivId && <a href={`https://arxiv.org/abs/${p.data.arxivId}`} rel="noopener">arXiv</a>}
                 {p.data.doi && <a class="ml-2" href={`https://doi.org/${p.data.doi}`} rel="noopener">DOI</a>}
-                {!p.data.arxiv && !p.data.doi && p.data.url && <a href={p.data.url} rel="noopener">링크</a>}
+                {!p.data.arxivId && !p.data.doi && p.data.url && <a href={p.data.url} rel="noopener">링크</a>}
               </td>
             </tr>
           ))
@@ -41,4 +46,5 @@ const papers = (await getPublished('papers')).sort((a, b) => b.data.year - a.dat
       </tbody>
     </table>
   </div>
+  {papers.length === 0 && <p class="mt-4" style="color: var(--fg-muted)">아직 발행된 요약이 없습니다.</p>}
 </BaseLayout>

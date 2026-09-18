@@ -1,0 +1,11 @@
+---
+/** 선수 단원 배너. 본문 맨 위에 두어 읽기 전에 막히는 지점을 알린다. */
+import LessonRefs from './LessonRefs.astro';
+interface Props {
+  ids: string[];
+  note?: string;
+}
+const { ids, note } = Astro.props;
+---
+
+<LessonRefs ids={ids} kind="prereq" label="먼저 읽을 단원" note={note} />

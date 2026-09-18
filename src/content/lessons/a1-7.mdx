@@ -1,0 +1,172 @@
+---
+id: a1-7
+track: physics
+module: a1
+order: 7
+title: 곡률과 측지선
+summary: 등가원리에서 출발해 자유낙하를 측지선 운동으로 다시 쓰고, 좌표 변환으로 없앨 수 없는 조석 효과가 곡률 텐서라는 것을 확인한다.
+level: intermediate
+status: review
+prereq: [a1-4]
+wikiRefs: [covariant-derivative, energy-momentum-tensor, field-strength, unification]
+citations: [carroll2004, wald1984, nakahara2003, zee2010]
+estMinutes: 160
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [등가원리, 측지선, 곡률, 조석력]
+---
+
+<Gist>
+엘리베이터 줄이 끊어지면 안에 탄 사람은 자신이 떨어지는지 알 수 없다. 떨어지는 동안 무게가 사라지고, 손에서 놓은 물건도 함께 떠 있기 때문이다. 이것이 등가원리이며, 중력이 다른 힘들과 근본적으로 다르다는 신호다. 다른 힘은 좌표계를 바꾼다고 사라지지 않는다. 이 단원은 그 관찰을 기하학으로 옮긴다. 중력장 안의 자유낙하는 힘을 받는 운동이 아니라 굽은 시공간에서 가장 곧은 길을 따라가는 운동이 되고, 좌표 변환으로 끝내 지워지지 않는 부분이 곡률이 된다.
+</Gist>
+
+## 동기 · 중력만 다른 이유
+
+뉴턴 중력에는 설명되지 않은 우연이 하나 있다. 관성질량과 중력질량이 같다는 사실이다. 전자기력에서는 대응하는 우연이 없다. 전하와 질량은 서로 다른 양이고, 같은 전기장 안에서 입자마다 가속도가 다르다. 중력에서는 모든 입자가 같은 가속도로 떨어진다. 에트베시 실험과 그 후속 실험은 이 일치를 $10^{-13}$ 수준까지 확인했다.
+
+같은 가속도로 떨어진다는 것은 함께 떨어지는 좌표계를 잡으면 중력의 효과가 국소적으로 사라진다는 뜻이다. 사라질 수 있는 것은 물체의 성질이 아니라 좌표계의 성질이다. 따라서 중력은 입자에 붙은 전하가 아니라 시공간 자체의 성질이어야 한다 [@carroll2004].
+
+여기서 "국소적으로"라는 단서가 결정적이다. 넓은 영역을 보면 지구를 향해 떨어지는 두 입자의 경로가 서로 가까워진다. 이 상대 가속도는 어떤 좌표계에서도 사라지지 않으며, 바로 그것이 중력의 지워지지 않는 내용이다.
+
+## 핵심 수식
+
+시공간의 기하는 계량으로 주어진다. 규약은 $\eta_{\mu\nu} = \operatorname{diag}(+,-,-,-)$ 이다.
+
+$$
+\dd s^2 = g_{\mu\nu}(x)\,\dd x^\mu\,\dd x^\nu \label{metric}
+$$
+
+자유 입자의 세계선은 측지선 방정식을 만족한다.
+
+$$
+\frac{\dd^2 x^\lambda}{\dd\tau^2} + \Gamma^{\lambda}{}_{\mu\nu}\,\frac{\dd x^\mu}{\dd\tau}\frac{\dd x^\nu}{\dd\tau} = 0 \label{geo}
+$$
+
+접속 계수는 계량에서 결정된다.
+
+$$
+\Gamma^{\lambda}{}_{\mu\nu} = \tfrac12 g^{\lambda\sigma}\big(\partial_\mu g_{\sigma\nu} + \partial_\nu g_{\sigma\mu} - \partial_\sigma g_{\mu\nu}\big) \label{christoffel}
+$$
+
+곡률은 [공변 미분](/wiki/covariant-derivative)의 교환자로 정의한다.
+
+$$
+\big[\nabla_\mu, \nabla_\nu\big]V^{\lambda} = R^{\lambda}{}_{\sigma\mu\nu}V^{\sigma} \label{riemann}
+$$
+
+## 유도 · 생략 없이
+
+### 자유낙하 좌표에서 일반 좌표로
+
+등가원리는 어떤 점에서든 국소 관성 좌표 $\xi^a$ 를 잡을 수 있다고 말한다. 그 좌표에서 자유 입자는 직선 운동을 한다.
+
+$$
+\frac{\dd^2\xi^a}{\dd\tau^2} = 0 \notag
+$$
+
+이제 일반 좌표 $x^\mu$ 로 옮긴다. 연쇄법칙으로 $\dd\xi^a/\dd\tau = (\partial\xi^a/\partial x^\mu)(\dd x^\mu/\dd\tau)$ 이고, 한 번 더 미분하면
+
+$$
+\frac{\partial\xi^a}{\partial x^\lambda}\frac{\dd^2 x^\lambda}{\dd\tau^2}
++ \frac{\partial^2\xi^a}{\partial x^\mu\partial x^\nu}\frac{\dd x^\mu}{\dd\tau}\frac{\dd x^\nu}{\dd\tau} = 0 \notag
+$$
+
+이다. 양변에 역행렬 $\partial x^\lambda/\partial\xi^a$ 를 곱하면 @eq:geo 이 나오고, 이때
+
+$$
+\Gamma^{\lambda}{}_{\mu\nu} = \frac{\partial x^\lambda}{\partial\xi^a}\frac{\partial^2\xi^a}{\partial x^\mu\partial x^\nu} \notag
+$$
+
+로 동정된다. 이 식에서 두 가지를 읽을 수 있다. 첫째, $\Gamma$ 는 텐서가 아니다. 좌표 변환에서 2계 미분 항이 붙기 때문이며, 그래서 한 점에서 $\Gamma$ 를 0으로 만드는 좌표를 언제나 잡을 수 있다. 이것이 등가원리의 수학적 내용이다. 둘째, 그럼에도 @eq:geo 전체는 좌표에 무관한 식이다. 텐서가 아닌 두 항이 합쳐져 텐서처럼 행동한다.
+
+### 접속을 계량으로 쓰기
+
+@eq:christoffel 은 두 조건에서 유일하게 정해진다. 계량 적합성 $\nabla_\lambda g_{\mu\nu} = 0$ 과 비틀림 없음 $\Gamma^\lambda{}_{\mu\nu} = \Gamma^\lambda{}_{\nu\mu}$ 이다. 첫 조건을 지표를 돌려가며 세 번 쓰고 두 개를 더한 뒤 하나를 빼면 @eq:christoffel 이 그대로 떨어진다 [@wald1984].
+
+같은 식을 변분으로도 얻는다. 고유 시간 $S = -m\int\dd\tau$ 를 극값으로 만드는 경로를 구하면 @eq:geo 이 나온다. 물질 입자의 세계선은 두 사건을 잇는 경로 가운데 고유 시간이 **최대**인 경로다. 쌍둥이 역설에서 관성 운동을 한 쪽이 더 늙는 이유가 이것이다.
+
+### 지워지지 않는 부분
+
+한 점에서 $\Gamma$ 를 0으로 만들 수 있지만 그 미분까지 0으로 만들 수는 없다. 좌표 변환의 자유도를 세면 2계 미분으로 40개를 쓸 수 있고 $\partial\Gamma$ 의 성분은 80개이므로, 20개가 남는다. 이 20개가 리만 텐서의 독립 성분이다.
+
+@eq:riemann 을 성분으로 풀면
+
+$$
+R^{\lambda}{}_{\sigma\mu\nu} = \partial_\mu\Gamma^{\lambda}{}_{\nu\sigma} - \partial_\nu\Gamma^{\lambda}{}_{\mu\sigma}
++ \Gamma^{\lambda}{}_{\mu\rho}\Gamma^{\rho}{}_{\nu\sigma} - \Gamma^{\lambda}{}_{\nu\rho}\Gamma^{\rho}{}_{\mu\sigma} \label{riemann-comp}
+$$
+
+이고, 이웃한 두 측지선의 분리 벡터 $S^\mu$ 가 따르는 식은
+
+$$
+\frac{D^2 S^\lambda}{\dd\tau^2} = R^{\lambda}{}_{\mu\nu\sigma}\,u^\mu u^\nu S^\sigma \label{deviation}
+$$
+
+이다. 좌변은 상대 가속도, 우변은 곡률이다. 조석력이 곡률의 관측이라는 진술이 @eq:deviation 이다.
+
+## 예제 1 · 뉴턴 극한
+
+약한 장 $g_{00} = 1 + 2\Phi$, 저속 $\dd x^i/\dd\tau \ll \dd t/\dd\tau$, 정적 장을 가정한다. @eq:christoffel 에서 살아남는 성분은
+
+$$
+\Gamma^{i}{}_{00} = -\tfrac12 g^{ij}\partial_j g_{00} = \partial_i\Phi \notag
+$$
+
+이고, @eq:geo 의 공간 성분은 $\dd^2x^i/\dd t^2 = -\partial_i\Phi$ 가 된다. 뉴턴의 운동 방정식이다. 중력 퍼텐셜은 계량의 시간-시간 성분에 숨어 있었다.
+
+지표면에서 $\Phi \sim -7\times10^{-10}$ 이므로 보정은 $10^{-9}$ 수준이다. 그런데도 위성 항법 장치는 이 보정을 넣지 않으면 하루에 수 킬로미터씩 어긋난다. 작다는 것과 무시해도 된다는 것은 다르다.
+
+## 예제 2 · 게이지 이론과 같은 구조
+
+@eq:riemann 을 게이지 이론과 나란히 놓으면 구조가 같다.
+
+$$
+\big[D_\mu, D_\nu\big] = -ieF_{\mu\nu} \qquad\text{대}\qquad \big[\nabla_\mu,\nabla_\nu\big]V^\lambda = R^{\lambda}{}_{\sigma\mu\nu}V^\sigma \notag
+$$
+
+둘 다 "평행 이동을 서로 다른 순서로 했을 때의 차이"를 재는 양이다. $A_\mu$ 와 $\Gamma^\lambda{}_{\mu\nu}$ 가 접속이고, [장세기](/wiki/field-strength)와 리만 텐서가 곡률이다. 게이지 변환과 좌표 변환이 각각 접속을 비텐서적으로 바꾼다는 점까지 같다.
+
+이 평행 관계가 [통일](/wiki/unification) 시도의 오래된 동기다. 칼루차-클라인 이론은 5차원 계량의 성분에서 $A_\mu$ 를 꺼내 이 유비를 문자 그대로 만들려 했다. 다만 게이지군이 내부 공간에 작용하는 데 반해 좌표 변환은 시공간에 작용한다는 차이가 남으며, 이 차이를 지우는 일이 생각만큼 쉽지 않다 [@nakahara2003].
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+$S = -m\int\dd\tau$ 를 변분해 @eq:geo 을 유도하시오. 매개변수 선택에 어떤 제한이 붙는지 밝히시오.
+
+<Solution>
+$\dd\tau = \sqrt{g_{\mu\nu}\dot x^\mu\dot x^\nu}\,\dd\lambda$ 로 두고 오일러-라그랑주 방정식을 쓰면, 제곱근 안쪽의 미분에서 @eq:christoffel 의 세 항이 정확히 조합되어 나온다. 계산은 $\lag = \tfrac12 g_{\mu\nu}\dot x^\mu\dot x^\nu$ 로 제곱근 없이 두는 편이 훨씬 짧고, 두 라그랑지안은 같은 측지선을 준다.
+
+제한은 매개변수가 아핀이어야 한다는 것이다. 제곱근 형태는 재매개변수화에 불변이므로 어떤 매개변수를 써도 경로는 같지만, @eq:geo 의 모양은 아핀 매개변수에서만 성립한다. 그렇지 않으면 우변에 $\dd x^\lambda/\dd\lambda$ 에 비례하는 항이 남는다.
+
+흔한 오류는 제곱근 없는 $\lag$ 로 계산해 놓고 임의의 매개변수를 쓰는 것이다. 두 라그랑지안이 같은 답을 준다는 사실이 알려져 있어 그럴듯하지만, 그 동치는 아핀 매개변수를 택했을 때만 성립한다. 질량 없는 입자의 측지선에서는 $\dd\tau = 0$ 이라 제곱근 형태를 쓸 수 없으므로 이 구분이 더 중요해진다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="계산형">
+빛의 휘어짐을 계산할 때 $g_{00}$ 만 쓰면 관측값의 절반이 나온다. 왜 그런지 설명하시오.
+
+<Solution>
+슈바르츠실트 계량에는 $g_{00} = 1 + 2\Phi$ 뿐 아니라 공간 성분의 보정 $g_{ij} = -(1 - 2\Phi)\delta_{ij}$ 도 있다. 느린 입자는 $\dd x^i/\dd\tau$ 가 작아 공간 보정의 기여가 무시되지만, 빛은 공간 성분과 시간 성분의 기여가 같은 크기다. 그래서 $g_{00}$ 만 쓰면 정확히 절반인 $2GM/bc^2$ 이 나오고, 둘을 모두 쓰면 관측값 $4GM/bc^2$ 이 나온다.
+
+흔한 오류는 뉴턴 중력에 등가원리만 덧붙여 광자를 "질량 있는 입자처럼" 다루면 충분하다고 보는 것이다. 1911년의 아인슈타인 자신이 그 계산을 했으니 그럴듯하다. 그러나 그 계산은 시공간 곡률 가운데 시간 방향만 쓴 것이고, 공간의 곡률은 광속으로 움직이는 대상에서만 드러난다. 1919년 관측이 판별한 것이 바로 이 인수 2다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+"등가원리에 따르면 중력은 언제나 좌표 변환으로 없앨 수 있다"는 진술이 왜 부정확한지 @eq:deviation 을 써서 설명하시오.
+
+<Solution>
+없앨 수 있는 것은 한 점, 그리고 그 점 주변의 1차 근사까지다. 한 점에서 $g_{\mu\nu} = \eta_{\mu\nu}$ 와 $\Gamma = 0$ 을 만드는 좌표는 언제나 있지만, $\partial\Gamma$ 에 들어 있는 20개 성분은 어떤 좌표에서도 남는다. @eq:deviation 이 말하듯 그 남는 부분이 이웃한 두 자유낙하 궤적의 상대 가속도로 관측된다.
+
+즉 등가원리는 "중력장이 없다"가 아니라 "중력장의 1차 효과를 국소적으로 상쇄할 수 있다"는 진술이다. 떨어지는 엘리베이터가 충분히 크면 안에서 조석 효과를 측정할 수 있다.
+
+흔한 오류는 등가원리를 무제한으로 적용해 중력이 실재하는 장이 아니라 좌표 인공물이라고 결론짓는 것이다. 국소 실험에서 정말로 아무 효과가 없으니 그럴듯하다. 그러나 곡률은 텐서이고, 텐서가 한 좌표계에서 0이 아니면 모든 좌표계에서 0이 아니다 [@zee2010].
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 등가원리에서 측지선까지의 서술은 [@carroll2004] 2~3장이 가장 친절하다.
+- 접속과 곡률의 정의를 좌표 없이 세우는 방식은 [@wald1984] 3장에 있다.
+- 게이지 이론과 중력의 기하학적 공통 구조는 [@nakahara2003] 10장에서 주다발 언어로 정리된다.

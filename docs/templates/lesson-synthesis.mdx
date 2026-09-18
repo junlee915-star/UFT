@@ -1,0 +1,69 @@
+---
+id: c1-1
+track: synthesis
+module: c1
+order: 1
+title: 단원 제목
+summary: 한 줄 요지. 300자 이하.
+level: intermediate
+status: review                  # 트랙 C 는 verified 를 쓰지 않는다
+claimType: comparative          # comparative | conceptual | proposal
+prereq: []
+groundedIn: [a1-3, b0-1]        # 트랙 A 또는 B 단원만. 본문 <Grounds> 와 같아야 함
+wikiRefs: [unification, monism, category-mistake]
+citations: [weinberg1967, spinoza_ethics, morrison2000]
+estMinutes: 150
+author: Jun Lee
+created: 2026-01-01
+aiAssisted: none
+tags: []
+---
+
+<Grounds ids={['a1-3', 'b0-1']} />
+
+## 다룰 질문
+
+한 문장으로.
+
+## 물리학 쪽 사실
+
+근거 단원에서 가져오는 사실만 쓴다. 어느 단원에서 왔는지 본문에 적는다.
+
+## 형이상학 쪽 입장들
+
+입장을 나열하고 각각이 무엇을 주장하는지 구분한다.
+
+## 대조와 정리
+
+두 쪽이 같은 낱말을 서로 다른 뜻으로 쓰는 지점을 밝힌다.
+
+## 명제 분해
+
+<Claims
+  caption="이 단원이 확정하는 명제"
+  claims={[
+    { id: 'P1', text: '부정 가능한 문장으로 쓴다.', kind: 'physical', test: '무엇으로 부정되는가.' },
+    { id: 'P2', text: '형이상학적 명제.', kind: 'metaphysical', test: '어떤 논증이 지지하는가.' },
+  ]}
+/>
+
+## 논증 가능한 것과 불가능한 것
+
+- **논증 가능.**
+- **논증 불가능 (이 단원의 자료만으로).**
+
+## 과제와 산출물
+
+<Problem n={1} type="개념 진술형">
+문제 본문.
+
+<Solution>
+풀이와 흔한 오류.
+</Solution>
+</Problem>
+
+**산출물.** 무엇을 만들어 남기는지.
+
+## 더 읽기
+
+- [@morrison2000]

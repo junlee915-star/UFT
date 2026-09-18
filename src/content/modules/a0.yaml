@@ -1,0 +1,8 @@
+track: physics
+order: 0
+title: 수학 도구 정비
+summary: 학부 수학을 장이론의 언어로 옮기는 속성 과정. 변분법, 텐서 지표, 미분형식, 군과 표현, 리대수, 함수해석 최소 도구를 여섯 단원에 담는다.
+goal: 장이론 교과서의 수식을 기호 때문에 막히지 않고 읽는다.
+level: intro
+prereqModules: []
+checkpoint: 문제 5개 세트. 변분 유도 1, 지표 계산 1, 미분형식 1, 표현론 2.

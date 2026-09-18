@@ -1,0 +1,51 @@
+---
+/**
+ * 수식 없는 요지 박스 (교육과정 원칙 2번을 강제하는 장치).
+ * 트랙 A 단원은 이 박스 없이 검사를 통과하지 못한다.
+ * 교양 독자가 여기서 읽기를 닫을 수 있도록 3~5문장으로 쓴다.
+ */
+interface Props {
+  /** 기본은 펼침. 이미 아는 독자를 위해 접어 두려면 open={false} */
+  open?: boolean;
+}
+const { open = true } = Astro.props;
+---
+
+<details class="gist" open={open}>
+  <summary>수식 없는 요지</summary>
+  <div class="gist-body"><slot /></div>
+</details>
+
+<style>
+  .gist {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    background: var(--bg-2);
+    padding: 0.8em 1.1em;
+    margin-block: 1.4em;
+  }
+  .gist > summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    list-style: none;
+  }
+  .gist > summary::-webkit-details-marker {
+    display: none;
+  }
+  .gist > summary::before {
+    content: '▸ ';
+  }
+  .gist[open] > summary::before {
+    content: '▾ ';
+  }
+  .gist-body :global(> :first-child) {
+    margin-top: 0.7em;
+  }
+  .gist-body :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
-import { collectionLabel, urlOf, type AnyEntry } from '@/lib/content';
+import type { Listing } from '@/lib/content';
 interface Props {
-  entries: AnyEntry[];
+  entries: Listing[];
   title?: string;
 }
 const { entries, title = '이 항목을 참조하는 글' } = Astro.props;
@@ -14,10 +14,8 @@ const { entries, title = '이 항목을 참조하는 글' } = Astro.props;
       <ul class="mt-3 space-y-1.5 text-sm">
         {entries.map((e) => (
           <li>
-            <span class="mr-2 text-xs" style="color: var(--fg-muted)">
-              {collectionLabel[e.collection]}
-            </span>
-            <a href={urlOf(e)}>{e.data.title}</a>
+            <span class="mr-2 text-xs" style="color: var(--fg-muted)">{e.kind}</span>
+            <a href={e.url}>{e.title}</a>
           </li>
         ))}
       </ul>

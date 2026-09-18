@@ -1,0 +1,173 @@
+---
+id: a3-5
+track: physics
+module: a3
+order: 5
+title: 전기약 통일 (GWS)
+summary: SU(2)_L×U(1)_Y 에 힉스 이중항을 넣어 게이지 보손 질량 행렬을 대각화하고, 광자가 무질량으로 남는 조합과 Z 보손이 되는 조합을 혼합각으로 얻는다. 전하와 두 결합상수의 관계도 함께 읽는다.
+level: advanced
+status: review
+prereq: [a3-4]
+wikiRefs: [electroweak-unification, standard-model, higgs-mechanism, spontaneous-symmetry-breaking, gauge-symmetry, unification]
+citations: [glashow1961, weinberg1967, salam1968, peskin1995, schwartz2014]
+estMinutes: 170
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [전기약 통일, 와인버그 각, Z 보손]
+---
+
+<Gist>
+전자기력과 약한 힘은 겉보기에 전혀 다르다. 하나는 무한히 멀리 가고 다른 하나는 원자핵 안에서만 작동한다. 그런데 두 힘을 한 대칭에서 함께 꺼내면 이 차이가 매개 입자의 질량 차이로 환원된다. 앞 단원의 기작을 적용하면 네 개의 매개 입자 중 셋은 무거워지고 하나는 정확히 무질량으로 남는데, 그 하나가 광자다. 남는 조합이 무엇인지는 두 결합상수의 비가 정하며, 이 비를 각도로 적은 것이 혼합각이다. 통일이 무엇을 설명하고 무엇을 설명하지 않는지가 이 단원에서 분명해진다.
+</Gist>
+
+## 동기 · 왜 두 힘을 묶는가
+
+페르미의 사점 상호작용은 낮은 에너지에서 잘 맞지만 고에너지에서 산란 진폭이 발산한다. 결합상수 $G_F$ 가 질량 차원 $-2$ 를 가지므로 재규격화할 수 없기 때문이다. 이 발산을 무거운 매개 보손으로 무마하려면 그 보손이 게이지 보손이어야 하고, 게이지 보손이 무거우려면 힉스 기작이 필요하다.
+
+또 다른 이유는 전하 구조다. 약한 상호작용은 왼손 성분만 건드리고 전자기력은 손지기를 가리지 않는다. 손지기를 구별하는 힘과 구별하지 않는 힘을 한 군에 넣으려면, 전자기 U(1) 을 그대로 쓰는 것이 아니라 더 큰 군의 부분군으로 다시 만들어야 한다. 글래쇼가 1961년에 $SU(2)_L \times U(1)_Y$ 라는 구조를 제안했고 [@glashow1961], 여기에 힉스 기작을 결합해 완성한 것이 와인버그와 살람이다 [@weinberg1967; @salam1968].
+
+## 핵심 수식
+
+게이지군은 $SU(2)_L \times U(1)_Y$ 이고 게이지 장은 $W^1_\mu, W^2_\mu, W^3_\mu$ 와 $B_\mu$ 네 개다. 힉스 이중항 $\Phi$ 는 초전하 $Y = 1$ 을 갖는다.
+
+$$
+D_\mu\Phi = \left(\partial_\mu - ig\,W^a_\mu T^a - i\frac{g'}{2}\,Y B_\mu\right)\Phi ,
+\qquad T^a = \frac{\sigma^a}{2} \label{ew-covd}
+$$
+
+진공 기댓값과 남는 대칭은 앞 단원의 셈 그대로다.
+
+$$
+\langle\Phi\rangle = \frac{1}{\sqrt2}\begin{pmatrix} 0 \\ v \end{pmatrix} ,
+\qquad Q = T^3 + \frac{Y}{2} , \qquad Q\,\langle\Phi\rangle = 0 \label{vev-ew}
+$$
+
+게이지 보손 질량항은 다음 꼴로 정리된다.
+
+$$
+\left|D_\mu\langle\Phi\rangle\right|^2
+= \frac{v^2}{8}\left[g^2\left(W^1_\mu W^{1\mu} + W^2_\mu W^{2\mu}\right)
++ \left(g\,W^3_\mu - g'\,B_\mu\right)^2\right] \label{ew-mass}
+$$
+
+대각화 결과가 이 단원의 결론이다.
+
+$$
+m_W = \frac{g v}{2} , \qquad m_Z = \frac{\sqrt{g^2+g'^2}\,v}{2} , \qquad m_\gamma = 0 ,
+\qquad \tan\theta_W = \frac{g'}{g} \label{ew-result}
+$$
+
+## 유도 · 생략 없이
+
+@eq:ew-covd 를 진공에 작용시킨다. $Y = 1$ 이므로 괄호 안은
+
+$$
+-\frac{i}{2}\begin{pmatrix} g W^3 + g' B & g\left(W^1 - iW^2\right) \\ g\left(W^1 + iW^2\right) & -g W^3 + g' B \end{pmatrix}
+$$
+
+이고, 이것을 $\tfrac{1}{\sqrt2}(0, v)^{\mathsf T}$ 에 곱하면 둘째 열만 살아남는다. 결과 벡터의 노름 제곱을 취하면 @eq:ew-mass 이 나온다. 여기서 $W^3$ 과 $B$ 가 항상 $gW^3 - g'B$ 라는 한 조합으로만 들어온다는 사실이 전부를 결정한다.
+
+$W^1, W^2$ 는 서로 같은 계수를 가지므로 전하 고유 상태로 묶는다.
+
+$$
+W^{\pm}_\mu = \frac{1}{\sqrt2}\left(W^1_\mu \mp i W^2_\mu\right) ,
+\qquad \frac{v^2}{8}g^2\left[(W^1)^2 + (W^2)^2\right] = \frac{g^2v^2}{4}\,W^+_\mu W^{-\mu}
+$$
+
+복소 벡터장의 질량항 규약이 $m^2 W^+W^-$ 이므로 $m_W = gv/2$ 다.
+
+중성 부분은 $2\times2$ 문제다. $\left(W^3, B\right)$ 기저에서 질량 행렬은
+
+$$
+M^2 = \frac{v^2}{4}\begin{pmatrix} g^2 & -g g' \\ -g g' & g'^2 \end{pmatrix} \label{massmatrix}
+$$
+
+이다. 이 행렬은 행렬식이 0이다. 두 행이 비례하기 때문이다. 따라서 고유값 하나는 반드시 0이고, 나머지 하나는 대각합과 같아 $\tfrac{v^2}{4}(g^2 + g'^2)$ 다. 무질량 보손이 하나 남는다는 것이 계산에서 저절로 나온다. 앞 단원의 셈, 즉 깨진 생성자가 4개 중 3개라는 사실의 행렬판이다.
+
+고유벡터를 읽는다. 혼합각 $\theta_W$ 를 $\tan\theta_W = g'/g$ 로 정의하면
+
+$$
+A_\mu = \sin\theta_W\,W^3_\mu + \cos\theta_W\,B_\mu , \qquad
+Z_\mu = \cos\theta_W\,W^3_\mu - \sin\theta_W\,B_\mu \label{mixing}
+$$
+
+이고, $A_\mu$ 가 영고유값, $Z_\mu$ 가 $m_Z = \tfrac{v}{2}\sqrt{g^2+g'^2}$ 에 대응한다. 확인하려면 @eq:ew-mass 의 괄호 안 $gW^3 - g'B$ 를 @eq:mixing 으로 바꿔 쓰면 된다. $\sqrt{g^2+g'^2}\,Z_\mu$ 가 되고 $A_\mu$ 는 아예 나타나지 않는다.
+
+남은 것은 결합이다. 전자기 결합은 $Q = T^3 + Y/2$ 에 붙어야 하므로, @eq:ew-covd 에서 $W^3$ 과 $B$ 를 @eq:mixing 으로 치환한 뒤 $A_\mu$ 의 계수를 모으면
+
+$$
+e = g\sin\theta_W = g'\cos\theta_W , \qquad
+\frac{1}{e^2} = \frac{1}{g^2} + \frac{1}{g'^2} \label{echarge}
+$$
+
+를 얻는다. 여기에 통일의 성격이 드러난다. 전하 $e$ 는 이제 독립 매개변수가 아니라 $g, g'$ 에서 유도된다. 그러나 $g$ 와 $g'$ 사이의 관계는 여전히 없으므로 $\theta_W$ 자체는 예측되지 않고 측정해야 한다. 곱군은 진정한 단일 군이 아니다. $\sin^2\theta_W$ 를 예측하려면 다음 모듈의 단순군 매장이 필요하다.
+
+마지막으로 트리 준위 예측 하나가 남는다. @eq:ew-result 에서
+
+$$
+\rho \equiv \frac{m_W^2}{m_Z^2\cos^2\theta_W} = 1 \label{rho}
+$$
+
+이다. 이 값은 힉스가 이중항이라는 가정에서만 나오며, 삼중항을 썼다면 달라진다. 실측이 $\rho \approx 1$ 이라는 사실이 힉스 표현을 결정한 근거다 [@peskin1995].
+
+## 예제 1 · 중성류 결합
+
+@eq:mixing 을 페르미온의 공변 미분에 넣고 $Z_\mu$ 의 계수를 모으면
+
+$$
+\lag \supset \frac{g}{\cos\theta_W}\,Z_\mu\,\bar f\gamma^\mu\left(T^3 - Q\sin^2\theta_W\right)f
+$$
+
+가 된다. $T^3$ 은 왼손 성분에만 있고 $Q$ 는 양쪽에 있으므로 Z 결합은 손지기에 따라 다르다. 이것이 1973년에 발견된 중성류의 정체이며, 전기약 이론이 처음으로 새 현상을 예측해 맞힌 사례다. 광자에는 $T^3$ 항이 없어 손지기에 무관하다는 대비도 같은 식에서 읽힌다.
+
+## 예제 2 · 진공 기댓값의 수치
+
+낮은 에너지에서 $W$ 를 적분해 내면 페르미 이론이 복원된다. 사점 결합의 세기를 맞추면
+
+$$
+\frac{G_F}{\sqrt2} = \frac{g^2}{8m_W^2} = \frac{1}{2v^2}
+\;\Longrightarrow\;
+v = \left(\sqrt2\,G_F\right)^{-1/2} \approx 246\ \text{GeV}
+$$
+
+이다. $G_F$ 는 뮤온 수명에서 정밀하게 측정되므로 $v$ 는 W 보손을 보기 훨씬 전부터 알려져 있었다. 여기에 $\sin^2\theta_W \approx 0.231$ 과 $e$ 를 넣으면 $m_W \approx 80$ GeV, $m_Z \approx 91$ GeV 가 나오고, 1983년 실험이 이 값을 확인했다. 예측이 먼저 있었고 발견이 뒤따랐다는 순서가 이 이론의 지위를 정했다.
+
+## 연습문제
+
+<Problem n={1} type="계산형">
+@eq:massmatrix 의 고유값이 $0$ 과 $\tfrac{v^2}{4}(g^2+g'^2)$ 임을 직접 보이고, 영고유벡터가 @eq:mixing 의 $A_\mu$ 임을 확인하시오.
+
+<Solution>
+$\det M^2 = \tfrac{v^4}{16}\left(g^2g'^2 - g^2g'^2\right) = 0$ 이므로 고유값 하나가 0이다. 대각합은 $\tfrac{v^2}{4}(g^2+g'^2)$ 이고 두 고유값의 합과 같으므로 나머지가 결정된다. 영고유벡터는 $M^2 x = 0$ 에서 $g^2 x_1 - gg' x_2 = 0$, 즉 $x \propto (g', g)$ 다. 규격화하면 $(\sin\theta_W, \cos\theta_W)$ 이고 이것이 $A_\mu$ 의 계수다.
+
+흔한 오류는 $W^3$ 과 $B$ 의 혼합을 "광자가 $W^3$ 과 $B$ 의 평균"으로 외우는 것이다. 그럴듯한 이유는 $g \approx g'$ 근처의 그림을 자주 보기 때문이다. 그러나 실제로는 $g'/g \approx 0.55$ 이고 $\sin^2\theta_W \approx 0.23$ 이므로 광자는 $B$ 쪽에 더 많이 치우쳐 있다. 각도가 $45^\circ$ 가 아니라는 사실이 곧 통일이 완결되지 않았다는 신호다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="유도형">
+@eq:echarge 의 둘째 표현 $1/e^2 = 1/g^2 + 1/g'^2$ 를 유도하고, 이 식이 왜 "전자기 결합이 두 결합 중 더 약한 쪽보다도 약하다"를 뜻하는지 설명하시오.
+
+<Solution>
+$e = g\sin\theta_W$ 에서 $\sin^2\theta_W = e^2/g^2$ 이고, $e = g'\cos\theta_W$ 에서 $\cos^2\theta_W = e^2/g'^2$ 다. 두 값을 더하면 1이므로 $e^2/g^2 + e^2/g'^2 = 1$ 이고, 양변을 $e^2$ 으로 나누면 $1/e^2 = 1/g^2 + 1/g'^2$ 가 된다. 저항의 병렬 연결과 같은 꼴이다. 병렬 합성값이 가장 작은 성분보다 작듯이, $e^2$ 은 $g^2$ 과 $g'^2$ 중 작은 쪽보다도 작다.
+
+흔한 오류는 통일을 "여러 힘이 합쳐져 더 강해진다"로 상상하는 것이다. 그럴듯한 이유는 일상적으로 합침이 증가를 뜻하기 때문이다. 그러나 여기서 합쳐지는 것은 세기가 아니라 대칭 구조이며, 전자기 결합은 두 모군 결합의 조화평균 꼴로 오히려 작아진다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="계산형">
+힉스가 이중항이 아니라 초전하 $Y = 2$ 인 복소 삼중항 하나였다면 $\rho$ 가 얼마가 되는지 구하시오. 일반 공식은
+$\rho = \sum_i\left[T_i(T_i+1) - (T^3_i)^2\right]v_i^2 \big/ \left(2\sum_i (T^3_i)^2 v_i^2\right)$ 이다.
+
+<Solution>
+전기적으로 중성인 성분이 진공 기댓값을 가져야 하므로 $Q = T^3 + Y/2 = 0$, 즉 $T^3 = -1$ 인 성분이다. 분자는 $T(T+1) - (T^3)^2 = 1\cdot 2 - 1 = 1$ 이고 분모는 $2\cdot 1 = 2$ 이므로 $\rho = 1/2$ 다. 이중항의 $T = 1/2,\ T^3 = -1/2$ 를 넣으면 분자와 분모가 모두 $1/2$ 이 되어 @eq:rho 의 $\rho = 1$ 이 재현된다. 실측값이 1에 매우 가까우므로 삼중항이 지배적인 시나리오는 배제된다.
+
+흔한 오류는 $\rho = 1$ 을 이론의 정리로 착각해 어떤 힉스 표현에서도 성립한다고 보는 것이다. 그럴듯한 이유는 표준모형 교과서가 $\rho = 1$ 을 거의 항상 참으로 다루기 때문이다. 그러나 이것은 표현 선택의 결과이며, 일반적으로 $\rho$ 는 각 스칼라 다중항의 약아이소스핀과 초전하로 주어지는 합으로 정해진다. $\rho$ 측정은 그래서 힉스 부문의 구조를 제약하는 실험이다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 군 구조를 먼저 제안한 것은 [@glashow1961]이고, 힉스 기작을 붙여 질량을 준 것이 [@weinberg1967]과 [@salam1968]이다. 와인버그의 논문은 두 쪽이 조금 넘는다.
+- 전기약 이론의 조립과 파인만 규칙은 [@peskin1995] 20장에 정리되어 있다.
+- 정밀 전기약 검증과 $\rho$ 매개변수의 고리 보정은 [@schwartz2014] 31장을 보라.

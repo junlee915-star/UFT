@@ -1,0 +1,119 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Badge from '@/components/Badge.astro';
+import ProgressBar from '@/components/ProgressBar.astro';
+import { getModules, getLessons, getTracks, urls, type TrackId } from '@/lib/content';
+
+export async function getStaticPaths() {
+  const modules = await getModules();
+  return modules.map((m) => ({ params: { track: m.data.track, module: m.id }, props: { module: m } }));
+}
+const { module: mod } = Astro.props;
+const trackId = mod.data.track as TrackId;
+const track = (await getTracks()).find((t) => t.id === trackId)!;
+const allModules = await getModules();
+const lessons = (await getLessons()).filter((l) => l.data.module === mod.id);
+const totalMinutes = lessons.reduce((s, l) => s + l.data.estMinutes, 0);
+const prereqModules = mod.data.prereqModules.map((id) => allModules.find((m) => m.id === id)).filter((m) => m !== undefined);
+const nextModules = allModules.filter((m) => m.data.prereqModules.includes(mod.id));
+---
+
+<BaseLayout title={`${mod.id.toUpperCase()} ${mod.data.title}`} description={mod.data.summary} track={trackId}>
+  <PageHeader
+    kicker={`트랙 ${track.data.letter} · ${track.data.title}`}
+    title={mod.data.title}
+    lead={mod.data.summary}
+  >
+    <p class="-mt-1 mb-2 font-mono text-sm font-bold" style={`color: var(--track-${trackId})`}>{mod.id.toUpperCase()}</p>
+    <p class="mt-4 max-w-3xl rounded-lg border p-4" style="border-color: var(--line); background: var(--bg-2)">
+      <strong>이 모듈을 마치면</strong><br />{mod.data.goal}
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-3 text-sm" style="color: var(--fg-muted)">
+      <Badge kind="level" value={mod.data.level} />
+      <span>단원 {lessons.length}개</span>
+      {totalMinutes > 0 && <span>약 {Math.round(totalMinutes / 60)}시간</span>}
+    </div>
+    {
+      prereqModules.length > 0 && (
+        <p class="mt-3 text-sm" style="color: var(--fg-muted)">
+          선수 모듈:{' '}
+          {prereqModules.map((p, i) => (
+            <>
+              {i > 0 && ', '}
+              <a href={urls.module(p.data.track, p.id)}>{p.id.toUpperCase()} {p.data.title}</a>
+            </>
+          ))}
+        </p>
+      )
+    }
+    {
+      lessons.length > 0 && (
+        <div class="mt-5 max-w-md">
+          <ProgressBar scope={mod.id} ids={lessons.map((l) => l.id)} label="이 모듈 진행률" />
+        </div>
+      )
+    }
+    <div
+      class="mt-4 rounded-lg border p-3 text-sm"
+      style="border-color: var(--line)"
+      data-progress-resume
+      data-progress-ids={lessons.map((l) => l.id).join(',')}
+      hidden
+    >
+      이어보기 → <a data-resume-link href={lessons.length ? urls.lesson(trackId, mod.id, lessons[0].id) : '#'}>다음 단원</a>
+    </div>
+  </PageHeader>
+
+  <ol class="grid gap-4">
+    {
+      lessons.map((l) => (
+        <li>
+          <a
+            href={urls.lesson(trackId, mod.id, l.id)}
+            class="flex gap-5 rounded-xl border p-5 no-underline hover:no-underline"
+            style="border-color: var(--line)"
+            data-lesson-href={l.id}
+            data-lesson-title={l.data.title}
+          >
+            <span class="shrink-0 font-mono text-2xl font-bold tabular-nums" style={`color: var(--track-${trackId})`}>
+              {String(l.data.order).padStart(2, '0')}
+            </span>
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold" style="color: var(--fg)">{l.data.title}</h2>
+              <p class="mt-1 text-sm" style="color: var(--fg-muted)">{l.data.summary}</p>
+              <div class="mt-2 flex flex-wrap items-center gap-2 text-xs" style="color: var(--fg-muted)">
+                <span class="font-mono">{l.id.toUpperCase()}</span>
+                <Badge kind="level" value={l.data.level} small />
+                <Badge kind="status" value={l.data.status} small />
+                <span>{l.data.estMinutes}분</span>
+                {l.data.prereq.length > 0 && <span>선수 {l.data.prereq.length}개</span>}
+              </div>
+            </div>
+          </a>
+        </li>
+      ))
+    }
+    {lessons.length === 0 && <li style="color: var(--fg-muted)">단원 준비 중입니다.</li>}
+  </ol>
+
+  <section class="mt-10 rounded-xl border p-5" style="border-color: var(--line); background: var(--bg-2)">
+    <h2 class="text-base font-semibold">모듈 체크포인트</h2>
+    <p class="mt-2 text-sm" style="color: var(--fg-muted)">{mod.data.checkpoint}</p>
+    <p class="mt-2 text-sm" style="color: var(--fg-muted)">
+      통과 기준은 루브릭 3수준 이상이다. 채점은 사이트가 하지 않고 학습자가 자기 글을 루브릭에 대어 스스로 정한다.
+      <a href={urls.about()}>루브릭 보기</a>
+    </p>
+  </section>
+
+  {
+    nextModules.length > 0 && (
+      <nav class="mt-8 flex flex-wrap gap-3 text-sm" aria-label="다음 모듈">
+        <span style="color: var(--fg-muted)">이 모듈을 선수로 삼는 모듈:</span>
+        {nextModules.map((m) => (
+          <a href={urls.module(m.data.track, m.id)}>{m.id.toUpperCase()} {m.data.title}</a>
+        ))}
+      </nav>
+    )
+  }
+</BaseLayout>

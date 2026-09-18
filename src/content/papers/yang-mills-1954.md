@@ -1,16 +1,18 @@
 ---
-title: 아이소스핀 보존과 아이소스핀 게이지 불변성
-titleEn: Conservation of Isotopic Spin and Isotopic Gauge Invariance
+titleKo: 아이소스핀 보존과 아이소스핀 게이지 불변성
+titleOriginal: Conservation of Isotopic Spin and Isotopic Gauge Invariance
 authors: [Chen Ning Yang, Robert L. Mills]
 year: 1954
 venue: Physical Review 96, 191
 doi: 10.1103/PhysRev.96.191
 bibKey: yang1954
-summary: 전역 SU(2) 아이소스핀 대칭을 국소 대칭으로 승격하여 비아벨 게이지 장을 도입한 논문. 표준모형과 대통일이론 전체의 수학적 골격을 제공했다.
+summaryKo: 전역 SU(2) 아이소스핀 대칭을 국소 대칭으로 승격하여 비아벨 게이지 장을 도입한 논문. 표준모형과 대통일이론 전체의 수학적 골격을 제공했다.
+wikiRefs: [yang-mills-action, gauge-symmetry, covariant-derivative]
 tags: [양-밀스, SU(2), 게이지 대칭]
-difficulty: 중급
-status: 검토 완료
+tracks: [physics]
+status: verified
 created: 2026-09-12
+aiAssisted: draft
 ---
 
 ## 한 문장 요약
@@ -29,5 +31,5 @@ created: 2026-09-12
 
 ## 이 사이트의 관련 글
 
-- [게이지 대칭과 공변 미분](/learn/gauge-theory-standard-model/01-gauge-symmetry)
+- [게이지 대칭과 공변 미분](/learn/physics/a3/a3-1)
 - [양-밀스 작용](/wiki/yang-mills-action)

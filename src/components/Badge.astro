@@ -1,24 +1,60 @@
 ---
+import { levelLabel, statusLabel, trackLabel, type Level, type Status, type TrackId } from '@/lib/content';
+
 interface Props {
-  kind: 'difficulty' | 'status' | 'plain';
+  kind: 'level' | 'status' | 'track' | 'plain';
   value: string;
+  /** 짧게 표시 */
+  small?: boolean;
 }
-const { kind, value } = Astro.props;
-const palette: Record<string, string> = {
-  입문: '#2e7d4f',
-  중급: '#2f5d8a',
-  고급: '#8a3d2f',
-  초안: '#7a6f5a',
-  '검토 중': '#a1701a',
-  '검토 완료': '#2e7d4f',
+const { kind, value, small } = Astro.props;
+
+const levelColor: Record<string, string> = {
+  intro: '#2e7d4f',
+  intermediate: '#2f5d8a',
+  advanced: '#8a3d2f',
 };
-const color = palette[value] ?? 'var(--fg-muted)';
+const statusColor: Record<string, string> = {
+  draft: '#7a6f5a',
+  review: '#a1701a',
+  verified: '#2e7d4f',
+};
+
+let text = value;
+let color = 'var(--fg-muted)';
+if (kind === 'level') {
+  text = levelLabel[value as Level] ?? value;
+  color = levelColor[value] ?? color;
+} else if (kind === 'status') {
+  text = statusLabel[value as Status] ?? value;
+  color = statusColor[value] ?? color;
+} else if (kind === 'track') {
+  text = trackLabel[value as TrackId] ?? value;
+  color = `var(--track-${value})`;
+}
 ---
 
 <span
-  class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+  class:list={['badge', { small }]}
   style={`color: ${color}; border-color: color-mix(in srgb, ${color} 40%, transparent); background: color-mix(in srgb, ${color} 10%, transparent)`}
-  data-kind={kind}
 >
-  {value}
+  {text}
 </span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 0.1em 0.55em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .badge.small {
+    font-size: 0.68rem;
+    padding: 0.05em 0.4em;
+  }
+</style>

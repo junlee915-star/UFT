@@ -1,0 +1,95 @@
+---
+/**
+ * 명제 분해표. 트랙 C 에서 자기 가설을 P1~Pn 으로 쪼개고
+ * 명제마다 물리적·형이상학적 분류와 검증 경로를 붙인다.
+ */
+export interface Claim {
+  id: string;
+  /** 부정 가능한 문장으로 쓴다 */
+  text: string;
+  /** physical 은 관측·계산으로, metaphysical 은 논증으로 다툰다 */
+  kind: 'physical' | 'metaphysical';
+  /** 이 명제를 부정하는 관측·계산 또는 지지하는 논증 */
+  test: string;
+}
+interface Props {
+  claims: Claim[];
+  caption?: string;
+}
+const { claims, caption } = Astro.props;
+const kindLabel = { physical: '물리적', metaphysical: '형이상학적' } as const;
+---
+
+<figure class="claims">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">명제</th>
+        <th scope="col">내용</th>
+        <th scope="col">분류</th>
+        <th scope="col">검증 경로</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        claims.map((c) => (
+          <tr>
+            <th scope="row">{c.id}</th>
+            <td>{c.text}</td>
+            <td><span class:list={['kind', c.kind]}>{kindLabel[c.kind]}</span></td>
+            <td>{c.test}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .claims {
+    margin-block: 1.6em;
+  }
+  .claims table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93em;
+    display: block;
+    overflow-x: auto;
+  }
+  .claims th,
+  .claims td {
+    border: 1px solid var(--line);
+    padding: 0.5em 0.7em;
+    text-align: left;
+    vertical-align: top;
+  }
+  .claims thead th {
+    background: var(--bg-2);
+    white-space: nowrap;
+  }
+  .claims tbody th {
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--track-synthesis);
+  }
+  .kind {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 0.85em;
+    padding: 0.1em 0.5em;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+  .kind.physical {
+    color: var(--track-physics);
+  }
+  .kind.metaphysical {
+    color: var(--track-philosophy);
+  }
+  figcaption {
+    margin-top: 0.5em;
+    font-size: 0.85em;
+    color: var(--fg-muted);
+  }
+</style>

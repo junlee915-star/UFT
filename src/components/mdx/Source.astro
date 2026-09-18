@@ -1,0 +1,89 @@
+---
+/**
+ * 원전 인용 박스 (교육과정 원칙 4번을 강제하는 장치).
+ * 트랙 B 단원은 이 박스 없이 검사를 통과하지 못한다.
+ * 번역을 본문 슬롯에, 원문을 original 속성에 넣는다.
+ */
+interface Props {
+  work: string;
+  author: string;
+  /** 인용 위치. 정리 번호, 장·절, 단락 번호 등 */
+  locus: string;
+  /** 번역본 판본 정보 */
+  edition?: string;
+  /** 원문. 라틴어·그리스어·한문·산스크리트 모두 표시된다 */
+  original?: string;
+  /** 원문 언어 표기 */
+  lang?: string;
+}
+const { work, author, locus, edition, original, lang } = Astro.props;
+---
+
+<figure class="source">
+  <blockquote class="source-translation"><slot /></blockquote>
+  {
+    original && (
+      <div class="source-original" lang={lang === '한문' ? 'zh-Hant' : undefined}>
+        {lang && <span class="source-lang">{lang}</span>}
+        <p>{original}</p>
+      </div>
+    )
+  }
+  <figcaption>
+    <cite>{author}, 『{work}』</cite> {locus}
+    {edition && <span class="source-edition">· {edition}</span>}
+  </figcaption>
+</figure>
+
+<style>
+  .source {
+    margin-block: 1.6em;
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .source-translation {
+    margin: 0;
+    padding: 1em 1.2em;
+    border: 0;
+    border-left: 4px solid var(--track-philosophy);
+    background: none;
+    font-size: 1.02em;
+  }
+  .source-translation :global(> :first-child) {
+    margin-top: 0;
+  }
+  .source-translation :global(> :last-child) {
+    margin-bottom: 0;
+  }
+  .source-original {
+    padding: 0.8em 1.2em;
+    border-top: 1px dashed var(--line);
+    font-size: 0.93em;
+    color: var(--fg-muted);
+    font-family: 'Noto Serif KR', 'Apple SD Gothic Neo', serif;
+  }
+  .source-original p {
+    margin: 0.3em 0 0;
+  }
+  .source-lang {
+    font-size: 0.78em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  figcaption {
+    padding: 0.55em 1.2em;
+    border-top: 1px solid var(--line);
+    font-size: 0.85em;
+    color: var(--fg-muted);
+  }
+  cite {
+    font-style: normal;
+    font-weight: 600;
+  }
+  .source-edition {
+    opacity: 0.8;
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import Backlinks from '@/components/Backlinks.astro';
+import Badge from '@/components/Badge.astro';
+import { mdxComponents } from '@/components/mdx';
+import { render } from 'astro:content';
+import { getWiki, getAllListings, findBacklinks, paths, urls, trackLabel, type TrackId } from '@/lib/content';
+
+export async function getStaticPaths() {
+  return (await getWiki()).map((w) => ({ params: { slug: w.id }, props: { entry: w } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const wiki = await getWiki();
+const all = await getAllListings();
+const related = d.related.map((s) => wiki.find((w) => w.id === s)).filter((w) => w !== undefined);
+const { Content, headings } = await render(entry);
+
+// 역링크: 본문에서 이 항목을 링크한 글 + wikiRefs 로 이 항목을 건 글 + related 로 가리키는 항목
+const backlinks = findBacklinks(all, paths.wiki(entry.id), paths.wiki(entry.id));
+const seen = new Set(backlinks.map((b) => b.path));
+for (const w of wiki) {
+  if (w.id !== entry.id && w.data.related.includes(entry.id) && !seen.has(paths.wiki(w.id))) {
+    backlinks.push({
+      kind: '위키',
+      url: urls.wiki(w.id),
+      path: paths.wiki(w.id),
+      title: w.data.titleKo,
+      summary: w.data.summary,
+      date: w.data.updated ?? w.data.created,
+      tags: w.data.tags,
+      level: w.data.level,
+      status: w.data.status,
+      body: '',
+    });
+    seen.add(paths.wiki(w.id));
+  }
+}
+---
+
+<ArticleLayout
+  title={d.titleKo}
+  titleEn={d.titleEn}
+  summary={d.summary}
+  kicker="개념 위키"
+  kickerHref={urls.wiki('').replace(/\/$/, '')}
+  created={d.created}
+  updated={d.updated}
+  tags={d.tags}
+  level={d.level}
+  status={d.status}
+  aiAssisted={d.aiAssisted}
+  headings={headings}
+>
+  <Fragment slot="meta">
+    <div class="mt-3 flex flex-wrap items-center gap-2 text-sm" style="color: var(--fg-muted)">
+      <span>쓰이는 트랙</span>
+      {d.tracks.map((t) => <Badge kind="track" value={t} />)}
+    </div>
+    {d.aliases.length > 0 && <p class="mt-2 text-sm" style="color: var(--fg-muted)">다른 이름: {d.aliases.join(', ')}</p>}
+  </Fragment>
+
+  <Content components={mdxComponents} />
+
+  <Fragment slot="after">
+    {
+      related.length > 0 && (
+        <section class="mt-12" data-pagefind-ignore>
+          <h2 class="text-base font-semibold">관련 항목</h2>
+          <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+            {related.map((r) => (
+              <li>
+                <a href={urls.wiki(r.id)} class="block rounded-lg border p-3 no-underline hover:no-underline" style="border-color: var(--line)">
+                  <span class="font-medium" style="color: var(--fg)">{r.data.titleKo}</span>
+                  <span class="block text-xs" style="color: var(--fg-muted)">{r.data.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+    <Backlinks entries={backlinks} />
+  </Fragment>
+</ArticleLayout>

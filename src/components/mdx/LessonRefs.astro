@@ -1,0 +1,100 @@
+---
+/**
+ * 단원 id 목록을 제목과 링크로 펼치는 공용 배너.
+ * Prereq(선수 단원)와 Grounds(트랙 C 근거 단원)가 이 컴포넌트를 공유한다.
+ */
+import { getLessonIndex, lessonUrl, trackLabel, type TrackId } from '@/lib/content';
+
+interface Props {
+  ids: string[];
+  kind: 'prereq' | 'grounds';
+  label: string;
+  note?: string;
+}
+const { ids, kind, label, note } = Astro.props;
+const index = await getLessonIndex();
+const items = ids.map((id) => ({ id, lesson: index.get(id) }));
+---
+
+<aside class:list={['refs', kind]} aria-label={label}>
+  <p class="refs-label">{label}</p>
+  <ul>
+    {
+      items.map(({ id, lesson }) => (
+        <li>
+          {lesson ? (
+            <a href={lessonUrl(lesson)} style={`--dot: var(--track-${lesson.data.track})`}>
+              <span class="refs-id">{id.toUpperCase()}</span>
+              <span class="refs-title">{lesson.data.title}</span>
+              <span class="refs-track">{trackLabel[lesson.data.track as TrackId]}</span>
+            </a>
+          ) : (
+            <span class="refs-missing">{id.toUpperCase()} (아직 공개되지 않음)</span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+  {note && <p class="refs-note">{note}</p>}
+</aside>
+
+<style>
+  .refs {
+    margin-block: 1.4em;
+    padding: 0.85em 1.1em;
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    background: var(--bg-2);
+    font-size: 0.93em;
+  }
+  .refs.grounds {
+    border-left: 4px solid var(--track-synthesis);
+  }
+  .refs.prereq {
+    border-left: 4px solid var(--fg-muted);
+  }
+  .refs-label {
+    margin: 0 0 0.45em;
+    font-weight: 700;
+    font-size: 0.85em;
+    color: var(--fg-muted);
+  }
+  .refs ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+  }
+  .refs a {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    text-decoration: none;
+  }
+  .refs a:hover .refs-title {
+    text-decoration: underline;
+  }
+  .refs-id {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--dot, var(--accent));
+  }
+  .refs-title {
+    color: var(--fg);
+  }
+  .refs-track {
+    font-size: 0.8em;
+    color: var(--fg-muted);
+  }
+  .refs-missing {
+    color: var(--fg-muted);
+  }
+  .refs-note {
+    margin: 0.5em 0 0;
+    font-size: 0.85em;
+    color: var(--fg-muted);
+  }
+</style>

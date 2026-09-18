@@ -1,30 +1,60 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Badge from '@/components/Badge.astro';
+import StatusBanner from '@/components/StatusBanner.astro';
+import AiNotice from '@/components/AiNotice.astro';
 import TagList from '@/components/TagList.astro';
 import Toc from '@/components/Toc.astro';
-import { formatDate } from '@/lib/content';
+import { formatDate, type AiAssisted, type Status, type TrackId } from '@/lib/content';
 import type { MarkdownHeading } from 'astro';
 
 interface Props {
   title: string;
   summary: string;
-  kicker?: string; // 예: "학습 · 모듈 1"
+  kicker?: string;
   kickerHref?: string;
+  /** 제목 위에 붙는 식별자 (예: A1-3) */
+  eyebrow?: string;
   created: Date;
   updated?: Date;
   author?: string;
   tags?: string[];
-  difficulty?: string;
-  status?: string;
+  level?: string;
+  status: Status;
+  aiAssisted?: AiAssisted;
+  track?: TrackId;
   headings?: MarkdownHeading[];
-  draft?: boolean;
+  titleEn?: string;
 }
-const { title, summary, kicker, kickerHref, created, updated, author, tags = [], difficulty, status, headings = [], draft } = Astro.props;
+const {
+  title,
+  summary,
+  kicker,
+  kickerHref,
+  eyebrow,
+  created,
+  updated,
+  author,
+  tags = [],
+  level,
+  status,
+  aiAssisted = 'none',
+  track,
+  headings = [],
+  titleEn,
+} = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<BaseLayout title={title} description={summary} type="article" published={created} modified={updated} noindex={draft}>
+<BaseLayout
+  title={title}
+  description={summary}
+  type="article"
+  published={created}
+  modified={updated}
+  noindex={status === 'draft'}
+  track={track}
+>
   <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
     <article class="min-w-0" data-pagefind-body>
       <header class="mb-8 border-b pb-6" style="border-color: var(--line)">
@@ -35,24 +65,34 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
             </p>
           )
         }
-        <h1 class="text-3xl font-bold leading-tight tracking-tight sm:text-4xl" data-pagefind-meta="title">{title}</h1>
+        <h1 class="text-3xl font-bold leading-tight tracking-tight sm:text-4xl" data-pagefind-meta="title">
+          {eyebrow && <span class="mr-2 font-mono text-2xl sm:text-3xl" style="color: var(--accent)">{eyebrow}</span>}
+          {title}
+        </h1>
+        {titleEn && <p class="mt-1 text-base" style="color: var(--fg-muted)">{titleEn}</p>}
         <p class="mt-3 text-lg" style="color: var(--fg-muted)">{summary}</p>
         <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm" style="color: var(--fg-muted)">
           {author && <span>{author}</span>}
           <time datetime={created.toISOString()}>{formatDate(created)}</time>
           {updated && <span>· 수정 {formatDate(updated)}</span>}
-          {difficulty && <Badge kind="difficulty" value={difficulty} />}
-          {status && <Badge kind="status" value={status} />}
-          {draft && <Badge kind="status" value="초안(비공개)" />}
+          {track && <Badge kind="track" value={track} />}
+          {level && <Badge kind="level" value={level} />}
+          <Badge kind="status" value={status} />
         </div>
         {tags.length > 0 && <div class="mt-3"><TagList tags={tags} /></div>}
         <slot name="meta" />
       </header>
+
+      <StatusBanner status={status} />
+
       <div class="prose">
         <slot />
       </div>
+
+      <AiNotice value={aiAssisted} />
       <slot name="after" />
     </article>
+
     <aside class="no-print hidden lg:block">
       <div class="sticky top-24">
         {tocHeadings.length > 1 && <Toc headings={tocHeadings} />}

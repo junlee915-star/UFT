@@ -1,13 +1,17 @@
 ---
-title: 장세기 텐서
+titleKo: 장세기 텐서
 titleEn: Field strength tensor
 summary: 게이지 장의 곡률. 맥스웰 이론에서는 전기장과 자기장을 한 반대칭 텐서로 담고, 비아벨 이론에서는 게이지 장의 자기상호작용 항을 포함한다.
 aliases: [전자기장 텐서, 곡률 텐서(게이지)]
+tracks: [physics]
 related: [covariant-derivative, yang-mills-action, gauge-symmetry]
-difficulty: 중급
-status: 검토 완료
+citations: [peskin1995, carroll2004]
+level: intermediate
+status: verified
 tags: [장세기 텐서, 전자기학]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의

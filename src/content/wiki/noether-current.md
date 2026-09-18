@@ -1,13 +1,17 @@
 ---
-title: 네터 흐름
+titleKo: 네터 흐름
 titleEn: Noether current
 summary: 연속 대칭에 대응하는 보존류. 시공간 적분한 시간 성분이 보존 전하가 된다.
 aliases: [네터 전류, 보존류]
+tracks: [physics]
 related: [lagrangian-density, gauge-symmetry]
-difficulty: 입문
-status: 검토 완료
+citations: [noether1918, weinberg1995]
+level: intro
+status: verified
 tags: [네터 정리, 보존류, 대칭]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -34,4 +38,4 @@ $$
 
 ## 학습 트랙에서
 
-- [네터 정리와 보존류](/learn/classical-field-theory/02-noether-theorem)
+- [네터 정리와 보존류](/learn/physics/a1/a1-3)

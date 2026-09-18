@@ -1,0 +1,45 @@
+---
+/**
+ * AI 보조 범위 표시. PRD 「콘텐츠 스키마」에 따라 단원 하단에 그대로 노출한다.
+ */
+import { aiAssistedLabel, urls, type AiAssisted } from '@/lib/content';
+interface Props {
+  value: AiAssisted;
+}
+const { value } = Astro.props;
+const detail: Record<AiAssisted, string> = {
+  none: '이 글은 AI 보조 없이 작성했습니다.',
+  outline: '이 글은 개요 작성에 AI 보조를 썼고, 본문과 수식 유도는 사람이 쓰고 확인했습니다.',
+  draft: '이 글은 초고 작성에 AI 보조를 썼습니다. 수식 유도와 인용은 사람이 확인해야 검토 완료로 올라갑니다.',
+  translation: '이 글은 원문 번역에 AI 보조를 썼습니다. 번역은 사람이 원문과 대조해야 검토 완료로 올라갑니다.',
+};
+---
+
+<p class="ai-notice" data-pagefind-ignore>
+  <span class="ai-tag">{aiAssistedLabel[value]}</span>
+  <span>{detail[value]}</span>
+  <a href={urls.about()}>사용 범위</a>
+</p>
+
+<style>
+  .ai-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    margin-top: 2.5em;
+    padding-top: 0.9em;
+    border-top: 1px solid var(--line);
+    font-size: 0.85em;
+    color: var(--fg-muted);
+  }
+  .ai-tag {
+    padding: 0.1em 0.5em;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .ai-notice a {
+    margin-left: auto;
+  }
+</style>

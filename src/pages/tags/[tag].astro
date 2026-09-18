@@ -2,11 +2,17 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import Card from '@/components/Card.astro';
-import { getAllArticles, collectTags, urlOf, collectionLabel, byNewest } from '@/lib/content';
+import { getAllListings, collectTags } from '@/lib/content';
 
 export async function getStaticPaths() {
-  const all = await getAllArticles();
-  return [...collectTags(all).keys()].map((tag) => ({ params: { tag }, props: { tag, entries: all.filter((e) => e.data.tags.includes(tag)).sort(byNewest) } }));
+  const all = await getAllListings();
+  return [...collectTags(all).keys()].map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      entries: all.filter((e) => e.tags.includes(tag)).sort((a, b) => b.date.getTime() - a.date.getTime()),
+    },
+  }));
 }
 const { tag, entries } = Astro.props;
 ---
@@ -14,6 +20,23 @@ const { tag, entries } = Astro.props;
 <BaseLayout title={`#${tag}`} description={`태그 "${tag}"가 붙은 글 ${entries.length}개`}>
   <PageHeader kicker="태그" title={`#${tag}`} lead={`${entries.length}개의 글`} />
   <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {entries.map((e) => <li><Card href={urlOf(e)} kicker={collectionLabel[e.collection]} title={e.data.title} summary={e.data.summary} date={e.data.updated ?? e.data.created} difficulty={e.data.difficulty} tags={e.data.tags.filter((t) => t !== tag)} /></li>)}
+    {
+      entries.map((e) => (
+        <li>
+          <Card
+            href={e.url}
+            kicker={e.kind}
+            title={e.title}
+            summary={e.summary}
+            date={e.date}
+            level={e.level}
+            track={e.track}
+            status={e.status}
+            tags={e.tags.filter((t) => t !== tag)}
+            accent={e.track ? `var(--track-${e.track})` : undefined}
+          />
+        </li>
+      ))
+    }
   </ul>
 </BaseLayout>

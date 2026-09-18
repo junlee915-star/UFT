@@ -1,0 +1,139 @@
+---
+id: a0-2
+track: physics
+module: a0
+order: 2
+title: 텐서와 지표 표기
+summary: 반변 지표와 공변 지표가 왜 서로 다른 변환법칙을 갖는지 보이고, 계량으로 지표를 올리고 내리는 계산과 축약 규칙을 손에 익힌다.
+level: intro
+status: review
+prereq: [a0-1]
+wikiRefs: [covariant-derivative, energy-momentum-tensor, field-strength]
+citations: [carroll2004, wald1984, weinberg1995, nakahara2003]
+estMinutes: 120
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [텐서, 지표, 계량, 로런츠 변환]
+---
+
+<Gist>
+좌표는 사람이 고르는 것이고 물리는 그 선택에 의존하지 않아야 한다. 텐서는 이 요구를 기호 수준에서 자동으로 지키도록 만든 장치다. 지표를 위에 쓰느냐 아래에 쓰느냐는 장식이 아니라, 좌표를 바꿀 때 그 양이 어느 방향으로 변환되는지를 가리키는 표시다. 위아래 지표가 짝을 이루어 사라지면 남은 양은 좌표와 무관한 수가 된다. 이 단원에서는 그 짝짓기 규칙을 익히고, 계량이 위아래를 오가는 번역기 역할을 한다는 점을 계산으로 확인한다.
+</Gist>
+
+## 동기 · 왜 지표를 두 층으로 쓰는가
+
+좌표 $x^\mu$ 를 새 좌표 $x'^\mu$ 로 바꾼다고 하자. 입자의 변위처럼 좌표의 차이에서 오는 양과, 온도 분포의 기울기처럼 미분에서 오는 양은 같은 방식으로 변환되지 않는다. 앞쪽은 야코비 행렬이 곱해지고 뒤쪽은 그 역행렬이 곱해진다. 두 종류를 같은 기호로 적으면 어떤 조합이 좌표와 무관한지 판정할 수 없다.
+
+지표를 두 층으로 쓰는 표기는 이 판정을 기계적으로 만든다. 식을 다 쓴 다음, 자유 지표의 위치가 좌변과 우변에서 같고 축약된 지표가 항상 위아래 짝이면 그 식은 좌표 변환에 대해 형태가 보존된다. 일반 상대론과 게이지 이론의 계산이 실수 없이 굴러가는 이유의 절반은 이 표기법에 있다 [@carroll2004].
+
+## 핵심 수식
+
+성분이 야코비 행렬로 변환되는 양을 반변 벡터, 그 역으로 변환되는 양을 공변 벡터라 한다.
+
+$$
+V'^\mu = \frac{\partial x'^\mu}{\partial x^\nu}\,V^\nu, \qquad
+\omega'_\mu = \frac{\partial x^\nu}{\partial x'^\mu}\,\omega_\nu \label{trans}
+$$
+
+두 번 나오는 지표는 합을 뜻한다는 것이 아인슈타인 규약이다. 계량 $g_{\mu\nu}$ 와 그 역 $g^{\mu\nu}$ 가 지표를 올리고 내린다.
+
+$$
+V_\mu = g_{\mu\nu}V^\nu, \qquad V^\mu = g^{\mu\nu}V_\nu, \qquad g^{\mu\alpha}g_{\alpha\nu} = \delta^\mu{}_\nu \label{raise}
+$$
+
+특수 상대론에서는 계량이 상수 행렬 $\eta_{\mu\nu} = \mathrm{diag}(+1,-1,-1,-1)$ 이고, 좌표 변환은 이 행렬을 보존하는 선형 변환으로 제한된다.
+
+$$
+\Lambda^\mu{}_\alpha\,\Lambda^\nu{}_\beta\,\eta^{\alpha\beta} = \eta^{\mu\nu} \label{lorentz}
+$$
+
+## 유도 · 두 변환법칙은 선택이 아니다
+
+먼저 반변 쪽이다. 곡선 $x^\mu(\lambda)$ 의 접벡터 $V^\mu = \dd x^\mu/\dd\lambda$ 를 새 좌표에서 계산하면 연쇄법칙이 그대로 @eq:trans 의 왼쪽 식을 준다. 좌표의 미분에서 오는 양은 모두 이 규칙을 따른다.
+
+공변 쪽은 기울기에서 나온다. 스칼라 함수 $f$ 에 대해
+
+$$
+\frac{\partial f}{\partial x'^\mu} = \frac{\partial x^\nu}{\partial x'^\mu}\,\frac{\partial f}{\partial x^\nu} \notag
+$$
+
+이므로 $\partial_\mu f$ 는 @eq:trans 의 오른쪽 식을 따른다. 미분 연산자 $\partial_\mu$ 의 지표가 아래에 붙는 이유가 여기에 있다.
+
+이제 왜 두 규칙이 서로 역이어야 하는지가 드러난다. 축약 $V^\mu\omega_\mu$ 를 새 좌표에서 계산하면
+
+$$
+V'^\mu \omega'_\mu = \frac{\partial x'^\mu}{\partial x^\nu}\frac{\partial x^\alpha}{\partial x'^\mu}\,V^\nu\omega_\alpha
+= \delta^\alpha{}_\nu\,V^\nu\omega_\alpha = V^\nu\omega_\nu \label{contract}
+$$
+
+이다. 두 야코비 행렬이 서로의 역이라 크로네커 델타로 접힌다. 위아래 짝이 사라지면 남는 것이 좌표와 무관한 수라는 규칙은 이 한 줄이 전부다.
+
+계량이 번역기 노릇을 할 수 있는 이유도 같은 자리에서 나온다. $g_{\mu\nu}$ 는 두 반변 벡터를 받아 수를 내주는 사상이므로 아래 지표 두 개짜리 텐서로 변환된다. 따라서 $g_{\mu\nu}V^\nu$ 는 남은 지표 하나가 아래인 양, 곧 공변 벡터가 된다. 계량이 가역이면 이 대응은 일대일이고, 그래서 위아래 지표를 같은 문자로 부를 수 있다.
+
+주의할 점은 이 번역이 계량에 의존한다는 사실이다. 유클리드 공간에서 $\delta_{ij}$ 를 쓰면 $V_i$ 와 $V^i$ 의 성분이 같아져 구분이 사라진다. 민코프스키 계량에서는 공간 성분의 부호가 뒤집힌다. 구분이 사라지는 것은 특별한 계량이 주는 우연이지 일반 규칙이 아니다 [@wald1984].
+
+마지막으로 로런츠 변환 조건 @eq:lorentz 은 "계량을 바꾸지 않는 변환"이라는 요구를 그대로 적은 것이다. 이 조건에서 $\det\Lambda = \pm 1$ 이 따라 나오고, 부호와 시간 방향의 보존 여부에 따라 로런츠 군이 네 조각으로 나뉜다.
+
+## 예제 1 · 전자기장 텐서의 불변량
+
+$A_\mu$ 에서 만든 [장세기](/wiki/field-strength) $F_{\mu\nu} = \partial_\mu A_\nu - \partial_\nu A_\mu$ 는 아래 지표 두 개의 반대칭 텐서다. 성분을 전기장과 자기장으로 읽으면 $F_{0i} = E_i$, $F_{ij} = -\epsilon_{ijk}B_k$ 다. 완전 축약한 양은 스칼라이므로 관성계에 의존하지 않는다.
+
+$$
+F_{\mu\nu}F^{\mu\nu} = 2\left(\mathbf B^2 - \mathbf E^2\right) \label{invariant}
+$$
+
+지표를 올릴 때 $F^{\mu\nu} = \eta^{\mu\alpha}\eta^{\nu\beta}F_{\alpha\beta}$ 이므로 $F^{0i}$ 는 부호가 한 번 뒤집히고 $F^{ij}$ 는 두 번 뒤집혀 그대로다. 이 부호 계산이 @eq:invariant 의 상대 부호를 만든다. 결과가 뜻하는 바는 실질적이다. 한 관성계에서 $\mathbf E^2 = \mathbf B^2$ 인 전자기파는 모든 관성계에서 그렇고, 어떤 변환으로도 전기장만 남기거나 자기장만 남길 수 없다.
+
+## 예제 2 · 지표 셈 연습
+
+자주 쓰는 축약 몇 개를 확인해 둔다. $\delta^\mu{}_\mu = 4$ 이고, 따라서 $\eta^{\mu\nu}\eta_{\mu\nu} = \delta^\mu{}_\mu = 4$ 다. $\partial_\mu x^\nu = \delta_\mu{}^\nu$ 이므로 $\partial_\mu x^\mu = 4$ 다. 달랑베르시안은 $\Box = \partial^\mu\partial_\mu = \partial_t^2 - \nabla^2$ 이다.
+
+임의의 두 지표 텐서는 대칭 부분과 반대칭 부분으로 유일하게 갈라진다.
+
+$$
+T_{\mu\nu} = T_{(\mu\nu)} + T_{[\mu\nu]}, \qquad
+T_{(\mu\nu)} = \tfrac12\left(T_{\mu\nu} + T_{\nu\mu}\right) \label{split}
+$$
+
+[에너지-운동량 텐서](/wiki/energy-momentum-tensor)가 대칭이고 $F_{\mu\nu}$ 가 반대칭이라는 사실은 이 분해에서 각각 반쪽만 살아 있다는 뜻이다.
+
+## 연습문제
+
+<Problem n={1} type="계산형">
+민코프스키 계량에서 $\eta^{\mu\nu}\eta_{\mu\nu}$ 와 $\eta^{\mu\nu}\eta_{\nu\alpha}\eta^{\alpha\beta}\eta_{\beta\mu}$ 를 계산하시오.
+
+<Solution>
+@eq:raise 의 마지막 관계로 $\eta^{\mu\nu}\eta_{\nu\alpha} = \delta^\mu{}_\alpha$ 다. 따라서 첫 식은 $\delta^\mu{}_\mu$ 이고 시공간 차원이 4이므로 값은 4다. 두 번째 식도 델타 두 개가 남아 $\delta^\mu{}_\beta\delta^\beta{}_\mu = \delta^\mu{}_\mu = 4$ 다.
+
+흔한 오류는 $\eta^{\mu\nu}\eta_{\mu\nu}$ 를 1로 답하는 것이다. 그럴듯한 이유는 $\eta$ 와 그 역을 곱하면 항등행렬이 되고, 행렬 항등식 $M M^{-1} = I$ 를 "곱하면 1"로 기억하기 때문이다. 그러나 축약은 행렬 곱 뒤에 대각합까지 취한 연산이므로 결과는 $\tr I = 4$ 다. 차원 정칙화에서 이 값이 $d$ 로 바뀌며 유한 항의 계수를 바꾸므로, 4라는 숫자가 어디서 오는지 아는 것이 중요하다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="유도형">
+$S^{\mu\nu}$ 가 대칭이고 $A_{\mu\nu}$ 가 반대칭이면 $S^{\mu\nu}A_{\mu\nu} = 0$ 임을 보이시오.
+
+<Solution>
+축약된 지표는 이름을 자유롭게 바꿀 수 있다. $X \equiv S^{\mu\nu}A_{\mu\nu}$ 에서 $\mu$ 와 $\nu$ 의 이름을 서로 바꾸면 $X = S^{\nu\mu}A_{\nu\mu}$ 다. 이제 대칭성으로 $S^{\nu\mu} = S^{\mu\nu}$ 이고 반대칭성으로 $A_{\nu\mu} = -A_{\mu\nu}$ 이므로 $X = -X$, 곧 $X = 0$ 이다.
+
+흔한 오류는 이름 바꾸기와 지표 교환을 같은 조작으로 여겨 "$S^{\mu\nu}A_{\mu\nu} = S^{\nu\mu}A_{\mu\nu}$ 이므로 대칭성만으로 0"이라고 쓰는 것이다. 그럴듯한 이유는 두 조작이 모두 지표 문자를 맞바꾸는 모양이기 때문이다. 그러나 이름 바꾸기는 항등식이고 지표 교환은 텐서의 성질을 쓰는 단계다. 반드시 두 텐서에 동시에 적용해야 하며, 한쪽에만 적용하면 다른 성분을 가리키게 된다. 이 구분을 놓치면 @eq:split 의 분해도 잘못 쓰게 된다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+$A^\mu = (\varphi, \mathbf A)$ 로 두었을 때 $A_\mu$ 의 성분을 쓰고, 부호 규약을 바꾸면 무엇이 달라지고 무엇이 달라지지 않는지 설명하시오.
+
+<Solution>
+$\eta = \mathrm{diag}(+1,-1,-1,-1)$ 에서는 $A_\mu = (\varphi, -\mathbf A)$ 다. 시간 성분은 그대로이고 공간 성분의 부호가 뒤집힌다. 규약을 $\mathrm{diag}(-1,+1,+1,+1)$ 로 바꾸면 이 관계도 통째로 뒤집혀 $A_\mu = (-\varphi, \mathbf A)$ 가 된다.
+
+달라지지 않는 것은 물리량이다. @eq:invariant 처럼 지표가 모두 축약된 양은 계량이 짝수 번 들어가므로 전체 규약 부호에 영향을 받지 않는다. $F_{\mu\nu}$ 의 성분 정의, 즉 어느 성분이 전기장인지도 바뀌지 않는다. 바뀌는 것은 중간 단계의 개별 성분 부호와 라그랑지안 항의 전체 부호다.
+
+흔한 오류는 두 교과서의 식을 부호 확인 없이 이어 붙이는 것이다. 그럴듯한 이유는 최종 결과인 단면적이나 붕괴율이 규약에 무관하므로, 중간 부호도 무관할 것처럼 보이기 때문이다. 실제로는 전파인자의 $i\epsilon$ 위치와 질량항의 부호가 규약과 함께 움직인다. 계산을 시작하기 전에 계량 규약을 한 번 적어 두는 습관이 [@weinberg1995]와 [@carroll2004]를 함께 읽을 때 사고를 막아 준다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 곡선 좌표까지 포함한 표준 입문은 [@carroll2004] 2장이다. 접공간과 쌍대공간의 언어로 다시 읽으면 위아래 지표의 뜻이 더 분명해진다.
+- 좌표에 의존하지 않는 정의를 먼저 세우고 성분을 나중에 도입하는 서술은 [@wald1984] 2장에 있다.
+- 텐서를 다양체 위의 사상으로 보는 관점은 [@nakahara2003] 5장에서 다음 단원의 미분형식으로 곧장 이어진다.

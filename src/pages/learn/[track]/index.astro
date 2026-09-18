@@ -1,0 +1,104 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Badge from '@/components/Badge.astro';
+import ProgressBar from '@/components/ProgressBar.astro';
+import { getTracks, getModules, getLessons, urls, type TrackId } from '@/lib/content';
+
+export async function getStaticPaths() {
+  const tracks = await getTracks();
+  return tracks.map((t) => ({ params: { track: t.id }, props: { track: t } }));
+}
+const { track } = Astro.props;
+const trackId = track.id as TrackId;
+const modules = (await getModules()).filter((m) => m.data.track === trackId);
+const lessons = (await getLessons()).filter((l) => l.data.track === trackId);
+const lessonsOf = (mod: string) => lessons.filter((l) => l.data.module === mod);
+const totalMinutes = lessons.reduce((s, l) => s + l.data.estMinutes, 0);
+---
+
+<BaseLayout title={`트랙 ${track.data.letter} · ${track.data.title}`} description={track.data.summary} track={trackId}>
+  <PageHeader kicker={`학습 트랙 ${track.data.letter}`} title={track.data.title} lead={track.data.summary}>
+    <p class="mt-4 max-w-3xl rounded-lg border p-4 text-sm" style="border-color: var(--line); background: var(--bg-2)">
+      <strong>이 트랙이 답하는 질문</strong><br />{track.data.question}
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3 text-sm" style="color: var(--fg-muted)">
+      <span>모듈 {modules.length}개</span>
+      <span>단원 {lessons.length}개</span>
+      <span>약 {Math.round(totalMinutes / 60)}시간</span>
+    </div>
+    {
+      track.data.assumes.length > 0 && (
+        <p class="mt-3 text-sm" style="color: var(--fg-muted)">전제: {track.data.assumes.join(', ')}</p>
+      )
+    }
+    {
+      lessons.length > 0 && (
+        <div class="mt-5 max-w-md">
+          <ProgressBar scope={`track-${trackId}`} ids={lessons.map((l) => l.id)} label="이 트랙 진행률" />
+        </div>
+      )
+    }
+  </PageHeader>
+
+  <ol class="space-y-8">
+    {
+      modules.map((m) => (
+        <li class="rounded-2xl border p-6" style={`border-color: var(--line); border-left: 4px solid var(--track-${trackId})`}>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-mono text-sm font-bold" style={`color: var(--track-${trackId})`}>{m.id.toUpperCase()}</p>
+              <h2 class="mt-1 text-2xl font-bold">
+                <a href={urls.module(trackId, m.id)} class="no-underline hover:underline" style="color: var(--fg)">{m.data.title}</a>
+              </h2>
+              <p class="mt-2 max-w-2xl" style="color: var(--fg-muted)">{m.data.summary}</p>
+              <p class="mt-2 max-w-2xl text-sm"><strong>도달점</strong> {m.data.goal}</p>
+            </div>
+            <Badge kind="level" value={m.data.level} />
+          </div>
+          {
+            m.data.prereqModules.length > 0 && (
+              <p class="mt-3 text-sm" style="color: var(--fg-muted)">
+                선수 모듈: {m.data.prereqModules.map((p) => p.toUpperCase()).join(', ')}
+              </p>
+            )
+          }
+          <ol class="mt-5 divide-y" style="border-color: var(--line)">
+            {lessonsOf(m.id).length === 0 && <li class="py-3 text-sm" style="color: var(--fg-muted)">단원 준비 중</li>}
+            {lessonsOf(m.id).map((l) => (
+              <li class="flex items-center gap-4 py-3" style="border-color: var(--line)">
+                <span class="w-14 shrink-0 font-mono text-xs tabular-nums" style="color: var(--fg-muted)">{l.id.toUpperCase()}</span>
+                <div class="min-w-0 flex-1">
+                  <a
+                    href={urls.lesson(trackId, m.id, l.id)}
+                    class="font-medium"
+                    data-lesson-href={l.id}
+                    data-lesson-title={l.data.title}
+                  >
+                    {l.data.title}
+                  </a>
+                  <p class="truncate text-sm" style="color: var(--fg-muted)">{l.data.summary}</p>
+                </div>
+                <div class="hidden shrink-0 items-center gap-2 text-xs sm:flex" style="color: var(--fg-muted)">
+                  <span>{l.data.estMinutes}분</span>
+                  <Badge kind="level" value={l.data.level} small />
+                  <Badge kind="status" value={l.data.status} small />
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p class="mt-4 rounded-lg p-3 text-sm" style="background: var(--bg-2); color: var(--fg-muted)">
+            <strong>체크포인트</strong> {m.data.checkpoint}
+          </p>
+          {
+            lessonsOf(m.id).length > 0 && (
+              <div class="mt-4">
+                <ProgressBar scope={m.id} ids={lessonsOf(m.id).map((l) => l.id)} />
+              </div>
+            )
+          }
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>

@@ -1,0 +1,8 @@
+track: synthesis
+order: 4
+title: 연구 제안서
+summary: 자기 통일 구상을 명제로 분해하고, 명제마다 검증 경로를 짝지은 뒤, 연구 노트로 공개하고 반론을 직접 쓴다. 트랙 전체의 산출물이다.
+goal: 자기 가설을 부정 가능한 명제 집합으로 진술하고 검증 경로를 붙인다.
+level: advanced
+prereqModules: [c1, c2, c3]
+checkpoint: 제안서 제출. 5,000~8,000자, 명제 분해표, 반론 3개 이상, 인용 15건 이상.

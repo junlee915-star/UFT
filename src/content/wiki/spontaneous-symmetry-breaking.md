@@ -1,13 +1,17 @@
 ---
-title: 자발 대칭 깨짐
+titleKo: 자발 대칭 깨짐
 titleEn: Spontaneous symmetry breaking
 summary: 라그랑지안은 대칭을 갖지만 진공(바닥 상태)은 그 대칭을 갖지 않는 현상. 골드스톤 정리와 힉스 기작의 토대다.
 aliases: [SSB, 자발적 대칭성 깨짐]
+tracks: [physics]
 related: [gauge-symmetry]
-difficulty: 중급
-status: 검토 완료
+citations: [higgs1964, peskin1995]
+level: intermediate
+status: verified
 tags: [자발 대칭 깨짐, 힉스 기작]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -28,4 +32,4 @@ created: 2026-09-18
 
 ## 학습 트랙에서
 
-- [힉스 기작과 전기약 통일](/learn/gauge-theory-standard-model/03-higgs-mechanism)
+- [힉스 기작과 전기약 통일](/learn/physics/a3/a3-4)

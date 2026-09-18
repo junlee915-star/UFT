@@ -1,39 +1,101 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/Card.astro';
-import { getCollection } from 'astro:content';
-import { getPublished, byNewest, urls, withBase } from '@/lib/content';
+import ProgressBar from '@/components/ProgressBar.astro';
+import {
+  getTracks,
+  getModules,
+  getLessons,
+  getWiki,
+  getNotes,
+  getPapers,
+  getEssays,
+  urls,
+  lessonUrl,
+  formatDate,
+} from '@/lib/content';
 
-const modules = (await getCollection('modules')).sort((a, b) => a.data.order - b.data.order);
-const units = await getPublished('learn');
-const notes = (await getPublished('notes')).sort(byNewest).slice(0, 3);
-const papers = (await getPublished('papers')).sort(byNewest).slice(0, 3);
-const wiki = await getPublished('wiki');
-const unitCount = (m: string) => units.filter((u) => u.data.module === m).length;
+const [tracks, modules, lessons, wiki, notes, papers, essays] = await Promise.all([
+  getTracks(),
+  getModules(),
+  getLessons(),
+  getWiki(),
+  getNotes(),
+  getPapers(),
+  getEssays(),
+]);
+
+const lessonsOfTrack = (t: string) => lessons.filter((l) => l.data.track === t);
+const modulesOfTrack = (t: string) => modules.filter((m) => m.data.track === t);
+
+// 트랙 A 부터 순서대로 이어 읽을 단원 목록 (이어보기용)
+const readingOrder = [...lessons].sort(
+  (a, b) => a.data.track.localeCompare(b.data.track) || a.data.module.localeCompare(b.data.module) || a.data.order - b.data.order,
+);
+const firstLesson = readingOrder.find((l) => l.data.track === 'physics') ?? readingOrder[0];
+
+const recent = [
+  ...notes.map((n) => ({ kind: '연구 노트', title: n.data.title, summary: n.data.summary, url: urls.note(n.id), date: n.data.updated ?? n.data.date, tags: n.data.tags, status: n.data.status })),
+  ...papers.map((p) => ({ kind: '논문 요약', title: p.data.titleKo, summary: p.data.summaryKo, url: urls.paper(p.id), date: p.data.updated ?? p.data.created, tags: p.data.tags, status: p.data.status })),
+  ...essays.map((e) => ({ kind: '개념 글', title: e.data.title, summary: e.data.summary, url: urls.essay(e.id), date: e.data.updated ?? e.data.date, tags: e.data.tags, status: e.data.status })),
+]
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 5);
+
+const stats = [
+  ['학습 단원', lessons.length],
+  ['위키 항목', wiki.length],
+  ['논문 요약', papers.length],
+  ['연구 노트', notes.length],
+] as const;
 ---
 
-<BaseLayout title="홈">
-  <section class="py-8 sm:py-14">
-    <p class="text-sm font-medium" style="color: var(--accent)">Unified Field Theory · 한국어 학습·연구 아카이브</p>
-    <h1 class="mt-2 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-      고전 장이론에서 양자중력까지, 한 갈래로 이어지는 통일장이론 공부길
+<BaseLayout title="홈" wide>
+  <section class="py-8 sm:py-12">
+    <p class="text-sm font-medium" style="color: var(--accent)">Unified Field Theory · 한국어 교육과정</p>
+    <h1 class="mt-2 max-w-4xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+      통일장이론을 물리학과 종교·철학 두 갈래로 배우고, 통합은 전용 트랙에서만 한다
     </h1>
-    <p class="mt-5 max-w-2xl text-lg" style="color: var(--fg-muted)">
-      순서대로 읽는 학습 트랙, 논문 요약과 연구 노트, 그리고 수식 하나하나를 항목으로 정리한 위키. 모든 글은
-      마크다운으로 작성되고 수식은 빌드 시점에 렌더링됩니다.
-    </p>
-    <div class="mt-7 flex flex-wrap gap-3">
-      <a href={withBase('/learn')} class="rounded-lg px-4 py-2.5 font-semibold text-white no-underline hover:no-underline" style="background: var(--accent)">학습 시작하기</a>
-      <a href={withBase('/wiki')} class="rounded-lg border px-4 py-2.5 font-semibold no-underline hover:no-underline" style="border-color: var(--line); color: var(--fg)">수식 위키 둘러보기</a>
+    <div class="mt-5 max-w-3xl space-y-2 text-lg" style="color: var(--fg-muted)">
+      <p>물리학 트랙은 고전 장이론에서 양자중력 후보까지, 종교·철학 트랙은 방법론과 형이상학에서 의식·정보 존재론까지 간다.</p>
+      <p>두 트랙을 따로 세운 이유는 범주 오류를 구조적으로 막기 위해서다. 물리 단원은 신학적 결론을 끌어내지 않고, 신학 단원은 물리 수식을 논거로 쓰지 않는다.</p>
+      <p>통합 트랙은 두 트랙을 이수한 학습자가 자기 가설을 부정 가능한 명제로 진술하도록 훈련한다.</p>
     </div>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a href={urls.learn()} class="rounded-lg px-4 py-2.5 font-semibold text-white no-underline hover:no-underline" style="background: var(--accent)">
+        전체 지도 보기
+      </a>
+      {
+        firstLesson && (
+          <a href={lessonUrl(firstLesson)} class="rounded-lg border px-4 py-2.5 font-semibold no-underline hover:no-underline" style="border-color: var(--line); color: var(--fg)">
+            첫 단원부터 시작하기
+          </a>
+        )
+      }
+      <a href={urls.about()} class="rounded-lg border px-4 py-2.5 font-semibold no-underline hover:no-underline" style="border-color: var(--line); color: var(--fg)">
+        설계 원칙
+      </a>
+    </div>
+
+    <div
+      class="mt-6 max-w-2xl rounded-xl border p-4"
+      style="border-color: var(--line); background: var(--bg-2)"
+      data-progress-resume
+      data-progress-ids={readingOrder.map((l) => l.id).join(',')}
+      hidden
+    >
+      <p class="text-sm" style="color: var(--fg-muted)">읽던 곳부터 이어보기</p>
+      <p class="mt-1 text-lg font-semibold">
+        <a data-resume-link href={firstLesson ? lessonUrl(firstLesson) : urls.learn()}>다음 단원</a>
+      </p>
+      <div class="mt-3"><ProgressBar scope="all" ids={readingOrder.map((l) => l.id)} label="전체 진행률" /></div>
+    </div>
+
+    {readingOrder.map((l) => <a class="hidden" data-lesson-href={l.id} data-lesson-title={`${l.id.toUpperCase()} ${l.data.title}`} href={lessonUrl(l)} aria-hidden="true" tabindex="-1" />)}
+
     <dl class="mt-10 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
       {
-        [
-          ['학습 단원', units.length],
-          ['위키 항목', wiki.length],
-          ['논문 요약', papers.length],
-          ['연구 노트', notes.length],
-        ].map(([k, v]) => (
+        stats.map(([k, v]) => (
           <div class="rounded-lg border p-4" style="border-color: var(--line)">
             <dt style="color: var(--fg-muted)">{k}</dt>
             <dd class="mt-1 text-2xl font-bold tabular-nums">{v}</dd>
@@ -45,38 +107,45 @@ const unitCount = (m: string) => units.filter((u) => u.data.module === m).length
 
   <section class="mt-8">
     <div class="mb-4 flex items-baseline justify-between">
-      <h2 class="text-2xl font-bold">학습 트랙</h2>
-      <a href={withBase('/learn')} class="text-sm">전체 보기 →</a>
+      <h2 class="text-2xl font-bold">세 트랙</h2>
+      <a href={urls.learn()} class="text-sm">전체 지도 →</a>
     </div>
-    <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul class="grid gap-5 lg:grid-cols-3">
       {
-        modules.map((m) => (
-          <li>
-            <Card href={urls.module(m.id)} kicker={`모듈 ${m.data.order}`} title={m.data.title} summary={m.data.summary} difficulty={m.data.difficulty} meta={`${unitCount(m.id)}개 단원`} />
+        tracks.map((t) => (
+          <li class="flex flex-col rounded-xl border p-6" style={`border-color: var(--line); border-top: 4px solid var(--track-${t.id})`}>
+            <p class="font-mono text-sm font-bold" style={`color: var(--track-${t.id})`}>트랙 {t.data.letter}</p>
+            <h3 class="mt-1 text-2xl font-bold">
+              <a href={urls.track(t.id)} class="no-underline hover:underline" style="color: var(--fg)">{t.data.title}</a>
+            </h3>
+            <p class="mt-1 text-sm font-medium" style="color: var(--fg-muted)">{t.data.subtitle}</p>
+            <p class="mt-3 text-sm" style={`color: var(--track-${t.id})`}>{t.data.question}</p>
+            <p class="mt-3 flex-1 text-sm" style="color: var(--fg-muted)">{t.data.summary}</p>
+            <p class="mt-4 text-xs" style="color: var(--fg-muted)">
+              모듈 {modulesOfTrack(t.id).length}개 · 단원 {lessonsOfTrack(t.id).length}개
+            </p>
+            <div class="mt-3"><ProgressBar scope={`home-${t.id}`} ids={lessonsOfTrack(t.id).map((l) => l.id)} compact /></div>
           </li>
         ))
       }
-    </ol>
+    </ul>
   </section>
 
-  <section class="mt-14 grid gap-10 lg:grid-cols-2">
-    <div>
-      <div class="mb-4 flex items-baseline justify-between">
-        <h2 class="text-2xl font-bold">최근 연구 노트</h2>
-        <a href={withBase('/research/notes')} class="text-sm">전체 보기 →</a>
-      </div>
-      <ul class="grid gap-4">
-        {notes.map((n) => <li><Card href={urls.note(n.id)} title={n.data.title} summary={n.data.summary} date={n.data.updated ?? n.data.created} status={n.data.status} tags={n.data.tags} /></li>)}
-      </ul>
+  <section class="mt-14">
+    <div class="mb-4 flex items-baseline justify-between">
+      <h2 class="text-2xl font-bold">최근 글</h2>
+      <a href={urls.note('').replace(/\/$/, '')} class="text-sm">연구 전체 →</a>
     </div>
-    <div>
-      <div class="mb-4 flex items-baseline justify-between">
-        <h2 class="text-2xl font-bold">최근 논문 요약</h2>
-        <a href={withBase('/research/papers')} class="text-sm">전체 보기 →</a>
-      </div>
-      <ul class="grid gap-4">
-        {papers.map((p) => <li><Card href={urls.paper(p.id)} kicker={`${p.data.authors[0]}${p.data.authors.length > 1 ? ' 외' : ''} · ${p.data.year}`} title={p.data.title} summary={p.data.summary} date={p.data.created} tags={p.data.tags} /></li>)}
-      </ul>
-    </div>
+    {
+      recent.length > 0 ? (
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {recent.map((r) => (
+            <li><Card href={r.url} kicker={r.kind} title={r.title} summary={r.summary} date={r.date} status={r.status} tags={r.tags} /></li>
+          ))}
+        </ul>
+      ) : (
+        <p style="color: var(--fg-muted)">아직 발행된 글이 없습니다.</p>
+      )
+    }
   </section>
 </BaseLayout>

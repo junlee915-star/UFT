@@ -1,0 +1,8 @@
+track: synthesis
+order: 2
+title: 대칭·법칙·필연
+summary: 뇌터 정리의 형이상학적 독법을 양쪽 입장에서 변호하고, 진공 선택의 우연성이 법칙의 필연성을 어디까지 남기는지 따진 뒤, 궁극 원리가 만족해야 할 네 형식 조건을 세운다.
+goal: 궁극 원리의 형식 조건 네 가지로 자기 구상을 점검한다.
+level: advanced
+prereqModules: [a3, b4]
+checkpoint: 산출물 제출. 필연·우연 경계 지도와 조건 자기 점검표.

@@ -1,0 +1,37 @@
+---
+/** 단원 이수 체크박스. 서버가 없으므로 이 브라우저에만 남는다. */
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+<label class="progress-check no-print">
+  <input type="checkbox" data-progress-lesson={id} disabled />
+  <span>이 단원 이수함</span>
+</label>
+
+<style>
+  .progress-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 0.4em 0.8em;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    user-select: none;
+  }
+  .progress-check:has(:checked) {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .progress-check input {
+    accent-color: var(--accent);
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

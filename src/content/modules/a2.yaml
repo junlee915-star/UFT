@@ -1,0 +1,8 @@
+track: physics
+order: 2
+title: 장의 양자화
+summary: 정준 양자화와 경로적분 두 길로 장을 양자화하고, 파인만 규칙, 발산과 정칙화, 재규격화, 재규격화군까지 한 번에 훑는다.
+goal: 결합상수가 에너지에 따라 흐르는 이유를 계산 구조로 설명한다.
+level: intermediate
+prereqModules: [a1]
+checkpoint: 문제 5개 세트. 1루프 계산 1개를 끝까지 포함한다.

@@ -1,0 +1,15 @@
+---
+/**
+ * 트랙 C 근거 단원 배너 (교육과정 원칙 1번을 강제하는 장치).
+ * 트랙 C 단원은 이 배너 없이 검사를 통과하지 못하고,
+ * 여기 적은 id 는 front matter 의 groundedIn 과 일치해야 한다.
+ */
+import LessonRefs from './LessonRefs.astro';
+interface Props {
+  ids: string[];
+  note?: string;
+}
+const { ids, note = '이 단원의 주장은 위 단원들을 근거로 삼는다. 근거 없는 문단은 검토에서 반려된다.' } = Astro.props;
+---
+
+<LessonRefs ids={ids} kind="grounds" label="근거 단원" note={note} />

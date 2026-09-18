@@ -1,46 +1,66 @@
 ---
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
+import { mdxComponents } from '@/components/mdx';
 import { render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
+import { getPapers, getWiki, getAllListings, findBacklinks, paths, urls } from '@/lib/content';
 
 export async function getStaticPaths() {
-  return (await getPublished('papers')).map((p) => ({ params: { id: p.id }, props: { entry: p } }));
+  return (await getPapers()).map((p) => ({ params: { id: p.id }, props: { entry: p } }));
 }
 const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
-const backlinks = findBacklinks(await getAllArticles(), paths.paper(entry.id), entry);
 const d = entry.data;
+const wiki = await getWiki();
+const linked = d.wikiRefs.map((s) => wiki.find((w) => w.id === s)).filter((w) => w !== undefined);
+const { Content, headings } = await render(entry);
+const backlinks = findBacklinks(await getAllListings(), paths.paper(entry.id), paths.paper(entry.id));
 ---
 
 <ArticleLayout
-  title={d.title}
-  summary={d.summary}
+  title={d.titleKo}
+  titleEn={d.titleOriginal}
+  summary={d.summaryKo}
   kicker="논문 요약"
-  kickerHref={withBase('/research/papers')}
+  kickerHref={urls.paper('').replace(/\/$/, '')}
   created={d.created}
   updated={d.updated}
-  author={d.author}
   tags={d.tags}
-  difficulty={d.difficulty}
   status={d.status}
+  aiAssisted={d.aiAssisted}
   headings={headings}
-  draft={d.draft}
 >
   <Fragment slot="meta">
     <dl class="mt-5 grid gap-x-6 gap-y-2 rounded-xl border p-4 text-sm sm:grid-cols-[auto_1fr]" style="border-color: var(--line); background: var(--bg-2)">
-      <dt style="color: var(--fg-muted)">원제</dt><dd class="font-medium">{d.titleEn}</dd>
       <dt style="color: var(--fg-muted)">저자</dt><dd>{d.authors.join(', ')}</dd>
       <dt style="color: var(--fg-muted)">발표</dt><dd>{d.year}{d.venue && ` · ${d.venue}`}</dd>
       <dt style="color: var(--fg-muted)">원문</dt>
       <dd class="flex flex-wrap gap-3">
-        {d.arxiv && <a href={`https://arxiv.org/abs/${d.arxiv}`} rel="noopener">arXiv:{d.arxiv}</a>}
+        {d.arxivId && <a href={`https://arxiv.org/abs/${d.arxivId}`} rel="noopener">arXiv:{d.arxivId}</a>}
         {d.doi && <a href={`https://doi.org/${d.doi}`} rel="noopener">doi:{d.doi}</a>}
         {d.url && <a href={d.url} rel="noopener">{d.url}</a>}
       </dd>
-      {d.bibKey && <><dt style="color: var(--fg-muted)">인용 키</dt><dd><code>[@{d.bibKey}]</code> · <a href={withBase(`/research/bibliography#ref-${d.bibKey}`)}>참고문헌에서 보기</a></dd></>}
+      {d.bibKey && (
+        <>
+          <dt style="color: var(--fg-muted)">인용 키</dt>
+          <dd><code>[@{d.bibKey}]</code> · <a href={`${urls.bib()}#ref-${d.bibKey}`}>참고문헌에서 보기</a></dd>
+        </>
+      )}
     </dl>
   </Fragment>
-  <Content />
-  <Fragment slot="after"><Backlinks entries={backlinks} title="이 요약을 참조하는 글" /></Fragment>
+  <Content components={mdxComponents} />
+  <Fragment slot="after">
+    {
+      linked.length > 0 && (
+        <section class="mt-10" data-pagefind-ignore>
+          <h2 class="text-base font-semibold">개념 연결</h2>
+          <ul class="mt-3 flex flex-wrap gap-2 text-sm">
+            {linked.map((w) => (
+              <li><a href={urls.wiki(w.id)} class="rounded-lg border px-3 py-1.5 no-underline hover:underline" style="border-color: var(--line)">{w.data.titleKo}</a></li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+    <Backlinks entries={backlinks} title="이 요약을 참조하는 글" />
+  </Fragment>
 </ArticleLayout>

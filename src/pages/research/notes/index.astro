@@ -3,19 +3,19 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import Badge from '@/components/Badge.astro';
 import TagList from '@/components/TagList.astro';
-import { getPublished, byNewest, urls, formatDate, collectTags } from '@/lib/content';
+import { getNotes, listNotes, collectTags, urls, formatDate } from '@/lib/content';
 
-const notes = (await getPublished('notes')).sort(byNewest);
-const tags = collectTags(notes);
+const notes = await getNotes();
+const tags = collectTags(listNotes(notes));
 const byYear = new Map<number, typeof notes>();
 for (const n of notes) {
-  const y = (n.data.updated ?? n.data.created).getFullYear();
+  const y = (n.data.updated ?? n.data.date).getFullYear();
   byYear.set(y, [...(byYear.get(y) ?? []), n]);
 }
 ---
 
 <BaseLayout title="연구 노트" description="통일장이론 연구 노트 목록">
-  <PageHeader kicker="연구" title="연구 노트" lead="날짜순 목록입니다. 초안 상태의 노트는 배포에서 제외됩니다.">
+  <PageHeader kicker="연구" title="연구 노트" lead="날짜순 목록. 초안 상태의 노트는 배포에서 제외된다.">
     {tags.size > 0 && <div class="mt-4"><TagList tags={[...tags.keys()]} counts={tags} /></div>}
   </PageHeader>
   {
@@ -25,12 +25,14 @@ for (const n of notes) {
         <ul class="divide-y" style="border-color: var(--line)">
           {list.map((n) => (
             <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6" style="border-color: var(--line)">
-              <time class="shrink-0 text-sm tabular-nums sm:w-32" style="color: var(--fg-muted)" datetime={(n.data.updated ?? n.data.created).toISOString()}>{formatDate(n.data.updated ?? n.data.created)}</time>
+              <time class="shrink-0 text-sm tabular-nums sm:w-32" style="color: var(--fg-muted)" datetime={(n.data.updated ?? n.data.date).toISOString()}>
+                {formatDate(n.data.updated ?? n.data.date)}
+              </time>
               <div class="min-w-0 flex-1">
                 <a href={urls.note(n.id)} class="font-semibold">{n.data.title}</a>
                 <p class="text-sm" style="color: var(--fg-muted)">{n.data.summary}</p>
                 <div class="mt-1 flex flex-wrap items-center gap-2 text-xs" style="color: var(--fg-muted)">
-                  <Badge kind="status" value={n.data.status} />
+                  <Badge kind="status" value={n.data.status} small />
                   {n.data.tags.map((t) => <a href={urls.tag(t)}>#{t}</a>)}
                 </div>
               </div>

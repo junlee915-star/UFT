@@ -1,0 +1,53 @@
+---
+/**
+ * 검토 상태 배너. review 상태의 글은 머리에 경고를 표시한다.
+ * verified 는 배너를 띄우지 않고, draft 는 프로덕션 빌드에 포함되지 않는다.
+ */
+import { statusMeaning, urls, type Status } from '@/lib/content';
+interface Props {
+  status: Status;
+}
+const { status } = Astro.props;
+---
+
+{
+  status !== 'verified' && (
+    <p class:list={['status-banner', status]} role="note" data-pagefind-ignore>
+      <strong>{status === 'draft' ? '초안' : '검토 중'}</strong>
+      <span>{statusMeaning[status]}</span>
+      <a href={urls.about()}>검토 상태란</a>
+    </p>
+  )
+}
+
+<style>
+  .status-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    margin-block: 1.2em;
+    padding: 0.6em 0.9em;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    font-size: 0.9em;
+  }
+  .status-banner.review {
+    color: #8a6320;
+    border-color: color-mix(in srgb, #a1701a 40%, transparent);
+    background: color-mix(in srgb, #a1701a 10%, transparent);
+  }
+  .status-banner.draft {
+    color: var(--fg-muted);
+    border-color: var(--line);
+    background: var(--bg-2);
+  }
+  :global(.dark) .status-banner.review {
+    color: #e0b872;
+  }
+  .status-banner a {
+    margin-left: auto;
+    font-size: 0.9em;
+    white-space: nowrap;
+  }
+</style>

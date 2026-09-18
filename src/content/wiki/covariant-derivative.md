@@ -1,13 +1,17 @@
 ---
-title: 공변 미분
+titleKo: 공변 미분
 titleEn: Covariant derivative
 summary: 게이지 변환 아래에서 장과 같은 방식으로 변환하도록 보정된 미분. 게이지 장과 물질장의 결합을 규정한다.
 aliases: [게이지 공변 미분]
+tracks: [physics]
 related: [gauge-symmetry, field-strength]
-difficulty: 중급
-status: 검토 완료
+citations: [peskin1995, carroll2004]
+level: intermediate
+status: verified
 tags: [게이지 대칭, 공변 미분]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의

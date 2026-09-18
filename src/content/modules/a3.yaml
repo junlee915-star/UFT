@@ -1,0 +1,8 @@
+track: physics
+order: 3
+title: 게이지 이론과 표준모형
+summary: 국소 게이지 대칭이 상호작용을 결정하는 과정을 양-밀스 이론으로 일반화하고, 자발적 대칭붕괴와 힉스 기작을 거쳐 전기약 통일과 QCD, 표준모형 전체 조립에 이른다.
+goal: 표준모형 라그랑지안의 각 항이 어느 대칭에서 나오는지 항별로 설명한다.
+level: intermediate
+prereqModules: [a2]
+checkpoint: 문제 5개 세트. 힉스 기작 질량 계산과 표준모형 한계 목록화를 포함한다.

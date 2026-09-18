@@ -2,38 +2,60 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import Badge from '@/components/Badge.astro';
-import { getPublished, urls, withBase } from '@/lib/content';
+import { getWiki, urls, trackLabel, type TrackId } from '@/lib/content';
 
-const wiki = (await getPublished('wiki')).sort((a, b) => a.data.title.localeCompare(b.data.title, 'ko'));
-const initials = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+const wiki = await getWiki();
+const INITIALS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 const groupKey = (title: string) => {
   const c = title.charCodeAt(0);
-  if (c >= 0xac00 && c <= 0xd7a3) return initials[Math.floor((c - 0xac00) / 588)];
+  if (c >= 0xac00 && c <= 0xd7a3) return INITIALS[Math.floor((c - 0xac00) / 588)];
   if (/[A-Za-z]/.test(title[0])) return title[0].toUpperCase();
   return '기타';
 };
 const groups = new Map<string, typeof wiki>();
 for (const w of wiki) {
-  const k = groupKey(w.data.title);
+  const k = groupKey(w.data.titleKo);
   groups.set(k, [...(groups.get(k) ?? []), w]);
 }
+const tracksUsed = (['physics', 'philosophy', 'synthesis'] as const).filter((t) => wiki.some((w) => w.data.tracks.includes(t)));
 ---
 
-<BaseLayout title="수식 위키" description="통일장이론의 핵심 개념과 수식을 항목별로 정리한 위키">
-  <PageHeader title="수식 위키" lead="개념 하나에 항목 하나. 정의, 핵심 수식, 관련 항목으로 구성되며 항목 사이 링크는 역방향으로도 표시됩니다.">
-    <p class="mt-3 text-sm" style="color: var(--fg-muted)">{wiki.length}개 항목 · <a href={withBase('/search')}>검색</a></p>
+<BaseLayout title="개념 위키" description="통일장이론 교육과정의 핵심 개념과 수식을 항목별로 정리한 위키" wide>
+  <PageHeader
+    title="개념 위키"
+    lead="개념 하나에 항목 하나. 같은 항목을 물리 단원과 철학 단원이 동시에 가리킬 때, 역링크 목록이 두 트랙을 한 화면에 모으는 유일한 지점이다."
+  >
+    <div class="mt-4 flex flex-wrap items-center gap-2 text-sm">
+      <span style="color: var(--fg-muted)">{wiki.length}개 항목</span>
+      <span style="color: var(--fg-muted)">·</span>
+      <a href={urls.glossary()}>한·영 용어 대조</a>
+      <span style="color: var(--fg-muted)">·</span>
+      <a href={urls.search()}>검색</a>
+    </div>
+    <div class="mt-4 flex flex-wrap items-center gap-2 text-sm" role="group" aria-label="트랙 필터">
+      <span style="color: var(--fg-muted)">트랙</span>
+      <button type="button" data-track="all" class="rounded-full border px-3 py-1 font-semibold" style="border-color: var(--line); background: var(--bg-2)" aria-pressed="true">전체</button>
+      {
+        tracksUsed.map((t) => (
+          <button type="button" data-track={t} class="rounded-full border px-3 py-1" style={`border-color: var(--line); color: var(--track-${t})`} aria-pressed="false">
+            {trackLabel[t]}
+          </button>
+        ))
+      }
+    </div>
   </PageHeader>
+
   <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
     {
       [...groups.entries()].map(([k, list]) => (
-        <section>
+        <section data-group={k}>
           <h2 class="mb-2 text-sm font-semibold" style="color: var(--fg-muted)">{k}</h2>
           <ul class="space-y-3">
             {list.map((w) => (
-              <li>
-                <a href={urls.wiki(w.id)} class="font-medium">{w.data.title}</a>
-                {w.data.titleEn && <span class="ml-1.5 text-xs" style="color: var(--fg-muted)">{w.data.titleEn}</span>}
-                <span class="ml-1.5 align-middle"><Badge kind="difficulty" value={w.data.difficulty} /></span>
+              <li data-entry data-tracks={w.data.tracks.join(',')}>
+                <a href={urls.wiki(w.id)} class="font-medium">{w.data.titleKo}</a>
+                <span class="ml-1.5 text-xs" style="color: var(--fg-muted)">{w.data.titleEn}</span>
+                <span class="ml-1.5 align-middle"><Badge kind="level" value={w.data.level} small /></span>
                 <p class="text-sm" style="color: var(--fg-muted)">{w.data.summary}</p>
               </li>
             ))}
@@ -42,4 +64,24 @@ for (const w of wiki) {
       ))
     }
   </div>
+  {wiki.length === 0 && <p style="color: var(--fg-muted)">아직 공개된 항목이 없습니다.</p>}
 </BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-track]');
+  const entries = document.querySelectorAll<HTMLElement>('[data-entry]');
+  const groups = document.querySelectorAll<HTMLElement>('[data-group]');
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const t = b.dataset.track!;
+      buttons.forEach((x) => {
+        const on = x === b;
+        x.setAttribute('aria-pressed', String(on));
+        x.style.background = on ? 'var(--bg-2)' : '';
+        x.style.fontWeight = on ? '600' : '';
+      });
+      entries.forEach((e) => (e.hidden = t !== 'all' && !(e.dataset.tracks ?? '').split(',').includes(t)));
+      groups.forEach((g) => (g.hidden = [...g.querySelectorAll<HTMLElement>('[data-entry]')].every((e) => e.hidden)));
+    }),
+  );
+</script>

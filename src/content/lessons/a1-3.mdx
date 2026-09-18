@@ -1,0 +1,183 @@
+---
+id: a1-3
+track: physics
+module: a1
+order: 3
+title: 뇌터 정리 I · 연속대칭
+summary: 연속 대칭 하나마다 보존되는 흐름이 하나씩 대응한다는 정리를 장이론에서 증명하고, 전역 U(1) 위상 대칭에서 전하 보존을 직접 얻는다.
+level: intermediate
+status: verified
+prereq: [a1-1]
+wikiRefs: [noether-current, lagrangian-density, energy-momentum-tensor, gauge-symmetry]
+citations: [noether1918, goldstein2002, weinberg1995, peskin1995]
+estMinutes: 150
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [뇌터 정리, 대칭, 보존류]
+---
+
+<Gist>
+물리학에서 "대칭"은 어떤 조작을 해도 법칙이 달라지지 않는다는 뜻이다. 예를 들어 실험을 오늘 하든 내일 하든 결과가 같다면 시간 평행이동 대칭이 있는 것이다. 뇌터 정리는 이런 대칭이 하나 있을 때마다 시간이 지나도 값이 변하지 않는 양이 하나씩 딸려 나온다고 말한다. 시간 대칭에서 에너지가, 공간 대칭에서 운동량이, 위상 대칭에서 전하가 나온다. 보존 법칙은 따로 가정하는 것이 아니라 대칭에서 유도되는 결과라는 뜻이며, 이 관점이 뒤에 나올 모든 통일 시도의 출발점이 된다.
+</Gist>
+
+## 동기 · 이 정리가 없었을 때 설명하지 못한 것
+
+19세기 물리학은 에너지 보존, 운동량 보존, 전하 보존을 각각 독립적인 실험 사실로 받아들였다. 왜 하필 이 양들이 보존되는가, 보존량의 목록은 어디까지인가 하는 물음에는 답이 없었다. 새 이론을 만들 때 어떤 보존 법칙을 넣어야 하는지도 원리적으로 정할 수 없었다.
+
+에미 뇌터가 1918년에 내놓은 정리는 이 물음을 뒤집었다 [@noether1918]. 보존 법칙을 가정하는 대신 **작용의 대칭**을 가정하면, 보존량은 계산으로 따라 나온다. 보존량의 목록은 대칭군의 차원과 같다.
+
+이 뒤집기가 통일장이론의 전략 전체를 결정한다. 통일이란 더 큰 대칭군을 찾는 일이 되고, 더 큰 대칭은 더 많은 보존량과 더 많은 상호작용을 강제한다. 다음 모듈에서 [게이지 대칭](/wiki/gauge-symmetry)을 다룰 때, 우리가 하는 일은 여기서 얻은 전역 대칭을 시공간의 점마다 따로 적용하는 것뿐이다.
+
+## 핵심 수식
+
+장 $\phi$ 의 무한소 변환을 $\phi \to \phi + \epsilon\,\Delta\phi$ 라 하자. 이 변환 아래에서 라그랑지안 밀도가 전체 미분만큼만 바뀐다고 하자.
+
+$$
+\lag \to \lag + \epsilon\,\partial_\mu \mathcal J^\mu \label{sym}
+$$
+
+전체 미분은 작용에 경계항만 더하므로 운동 방정식을 바꾸지 않는다. 이때 다음 [네터 흐름](/wiki/noether-current)이 보존된다.
+
+$$
+j^\mu = \frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\Delta\phi - \mathcal J^\mu , \qquad \partial_\mu j^\mu = 0 \label{noether}
+$$
+
+보존 전하는 공간 적분으로 정의한다.
+
+$$
+Q = \int \dd^3x \; j^0 , \qquad \frac{\dd Q}{\dd t} = 0 \label{charge}
+$$
+
+## 유도 · 생략 없이
+
+출발점은 두 개다. 하나는 대칭 가정 @eq:sym 이고, 다른 하나는 장이 운동 방정식을 만족한다는 사실이다. 뇌터 정리가 **운동 방정식 위에서만(on-shell)** 성립한다는 점은 처음 배울 때 놓치기 쉬운 부분이다.
+
+변환에 의한 라그랑지안의 변화를 연쇄법칙으로 직접 쓰면
+
+$$
+\delta\lag = \frac{\partial\lag}{\partial\phi}\,\epsilon\,\Delta\phi + \frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\epsilon\,\partial_\mu(\Delta\phi) . \label{chain}
+$$
+
+여기서 $\delta(\partial_\mu\phi) = \partial_\mu(\delta\phi)$ 를 썼다. 변분과 미분이 교환한다는 이 성질은 변환이 좌표가 아니라 장의 값에만 작용할 때 성립한다.
+
+이제 오일러-라그랑주 방정식
+
+$$
+\frac{\partial\lag}{\partial\phi} = \partial_\mu\left(\frac{\partial\lag}{\partial(\partial_\mu\phi)}\right) \notag
+$$
+
+을 @eq:chain 의 첫 항에 넣는다.
+
+$$
+\delta\lag = \epsilon\left[\partial_\mu\left(\frac{\partial\lag}{\partial(\partial_\mu\phi)}\right)\Delta\phi + \frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\partial_\mu(\Delta\phi)\right]
+= \epsilon\,\partial_\mu\left[\frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\Delta\phi\right] . \label{collapse}
+$$
+
+두 항이 곱의 미분 규칙으로 하나로 접힌다. 이 접힘이 증명의 전부다.
+
+한편 대칭 가정 @eq:sym 은 같은 양이 $\epsilon\,\partial_\mu\mathcal J^\mu$ 와 같다고 말한다. 두 식을 등치하고 $\epsilon$ 으로 나누면
+
+$$
+\partial_\mu\left[\frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\Delta\phi - \mathcal J^\mu\right] = 0 ,
+$$
+
+즉 @eq:noether 의 $j^\mu$ 가 보존된다.
+
+전하 보존 @eq:charge 은 여기서 한 걸음 더 간다. $\partial_\mu j^\mu = 0$ 을 시간과 공간으로 나누어 쓰면 $\partial_t j^0 = -\nabla\cdot\mathbf j$ 이므로
+
+$$
+\frac{\dd Q}{\dd t} = \int \dd^3x\; \partial_t j^0 = -\int \dd^3x\; \nabla\cdot\mathbf j = -\oint_{\partial V} \mathbf j \cdot \dd\mathbf S = 0 .
+$$
+
+마지막 등호는 무한히 먼 곳에서 장이 충분히 빨리 0으로 간다는 가정을 쓴다. 이 가정이 깨지는 계, 예를 들어 전하가 무한히 퍼져 있는 계에서는 전하가 보존되지 않을 수 있다.
+
+## 예제 1 · 시공간 평행이동과 에너지-운동량 텐서
+
+$x^\mu \to x^\mu + a^\mu$ 는 장의 값을 $\phi(x) \to \phi(x - a)$ 로 옮기므로 무한소로는 $\Delta\phi = -a^\nu\partial_\nu\phi$ 다. 라그랑지안 자체도 같은 방식으로 옮겨지므로 $\mathcal J^\mu = -a^\mu\lag$ 이다. 이를 @eq:noether 에 넣고 임의의 $a^\nu$ 에 대해 성립해야 한다는 조건을 쓰면 네 개의 보존류가 한 텐서로 묶인다.
+
+$$
+T^{\mu}{}_{\nu} = \frac{\partial\lag}{\partial(\partial_\mu\phi)}\,\partial_\nu\phi - \delta^\mu_\nu\,\lag \label{emt}
+$$
+
+이것이 [에너지-운동량 텐서](/wiki/energy-momentum-tensor)다. 클라인-고든 장 $\lag = \tfrac12(\partial\phi)^2 - \tfrac12 m^2\phi^2$ 에 @eq:emt 을 적용하면
+
+$$
+T^{00} = \tfrac12\dot\phi^2 + \tfrac12(\nabla\phi)^2 + \tfrac12 m^2\phi^2
+$$
+
+로 세 항이 모두 양수다. 에너지가 아래로 유계라는 사실이 계산에서 바로 나온다.
+
+## 예제 2 · 전역 U(1) 위상 대칭과 전하 보존
+
+복소 스칼라 장의 라그랑지안
+
+$$
+\lag = \partial_\mu\phi^*\partial^\mu\phi - m^2\phi^*\phi \label{complex}
+$$
+
+는 $\phi \to e^{i\alpha}\phi$, $\phi^* \to e^{-i\alpha}\phi^*$ 아래에서 그대로다. 위상이 곱해졌다 나누어지며 상쇄되기 때문이다. 무한소로는 $\Delta\phi = i\phi$, $\Delta\phi^* = -i\phi^*$ 이고, 라그랑지안이 아예 바뀌지 않으므로 $\mathcal J^\mu = 0$ 이다.
+
+@eq:noether 을 $\phi$ 와 $\phi^*$ 두 장에 각각 적용해 더하면
+
+$$
+j^\mu = \partial^\mu\phi^*\,(i\phi) + \partial^\mu\phi\,(-i\phi^*) = i\left(\phi^*\partial^\mu\phi - \phi\,\partial^\mu\phi^*\right) . \label{u1current}
+$$
+
+부호 규약에 따라 전체 부호가 달라지므로, 교과서를 옮겨 다닐 때는 $j^0$ 이 양의 전하 밀도를 주도록 맞춰 읽어야 한다 [@peskin1995].
+
+여기서 얻은 @eq:u1current 이 다음 모듈의 출발점이다. 위상 $\alpha$ 를 상수가 아니라 $\alpha(x)$ 로 놓으면 @eq:complex 은 더 이상 불변이 아니고, 불변성을 되살리려면 새로운 장을 도입해야 한다. 그 장이 전자기장이다.
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+실수 스칼라 장은 $\phi \to e^{i\alpha}\phi$ 변환을 할 수 없다. 실수 스칼라 장에 대응하는 보존 전하가 없음을 @eq:u1current 을 써서 확인하시오.
+
+<Solution>
+@eq:u1current 에 $\phi^* = \phi$ 를 넣으면 $j^\mu = i(\phi\partial^\mu\phi - \phi\partial^\mu\phi) = 0$ 이다. 흐름 자체가 항등적으로 사라지므로 보존 전하가 없다.
+
+흔한 오류는 "보존 전하가 0이다"와 "보존 전하가 없다"를 같게 보는 것이다. 둘은 다르다. 전자는 전하 연산자가 있고 그 값이 0인 상태를 말하고, 후자는 전하 연산자 자체가 정의되지 않는다는 뜻이다. 실수 스칼라 장은 후자다. 입자와 반입자가 구분되지 않으므로 세어야 할 것이 애초에 없다. 이 구분은 뒤에 중성미자가 마요라나 입자인지 디랙 입자인지를 따질 때 다시 나온다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="계산형">
+@eq:emt 에서 얻은 정준 에너지-운동량 텐서가 맥스웰 이론에서는 대칭이 아님을 보이고, 어떤 항을 더하면 대칭이 되는지 밝히시오.
+
+<Solution>
+$\lag = -\tfrac14 F_{\alpha\beta}F^{\alpha\beta}$ 에 @eq:emt 을 적용하면 $\partial\lag/\partial(\partial_\mu A_\lambda) = -F^{\mu\lambda}$ 이므로
+
+$$
+T^{\mu\nu}_{\text{정준}} = -F^{\mu\lambda}\partial^\nu A_\lambda + \tfrac14\eta^{\mu\nu}F_{\alpha\beta}F^{\alpha\beta} .
+$$
+
+첫 항에 $\partial^\nu A_\lambda$ 가 들어가는데 이것은 $\mu$ 와 $\nu$ 를 바꾸었을 때 같아지지 않는다. 게이지 불변도 아니다.
+
+$\partial_\lambda(F^{\mu\lambda}A^\nu)$ 를 더하면 운동 방정식 $\partial_\lambda F^{\mu\lambda} = 0$ (원천이 없을 때) 아래에서 $F^{\mu\lambda}\partial_\lambda A^\nu$ 가 되고, 원래 항과 합쳐 $-F^{\mu\lambda}F^{\nu}{}_{\lambda}$ 를 만든다. 결과는
+
+$$
+T^{\mu\nu} = -F^{\mu\lambda}F^{\nu}{}_{\lambda} + \tfrac14\eta^{\mu\nu}F_{\alpha\beta}F^{\alpha\beta}
+$$
+
+로 대칭이고 게이지 불변이다. 더한 항은 반대칭 지표를 가진 양의 발산이므로 보존 전하를 바꾸지 않는다.
+
+흔한 오류는 "대칭화는 미학적 선택"이라고 넘기는 것이다. 그럴듯하지만 틀렸다. 아인슈타인 방정식의 좌변이 대칭이므로 중력에 결합하려면 우변도 대칭이어야 하고, 이것은 선택이 아니라 요구다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+"뇌터 정리는 보존 법칙을 증명한다"는 문장이 왜 부정확한지 300자 이내로 설명하시오.
+
+<Solution>
+뇌터 정리는 보존 법칙을 무조건 증명하지 않는다. 정리는 조건문이다. 작용이 특정 연속 대칭을 가지면 대응하는 흐름이 보존된다는 것이고, 그 대칭이 실제로 있는지는 정리 바깥에서 정해진다. 게다가 유도 과정에서 장이 운동 방정식을 만족한다고 가정했으므로, 결론은 운동 방정식을 푸는 배위 위에서만 성립한다.
+
+두 번째로, 대칭이 양자 수준에서 깨지는 경우가 있다. 고전 작용은 대칭이지만 측도가 대칭이 아니어서 보존이 무너지는 것을 변칙(anomaly)이라 한다. 고전적 뇌터 정리만 보고 양자 보존을 단정할 수 없다.
+
+흔한 오류는 정리를 무조건적 정리로 읽는 것이다. 그럴듯한 이유는 교과서가 대칭을 이미 가정한 상태에서 정리를 소개하기 때문이다. 조건이 배경에 깔려 보이지 않을 뿐이다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 원논문은 [@noether1918]이다. 제1정리가 여기서 다룬 전역 대칭, 제2정리가 다음 모듈의 국소 대칭을 다룬다.
+- 입자 역학에서의 같은 정리는 [@goldstein2002]에 있다. 장이론으로 넘어오기 전에 유한 자유도에서 먼저 보면 접힘 구조가 선명하다.
+- 대칭과 보존의 관계를 상대론적 장이론의 공리에서 다시 세우는 서술은 [@weinberg1995] 7.3절에 있다.

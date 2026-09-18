@@ -1,0 +1,44 @@
+---
+/**
+ * 해설. 정답만 주지 않고 흔한 오류 하나와 그 오류가 왜 그럴듯한지까지 쓴다.
+ */
+interface Props {
+  label?: string;
+}
+const { label = '해설' } = Astro.props;
+---
+
+<details class="solution">
+  <summary>{label}</summary>
+  <div class="solution-body"><slot /></div>
+</details>
+
+<style>
+  .solution {
+    margin-top: 0.8em;
+    border-top: 1px dashed var(--line);
+    padding-top: 0.6em;
+  }
+  .solution > summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.88em;
+    color: var(--accent);
+    list-style: none;
+  }
+  .solution > summary::-webkit-details-marker {
+    display: none;
+  }
+  .solution > summary::before {
+    content: '▸ ';
+  }
+  .solution[open] > summary::before {
+    content: '▾ ';
+  }
+  .solution-body :global(> :first-child) {
+    margin-top: 0.6em;
+  }
+  .solution-body :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

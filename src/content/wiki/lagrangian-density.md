@@ -1,13 +1,17 @@
 ---
-title: 라그랑지안 밀도
+titleKo: 라그랑지안 밀도
 titleEn: Lagrangian density
 summary: 장이론에서 작용을 시공간 적분으로 나타낼 때의 피적분 함수. 장과 그 1차 미분의 국소 함수이며 로렌츠 스칼라다.
 aliases: [라그랑지언 밀도]
+tracks: [physics]
 related: [noether-current, yang-mills-action]
-difficulty: 입문
-status: 검토 완료
+citations: [peskin1995, weinberg1995]
+level: intro
+status: verified
 tags: [라그랑지안, 작용]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -35,4 +39,4 @@ $$
 
 ## 학습 트랙에서
 
-- [라그랑지안 장이론과 오일러-라그랑주 방정식](/learn/classical-field-theory/01-lagrangian-field-theory)
+- [라그랑지안 장이론과 오일러-라그랑주 방정식](/learn/physics/a1/a1-1)

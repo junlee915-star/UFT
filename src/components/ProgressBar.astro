@@ -1,0 +1,61 @@
+---
+/** 모듈·트랙 진행률 막대. 진도가 없으면 0%로 조용히 남는다. */
+interface Props {
+  scope: string;
+  ids: string[];
+  label?: string;
+  compact?: boolean;
+}
+const { scope, ids, label, compact } = Astro.props;
+---
+
+<div class="progress" data-progress-scope={scope} data-progress-ids={ids.join(',')} data-pagefind-ignore>
+  <p class="progress-label">
+    {label && <span>{label}</span>}
+    <span class="progress-num"><span data-progress-count>0</span> / {ids.length} 단원</span>
+    {!compact && <span class="progress-pct" data-progress-percent>0%</span>}
+  </p>
+  <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label={label ?? '진행률'}>
+    <span class="progress-fill" data-progress-bar></span>
+  </div>
+</div>
+
+<style>
+  .progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+  }
+  .progress-label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    margin: 0;
+    font-size: 0.8em;
+    color: var(--fg-muted);
+  }
+  .progress-pct {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+  .progress-num {
+    font-variant-numeric: tabular-nums;
+  }
+  .progress-track {
+    height: 5px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .progress-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+  .progress[data-progress-complete] .progress-fill {
+    background: #2e7d4f;
+  }
+</style>

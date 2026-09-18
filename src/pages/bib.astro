@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { loadBib, formatEntry } from '@/lib/bibtex.mjs';
+import { getAllListings, getLessons, getWiki, getNotes, getPapers, getEssays, lessonUrl, urls } from '@/lib/content';
+
+const entries = [...loadBib('./src/data/references.bib')].sort(
+  (a, b) => (a.fields.year ?? '').localeCompare(b.fields.year ?? '') || a.key.localeCompare(b.key),
+);
+
+// front matter 의 citations 와 본문의 [@key] 를 모두 모아 역인용을 만든다.
+type Ref = { title: string; url: string };
+const citedBy = new Map<string, Ref[]>();
+const add = (key: string, ref: Ref) => {
+  const list = citedBy.get(key) ?? [];
+  if (!list.some((r) => r.url === ref.url)) list.push(ref);
+  citedBy.set(key, list);
+};
+
+for (const l of await getLessons()) {
+  const ref = { title: `${l.id.toUpperCase()} ${l.data.title}`, url: lessonUrl(l) };
+  for (const k of l.data.citations) add(k, ref);
+}
+for (const w of await getWiki()) {
+  const ref = { title: w.data.titleKo, url: urls.wiki(w.id) };
+  for (const k of w.data.citations) add(k, ref);
+}
+for (const n of await getNotes()) {
+  const ref = { title: n.data.title, url: urls.note(n.id) };
+  for (const k of n.data.citations) add(k, ref);
+}
+for (const p of await getPapers()) {
+  const ref = { title: p.data.titleKo, url: urls.paper(p.id) };
+  if (p.data.bibKey) add(p.data.bibKey, ref);
+}
+for (const e of await getEssays()) {
+  const ref = { title: e.data.title, url: urls.essay(e.id) };
+  for (const k of e.data.citations) add(k, ref);
+}
+for (const item of await getAllListings()) {
+  for (const m of item.body.matchAll(/\[@([^\]]+)\]/g)) {
+    for (const k of m[1].split(/[;,]/).map((s) => s.trim().replace(/^@/, ''))) {
+      if (k) add(k, { title: item.title, url: item.url });
+    }
+  }
+}
+---
+
+<BaseLayout title="참고문헌" description="사이트 전체에서 인용하는 참고문헌 목록(BibTeX)">
+  <PageHeader
+    kicker="연구"
+    title="참고문헌"
+    lead={`src/data/references.bib 파일 하나로 관리한다. 본문에서 [@키] 로 인용하면 글 끝에 참고문헌 절이 자동 생성되고, 없는 키를 쓰면 빌드가 실패한다. 총 ${entries.length}건.`}
+  >
+    <p class="mt-3 text-sm">
+      <a href="https://github.com/junlee915-star/UFT/blob/main/src/data/references.bib" rel="noopener">BibTeX 원본 보기</a>
+    </p>
+  </PageHeader>
+  <ol class="space-y-4">
+    {
+      entries.map((e) => (
+        <li id={`ref-${e.key}`} class="rounded-lg border p-4 text-sm" style="border-color: var(--line); scroll-margin-top: 5rem">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <code class="text-xs" style="color: var(--fg-muted)">@{e.type}&#123;{e.key}&#125;</code>
+            <span class="text-xs" style="color: var(--fg-muted)">인용 {citedBy.get(e.key)?.length ?? 0}곳</span>
+          </div>
+          <p class="mt-1.5" set:html={formatEntry(e)} />
+          {citedBy.get(e.key) && (
+            <p class="mt-1.5 text-xs" style="color: var(--fg-muted)">
+              인용한 글:{' '}
+              {citedBy.get(e.key)!.map((r, i) => (<>{i > 0 && ', '}<a href={r.url}>{r.title}</a></>))}
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>

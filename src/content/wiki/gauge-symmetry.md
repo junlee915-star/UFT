@@ -1,13 +1,17 @@
 ---
-title: 게이지 대칭
+titleKo: 게이지 대칭
 titleEn: Gauge symmetry
 summary: 시공간의 각 점에서 독립적으로 적용할 수 있는 국소 대칭. 이 대칭을 요구하면 상호작용을 매개하는 게이지 장이 필연적으로 등장한다.
 aliases: [국소 대칭, 게이지 불변성]
+tracks: [physics]
 related: [covariant-derivative, field-strength, yang-mills-action]
-difficulty: 중급
-status: 검토 완료
+citations: [yang1954, peskin1995]
+level: intermediate
+status: verified
 tags: [게이지 대칭, 대칭]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -30,4 +34,4 @@ $$
 
 ## 학습 트랙에서
 
-- [게이지 대칭과 공변 미분](/learn/gauge-theory-standard-model/01-gauge-symmetry) 단원에서 유도를 다룬다.
+- [게이지 대칭과 공변 미분](/learn/physics/a3/a3-1) 단원에서 유도를 다룬다.

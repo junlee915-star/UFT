@@ -1,13 +1,17 @@
 ---
-title: 결합상수 러닝
+titleKo: 결합상수 러닝
 titleEn: Running coupling
 summary: 재규격화군 방정식에 따라 결합상수가 에너지 척도에 의존하는 현상. 대통일의 정량적 검증 수단이다.
 aliases: [재규격화군 흐름, 러닝 커플링]
+tracks: [physics]
 related: [yang-mills-action]
-difficulty: 고급
-status: 검토 중
+citations: [georgi1974b, schwartz2014]
+level: advanced
+status: review
 tags: [결합상수 러닝, 재규격화군, 대통일]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -34,4 +38,4 @@ $$
 
 ## 대통일과의 관계
 
-세 결합상수가 한 척도 $M_{\text{GUT}}$에서 만난다는 것은 두 개의 입력($\alpha_1, \alpha_2$)으로 하나의 예측($\alpha_3$ 또는 $\sin^2\theta_W$)을 하는 것이다. 표준모형만으로는 약 몇 퍼센트 어긋나고, MSSM에서는 $M_{\text{GUT}} \approx 2\times10^{16}$ GeV에서 잘 맞는다. 자세한 수치는 [SU(5) 단원](/learn/grand-unification/01-su5)을 참고.
+세 결합상수가 한 척도 $M_{\text{GUT}}$에서 만난다는 것은 두 개의 입력($\alpha_1, \alpha_2$)으로 하나의 예측($\alpha_3$ 또는 $\sin^2\theta_W$)을 하는 것이다. 표준모형만으로는 약 몇 퍼센트 어긋나고, MSSM에서는 $M_{\text{GUT}} \approx 2\times10^{16}$ GeV에서 잘 맞는다. 자세한 수치는 [SU(5) 단원](/learn/physics/a4/a4-2)을 참고.

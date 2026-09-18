@@ -1,31 +1,48 @@
 ---
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
+import { mdxComponents } from '@/components/mdx';
 import { render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
+import { getNotes, getWiki, getAllListings, findBacklinks, paths, urls } from '@/lib/content';
 
 export async function getStaticPaths() {
-  return (await getPublished('notes')).map((n) => ({ params: { id: n.id }, props: { entry: n } }));
+  return (await getNotes()).map((n) => ({ params: { id: n.id }, props: { entry: n } }));
 }
 const { entry } = Astro.props;
+const d = entry.data;
+const wiki = await getWiki();
+const linked = d.wikiRefs.map((s) => wiki.find((w) => w.id === s)).filter((w) => w !== undefined);
 const { Content, headings } = await render(entry);
-const backlinks = findBacklinks(await getAllArticles(), paths.note(entry.id), entry);
+const backlinks = findBacklinks(await getAllListings(), paths.note(entry.id), paths.note(entry.id));
 ---
 
 <ArticleLayout
-  title={entry.data.title}
-  summary={entry.data.summary}
+  title={d.title}
+  summary={d.summary}
   kicker="연구 노트"
-  kickerHref={withBase('/research/notes')}
-  created={entry.data.created}
-  updated={entry.data.updated}
-  author={entry.data.author}
-  tags={entry.data.tags}
-  difficulty={entry.data.difficulty}
-  status={entry.data.status}
+  kickerHref={urls.note('').replace(/\/$/, '')}
+  created={d.date}
+  updated={d.updated}
+  author={d.author}
+  tags={d.tags}
+  status={d.status}
+  aiAssisted={d.aiAssisted}
   headings={headings}
-  draft={entry.data.draft}
 >
-  <Content />
-  <Fragment slot="after"><Backlinks entries={backlinks} title="이 노트를 참조하는 글" /></Fragment>
+  <Content components={mdxComponents} />
+  <Fragment slot="after">
+    {
+      linked.length > 0 && (
+        <section class="mt-10" data-pagefind-ignore>
+          <h2 class="text-base font-semibold">개념 연결</h2>
+          <ul class="mt-3 flex flex-wrap gap-2 text-sm">
+            {linked.map((w) => (
+              <li><a href={urls.wiki(w.id)} class="rounded-lg border px-3 py-1.5 no-underline hover:underline" style="border-color: var(--line)">{w.data.titleKo}</a></li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+    <Backlinks entries={backlinks} title="이 노트를 참조하는 글" />
+  </Fragment>
 </ArticleLayout>

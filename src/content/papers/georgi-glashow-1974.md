@@ -1,16 +1,18 @@
 ---
-title: 모든 기본입자 힘의 통일
-titleEn: Unity of All Elementary-Particle Forces
+titleKo: 모든 기본입자 힘의 통일
+titleOriginal: Unity of All Elementary-Particle Forces
 authors: [Howard Georgi, Sheldon L. Glashow]
 year: 1974
 venue: Physical Review Letters 32, 438
 doi: 10.1103/PhysRevLett.32.438
 bibKey: georgi1974
-summary: 표준모형 게이지군을 SU(5)에 담아 강·약·전자기 상호작용을 하나의 결합상수로 기술한 첫 대통일 모형. 전하 양자화를 설명하고 양성자 붕괴를 예측한다.
+summaryKo: 표준모형 게이지군을 SU(5)에 담아 강·약·전자기 상호작용을 하나의 결합상수로 기술한 첫 대통일 모형. 전하 양자화를 설명하고 양성자 붕괴를 예측한다.
+wikiRefs: [running-coupling, gauge-symmetry, yang-mills-action]
 tags: [SU(5), 대통일, 양성자 붕괴]
-difficulty: 고급
-status: 검토 완료
+tracks: [physics]
+status: verified
 created: 2026-09-15
+aiAssisted: draft
 ---
 
 ## 한 문장 요약
@@ -32,5 +34,5 @@ $SU(3)\times SU(2)\times U(1)$을 포함하는 최소 단순군 SU(5)를 택하�
 
 ## 이 사이트의 관련 글
 
-- [SU(5) 대통일과 결합상수 러닝](/learn/grand-unification/01-su5)
+- [SU(5) 대통일과 결합상수 러닝](/learn/physics/a4/a4-2)
 - [GUT 규격화 노트](/research/notes/2026-09-gut-normalization)

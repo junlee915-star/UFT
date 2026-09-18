@@ -1,0 +1,68 @@
+---
+id: a1-1                     # 파일명과 같게. a=물리학 b=종교철학 c=통합
+track: physics
+module: a1
+order: 1
+title: 단원 제목
+summary: 한 줄 요지. 300자 이하. 카드와 메타 설명에 쓰인다.
+level: intro                 # intro | intermediate | advanced
+status: draft                # draft(배포 제외) | review(경고 배너) | verified
+prereq: []                   # 선수 단원 id
+wikiRefs: [lagrangian-density, noether-current, gauge-symmetry]   # 3개 이상, 실재해야 함
+citations: [peskin1995, weinberg1995, noether1918]                # 3건 이상, references.bib 에 있어야 함
+estMinutes: 120
+author: Jun Lee
+created: 2026-01-01
+aiAssisted: none             # none | outline | draft | translation
+tags: []
+---
+
+<Gist>
+수식을 읽지 않는 독자를 위한 3~5문장. 이 박스가 없으면 검사에 실패한다.
+무엇이 문제였고 이 단원이 무엇을 해결하는지만 일상어로 쓴다.
+</Gist>
+
+## 동기 · 이 수식 없이 설명하지 못한 것
+
+역사적 맥락과 미해결 문제. 수식을 꺼내기 전에 왜 필요한지 먼저 쓴다.
+
+## 핵심 수식
+
+$$
+S[\phi] = \int \dd^4x \; \lag(\phi, \partial_\mu\phi) \label{action}
+$$
+
+번호는 자동으로 붙는다. 다시 부를 식에만 `\label{}` 을 달고 본문에서 `@eq:action` 으로 참조한다.
+번호를 붙이지 않으려면 식 끝에 `\notag`.
+
+## 유도
+
+생략 없이. 분량이 넘치면 단원을 나눈다. 중간에 쓰는 가정을 모두 밝힌다.
+
+## 예제
+
+계산 하나를 끝까지 낸다.
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+문제 본문.
+
+<Solution>
+풀이. 그리고 흔한 오류 하나를 명시하고, 그 오류가 왜 그럴듯한지까지 쓴다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="개념 진술형">
+문제 본문.
+
+<Solution>
+풀이와 흔한 오류.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 교과서 장 번호와 인용 [@peskin1995]
+
+<!-- 개념 연결과 참고문헌 절은 자동 생성되므로 쓰지 않는다 -->

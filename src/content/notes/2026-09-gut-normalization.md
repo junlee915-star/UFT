@@ -1,11 +1,14 @@
 ---
 title: GUT 규격화에서 √(5/3) 인자가 붙는 이유
 summary: U(1)_Y 결합상수를 SU(5) 생성자 규격화에 맞출 때 나오는 √(5/3)을 한 세대 페르미온의 초전하 제곱합으로 직접 계산해 확인한 메모.
-tags: [SU(5), 결합상수 러닝, 초전하]
-difficulty: 고급
-status: 검토 완료
-created: 2026-09-14
+date: 2026-09-14
 updated: 2026-09-18
+tags: [SU(5), 결합상수 러닝, 초전하]
+wikiRefs: [running-coupling, gauge-symmetry]
+citations: [georgi1974, georgi1974b]
+status: verified
+author: Jun Lee
+aiAssisted: draft
 ---
 
 ## 문제
@@ -30,7 +33,7 @@ $$
 \alpha_1 = \tfrac53\,\alpha_Y, \qquad \sin^2\theta_W(M_X) = \frac{\alpha_Y}{\alpha_Y + \alpha_2}\bigg|_{\alpha_1 = \alpha_2} = \frac{3/5}{3/5 + 1} = \frac38 .
 $$
 
-@eq:trY2 의 계산은 [SU(5) 단원](/learn/grand-unification/01-su5)의 식 (1)로 연결된다. 원 논문은 [@georgi1974]이고 러닝 계산은 [@georgi1974b]다.
+@eq:trY2 의 계산은 [SU(5) 단원](/learn/physics/a4/a4-2)의 식 (1)로 연결된다. 원 논문은 [@georgi1974]이고 러닝 계산은 [@georgi1974b]다.
 
 ## 남은 질문
 

@@ -1,0 +1,165 @@
+---
+id: a0-1
+track: physics
+module: a0
+order: 1
+title: 변분법과 작용원리
+summary: 경로 전체에 하나의 숫자를 매기는 범함수를 정의하고, 그 극값 조건에서 오일러-라그랑주 방정식을 한 줄도 건너뛰지 않고 유도한다.
+level: intro
+status: review
+prereq: []
+wikiRefs: [action-principle, lagrangian-density, noether-current]
+citations: [goldstein2002, weinberg1995, srednicki2007, zee2016]
+estMinutes: 120
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [변분법, 작용, 오일러-라그랑주]
+---
+
+<Gist>
+물리 법칙은 두 가지 방식으로 쓸 수 있다. 하나는 매 순간 무엇이 무엇을 밀고 당기는지 적는 방식이고, 다른 하나는 처음과 끝이 정해진 경로 전체에 숫자를 하나 매긴 다음 그 숫자가 가장 덜 변하는 경로를 고르는 방식이다. 뒤쪽 방식에서 그 숫자를 작용이라 부른다. 두 방식은 같은 운동을 예측하지만, 작용으로 쓰면 이론 전체가 함수 하나에 담기고 대칭이 눈에 보인다. 이 단원은 작용에서 운동 방정식을 뽑아내는 계산을 끝까지 따라가고, 그 계산이 나중에 장이론에서 그대로 반복된다는 사실을 확인한다.
+</Gist>
+
+## 동기 · 힘의 목록으로는 하기 어려운 것
+
+뉴턴의 방식은 힘을 먼저 적고 가속도를 구한다. 이 방식은 좌표계를 바꿀 때마다 방정식을 다시 써야 한다. 극좌표로 옮기면 원심항과 코리올리항이 어디에서 왔는지 따로 설명해야 하고, 실이나 레일 같은 구속이 있으면 눈에 보이지 않는 구속력을 미지수로 끌고 다녀야 한다.
+
+더 큰 문제는 새 이론을 만들 때다. 아직 아무도 본 적 없는 장을 도입한다고 하자. 어떤 항을 방정식에 넣어도 되는지 판단할 기준이 힘의 목록에는 없다. 반면 작용은 좌표 변환에 대해 불변인 하나의 수이므로, "이 대칭을 가진 항을 낮은 차수부터 모두 쓴다"는 규칙으로 이론의 후보를 유한하게 줄일 수 있다 [@weinberg1995]. 게이지 이론도 일반 상대론도 실제로 이 방식으로 만들어졌다.
+
+작용이 주는 두 번째 이득은 대칭과 보존의 연결이다. 뇌터 정리는 작용의 대칭에서 [보존류](/wiki/noether-current)를 만들어 내는데, 이 정리는 작용이 없으면 진술조차 되지 않는다.
+
+## 핵심 수식
+
+시간 $t_1$ 에서 $t_2$ 까지의 경로 $q^i(t)$ 마다 수 하나를 대응시키는 사상을 범함수라 하고, 작용은 라그랑지안 $L$ 의 시간 적분으로 정의한다.
+
+$$
+S[q] = \int_{t_1}^{t_2} L\!\left(q^i, \dot q^i, t\right) \dd t \label{action}
+$$
+
+양 끝점을 고정한 채 경로를 흔들었을 때 작용의 1차 변화가 사라지는 조건, 즉 $\delta S = 0$ 은 다음과 같다.
+
+$$
+\frac{\dd}{\dd t}\!\left(\frac{\partial L}{\partial \dot q^i}\right) - \frac{\partial L}{\partial q^i} = 0 \label{el}
+$$
+
+장이론에서는 적분이 시공간 전체로 바뀌고 라그랑지안이 [라그랑지안 밀도](/wiki/lagrangian-density) $\lag$ 로 바뀐다.
+
+$$
+S[\phi] = \int \dd^4x \; \lag\!\left(\phi, \partial_\mu\phi\right), \qquad
+\partial_\mu\!\left(\frac{\partial\lag}{\partial(\partial_\mu\phi)}\right) - \frac{\partial\lag}{\partial\phi} = 0 \label{fieldel}
+$$
+
+## 유도 · 생략 없이
+
+참 경로를 $q^i(t)$ 라 하고, 끝점에서 사라지는 임의의 매끄러운 함수 $\eta^i(t)$ 로 한 매개변수 다발을 만든다.
+
+$$
+q^i_\epsilon(t) = q^i(t) + \epsilon\,\eta^i(t), \qquad \eta^i(t_1) = \eta^i(t_2) = 0 \label{family}
+$$
+
+끝점 조건이 핵심이다. 작용은 시작점과 끝점이 주어진 문제의 답을 고르는 장치이므로, 비교 대상이 되는 경로들은 모두 같은 두 점을 이어야 한다.
+
+이제 $S(\epsilon) \equiv S[q_\epsilon]$ 는 실수 변수 하나의 함수다. 범함수의 극값 조건은 이 함수의 보통 미분이 $\epsilon = 0$ 에서 사라진다는 조건으로 번역된다. 연쇄법칙으로 적분 기호 안에서 미분하면
+
+$$
+\left.\frac{\dd S}{\dd\epsilon}\right|_{\epsilon=0}
+= \int_{t_1}^{t_2}\left(\frac{\partial L}{\partial q^i}\,\eta^i + \frac{\partial L}{\partial \dot q^i}\,\dot\eta^i\right)\dd t \label{first}
+$$
+
+이다. 여기서 $\dot q_\epsilon = \dot q + \epsilon\dot\eta$ 이므로 두 번째 항에 $\dot\eta$ 가 나온다는 점만 조심하면 된다.
+
+@eq:first 의 두 번째 항을 부분적분한다.
+
+$$
+\int_{t_1}^{t_2}\frac{\partial L}{\partial \dot q^i}\,\dot\eta^i \,\dd t
+= \left[\frac{\partial L}{\partial \dot q^i}\,\eta^i\right]_{t_1}^{t_2}
+- \int_{t_1}^{t_2}\frac{\dd}{\dd t}\!\left(\frac{\partial L}{\partial \dot q^i}\right)\eta^i \,\dd t \notag
+$$
+
+경계항은 @eq:family 의 끝점 조건 때문에 정확히 0이다. 남은 것을 모으면
+
+$$
+\left.\frac{\dd S}{\dd\epsilon}\right|_{\epsilon=0}
+= \int_{t_1}^{t_2}\left[\frac{\partial L}{\partial q^i} - \frac{\dd}{\dd t}\!\left(\frac{\partial L}{\partial \dot q^i}\right)\right]\eta^i \,\dd t = 0 \label{weak}
+$$
+
+이고, 이것이 임의의 $\eta^i$ 에 대해 성립해야 한다.
+
+마지막 한 걸음이 변분법의 기본 보조정리다. 연속함수 $f(t)$ 에 대해 끝점에서 사라지는 모든 매끄러운 $\eta$ 가 $\int f\eta \,\dd t = 0$ 을 만족하면 $f \equiv 0$ 이다. 증명은 귀류법이다. 어떤 점 $t_0$ 에서 $f(t_0) > 0$ 이라면 연속성에 의해 그 점을 포함하는 작은 구간에서 $f > 0$ 이고, 그 구간에만 지지를 갖는 양의 혹 모양 함수를 $\eta$ 로 잡으면 적분이 양수가 되어 가정과 모순이다. 따라서 @eq:weak 의 대괄호가 모든 시각에서 0이고, 이것이 @eq:el 이다.
+
+장의 경우도 구조가 같다. $\delta\phi$ 가 적분 영역의 경계에서 사라진다고 두고 $\partial_\mu$ 에 대해 부분적분하면 경계항이 초곡면 적분이 되어 사라지고, 남는 조건이 @eq:fieldel 이다 [@srednicki2007]. 유한 자유도에서 무한 자유도로 넘어갈 때 새로 배울 계산은 없다.
+
+## 예제 1 · 평면에서 가장 짧은 곡선
+
+작용이 아닌 범함수에도 같은 계산이 쓰인다. $y(x)$ 로 주어진 곡선의 길이는
+
+$$
+\ell[y] = \int_{x_1}^{x_2}\sqrt{1 + y'^2}\;\dd x \notag
+$$
+
+이고, $L = \sqrt{1+y'^2}$ 은 $y$ 에 의존하지 않으므로 @eq:el 은 $\dd(\partial L/\partial y')/\dd x = 0$ 이 된다. 즉 $y'/\sqrt{1+y'^2}$ 가 상수이고, 이는 $y'$ 자체가 상수라는 뜻이므로 답은 직선이다. 라그랑지안이 어떤 변수에 의존하지 않으면 그 변수의 정준운동량이 보존된다는 규칙이 여기서 처음 나타난다.
+
+## 예제 2 · 클라인-고든 장
+
+$$
+\lag = \tfrac12\,\partial_\mu\phi\,\partial^\mu\phi - \tfrac12 m^2\phi^2 \label{kglag}
+$$
+
+에 @eq:fieldel 을 적용한다. $\partial\lag/\partial\phi = -m^2\phi$ 이고 $\partial\lag/\partial(\partial_\mu\phi) = \partial^\mu\phi$ 이므로 운동 방정식은
+
+$$
+\left(\Box + m^2\right)\phi = 0, \qquad \Box \equiv \partial_\mu\partial^\mu \notag
+$$
+
+이다. 라그랑지안 밀도 두 항이 각각 미분항과 질량항으로 번역되는 이 대응이 이후 모든 장이론 계산의 기본 문법이다 [@zee2016].
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+라그랑지안에 $L \to L + \dfrac{\dd F(q, t)}{\dd t}$ 를 더해도 @eq:el 이 바뀌지 않음을 보이시오. 또 $F$ 가 $\dot q$ 에 의존해도 되는지 판단하시오.
+
+<Solution>
+더해진 항의 작용 기여는 $\int (\dd F/\dd t)\,\dd t = F(q(t_2), t_2) - F(q(t_1), t_1)$ 로 끝점 값만으로 정해진다. 비교하는 경로들은 끝점이 모두 같으므로 이 값은 경로에 의존하지 않는 상수이고, 상수를 더해도 극값을 주는 경로는 그대로다. 따라서 운동 방정식이 같다.
+
+$F$ 가 $\dot q$ 에 의존하면 이 논증이 깨진다. 그때 $\dd F/\dd t$ 에 $\ddot q$ 가 들어가고, 끝점에서 고정한 것은 $q$ 이지 $\dot q$ 가 아니므로 부분적분에서 나오는 경계항 $[(\partial F/\partial\dot q)\,\delta\dot q]$ 가 사라지지 않는다.
+
+흔한 오류는 "전체 미분은 언제나 버려도 된다"를 조건 없이 외우는 것이다. 그럴듯한 이유는 교과서가 $F(q,t)$ 만 다루면서 인수 제한을 지나가듯 적기 때문이다. 버려도 되는 근거는 전체 미분이라는 형태가 아니라 끝점에서 고정된 양만으로 경계항이 쓰인다는 사실이다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="계산형">
+전자기장 속 하전 입자의 라그랑지안
+$L = \tfrac12 m\dot{\mathbf x}^2 - e\varphi(\mathbf x, t) + e\,\dot{\mathbf x}\cdot\mathbf A(\mathbf x, t)$
+에 @eq:el 을 적용해 로런츠 힘을 얻고, 정준운동량이 무엇인지 밝히시오.
+
+<Solution>
+정준운동량은 $p_i = \partial L/\partial \dot x^i = m\dot x^i + e A_i$ 다. 시간 미분을 취할 때 $\mathbf A$ 가 입자를 따라 움직이므로 전체 미분 $\dd A_i/\dd t = \partial_t A_i + \dot x^j\partial_j A_i$ 를 써야 한다. 한편 $\partial L/\partial x^i = -e\,\partial_i\varphi + e\,\dot x^j \partial_i A_j$ 이다. 두 결과를 @eq:el 에 넣고 정리하면
+
+$$
+m\ddot x^i = e\left(-\partial_i\varphi - \partial_t A_i\right) + e\,\dot x^j\left(\partial_i A_j - \partial_j A_i\right) \notag
+$$
+
+이고, 괄호가 각각 $E_i$ 와 $\epsilon_{ijk}B_k$ 를 주므로 $m\ddot{\mathbf x} = e(\mathbf E + \dot{\mathbf x}\times\mathbf B)$ 다.
+
+흔한 오류는 정준운동량을 $m\dot{\mathbf x}$ 로 두는 것이다. 그럴듯한 이유는 자유 입자에서 둘이 같기 때문이고, 자기장이 일을 하지 않으니 운동량에도 기여하지 않으리라는 직관도 거든다. 그러나 양자역학에서 $-i\nabla$ 로 바뀌는 것은 $\mathbf p = m\dot{\mathbf x} + e\mathbf A$ 쪽이며, 이 차이가 최소 결합과 [공변미분](/wiki/covariant-derivative)의 출발점이 된다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+"자연은 작용을 최소화한다"는 문장이 왜 부정확한지 300자 이내로 설명하시오.
+
+<Solution>
+두 가지가 틀렸다. 첫째, 조건은 극값이지 최솟값이 아니다. @eq:weak 이 말하는 것은 1차 변화가 사라진다는 것뿐이고, 2차 변화의 부호는 따지지 않았다. 실제로 켤레점을 지난 측지선이나 시간이 긴 경로에서는 작용이 안장점이 된다.
+
+둘째, 최소화라는 말은 자연이 여러 경로를 미리 비교한 뒤 하나를 고른다는 목적론적 그림을 준다. 유도가 보여 주듯 결론은 국소 미분방정식 @eq:el 이며, 입자는 매 순간의 정보만으로 움직인다. 경로적분에서는 이 상황이 더 분명해져서, 모든 경로가 진폭에 기여하고 고전 경로는 위상이 서로 상쇄되지 않는 경로일 뿐이다.
+
+흔한 오류는 이 문장을 물리적 원리로 받아들이는 것이다. 그럴듯한 이유는 "최소 작용의 원리"라는 이름 자체가 최소를 주장하기 때문이다. 역사적 명칭이 정리의 내용보다 강한 주장을 담고 있는 경우다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 유한 자유도에서의 표준 서술은 [@goldstein2002] 2장이다. 구속과 라그랑주 승수까지 함께 보면 좌표 선택의 자유가 어디서 오는지 분명해진다.
+- 장으로 넘어가는 최소 경로는 [@srednicki2007] 3장이다. 표기가 이후 단원과 가장 가깝다.
+- 작용을 대칭으로부터 구성하는 관점은 [@weinberg1995] 7장에 있다. 왜 이 방식이 통일 이론의 표준 전략이 되었는지 보인다.

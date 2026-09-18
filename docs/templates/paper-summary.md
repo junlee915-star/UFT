@@ -1,23 +1,28 @@
 ---
-title: 한국어 제목
-titleEn: Original English Title
+titleKo: 한국어 제목
+titleOriginal: Original Title
 authors: [First Author, Second Author]
 year: 2000
-venue: Journal 1, 1                    # 선택
-arxiv: "0000.00000"                    # arxiv, doi, url 중 하나는 필수
-# doi: 10.1000/xyz
+venue: Journal 1, 1
+doi: 10.1000/xyz                # arxivId, doi, url 중 하나는 필수 (원문 링크)
+# arxivId: "0000.00000"
 # url: https://example.com
-bibKey: key2000                        # src/data/references.bib 의 키(선택). 있으면 [@key2000]로 인용 가능
-summary: 논문의 핵심 주장 한두 문장. (300자 이하)
+bibKey: key2000                 # references.bib 의 키 (선택)
+summaryKo: 핵심 주장 한두 문장. 400자 이하.
+wikiRefs: []
 tags: []
-difficulty: 고급
-status: 초안
+tracks: [physics]
+status: draft
 created: 2026-01-01
+aiAssisted: none
 ---
 
 ## 한 문장 요약
 
 ## 핵심 주장
+
+1.
+2.
 
 ## 한계와 이후
 

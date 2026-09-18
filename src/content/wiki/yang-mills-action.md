@@ -1,12 +1,17 @@
 ---
-title: 양-밀스 작용
+titleKo: 양-밀스 작용
 titleEn: Yang–Mills action
 summary: 비아벨 게이지 장의 작용. 맥스웰 작용의 일반화이며 게이지 장의 3점·4점 자기상호작용을 포함한다.
+aliases: []
+tracks: [physics]
 related: [field-strength, gauge-symmetry, running-coupling]
-difficulty: 중급
-status: 검토 완료
+citations: [yang1954, schwartz2014]
+level: intermediate
+status: verified
 tags: [양-밀스, 게이지 대칭]
 created: 2026-09-18
+updated: 2026-09-18
+aiAssisted: draft
 ---
 
 ## 정의
@@ -40,4 +45,4 @@ $$
 
 ## 학습 트랙에서
 
-- [양-밀스 이론](/learn/gauge-theory-standard-model/02-yang-mills)
+- [양-밀스 이론](/learn/physics/a3/a3-2)

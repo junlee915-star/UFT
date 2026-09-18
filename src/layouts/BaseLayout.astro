@@ -1,20 +1,34 @@
 ---
-import { withBase, canonicalPath } from '@/lib/content';
 import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import ProgressRuntime from '@/components/ProgressRuntime.astro';
+import { withBase, canonicalPath } from '@/lib/content';
 
 interface Props {
   title: string;
   description?: string;
-  /** og:type */
   type?: 'website' | 'article';
   published?: Date;
   modified?: Date;
   noindex?: boolean;
+  /** 트랙 색을 페이지 강조색으로 쓴다 */
+  track?: 'physics' | 'philosophy' | 'synthesis';
+  /** 넓은 본문 레이아웃 */
+  wide?: boolean;
 }
-const SITE_NAME = '통일장이론 연구·학습';
-const { title, description = '통일장이론을 체계적으로 공부하고 연구 노트를 축적하는 한국어 사이트', type = 'website', published, modified, noindex } = Astro.props;
+const SITE_NAME = '통일장이론 교육과정';
+const {
+  title,
+  description = '물리학·종교철학·통합 세 트랙으로 통일장이론을 공부하고 연구하는 한국어 교육과정 사이트',
+  type = 'website',
+  published,
+  modified,
+  noindex,
+  track,
+  wide,
+} = Astro.props;
+
 const path = canonicalPath(Astro.url.pathname);
 const canonical = new URL(path, Astro.site ?? Astro.url.origin);
 const fullTitle = path === withBase('/') ? SITE_NAME : `${title} · ${SITE_NAME}`;
@@ -22,7 +36,7 @@ const ogImage = new URL(withBase('/og-default.svg'), Astro.site ?? Astro.url.ori
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-track={track}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,12 +73,32 @@ const ogImage = new URL(withBase('/og-default.svg'), Astro.site ?? Astro.url.ori
         } catch {}
       })();
     </script>
+    <slot name="head" />
   </head>
   <body class="flex min-h-dvh flex-col">
+    <a href="#main" class="skip-link">본문으로 건너뛰기</a>
     <Header />
-    <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+    <main id="main" class:list={['mx-auto w-full flex-1 px-4 py-8 sm:px-6 lg:px-8', wide ? 'max-w-7xl' : 'max-w-6xl']}>
       <slot />
     </main>
     <Footer />
+    <ProgressRuntime />
+    <style is:global>
+      /* 트랙 페이지에서는 강조색을 트랙 색으로 바꾼다 */
+      html[data-track='physics'] { --accent: var(--track-physics); }
+      html[data-track='philosophy'] { --accent: var(--track-philosophy); }
+      html[data-track='synthesis'] { --accent: var(--track-synthesis); }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 50;
+        padding: 0.6em 1em;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 0 0 0.5rem 0;
+      }
+      .skip-link:focus { left: 0; }
+    </style>
   </body>
 </html>

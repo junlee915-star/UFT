@@ -1,0 +1,149 @@
+---
+id: a3-2
+track: physics
+module: a3
+order: 2
+title: 양-밀스 이론
+summary: 국소 대칭의 군을 비가환군으로 바꾸면 게이지 장이 스스로 딸림표현으로 회전하고, 장세기에 제곱항이 생겨 게이지 보손끼리 상호작용한다. 이 비선형성이 강한 상호작용의 점근적 자유로 이어진다.
+level: intermediate
+status: review
+prereq: [a3-1]
+wikiRefs: [yang-mills-action, field-strength, covariant-derivative, running-coupling, lie-algebra]
+citations: [yang1954, peskin1995, schwartz2014, grosswilczek1973, politzer1973]
+estMinutes: 160
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [양-밀스, 비가환 게이지, 점근적 자유]
+---
+
+<Gist>
+앞 단원에서 국소화한 대칭은 위상 하나를 돌리는 단순한 것이었다. 이번에는 돌릴 수 있는 방향이 여러 개인 경우를 다룬다. 방향이 여러 개면 돌리는 순서가 결과를 바꾸는데, 이 순서 의존성이 이론을 근본적으로 다르게 만든다. 게이지 장 자신이 대칭의 대상이 되어 버리기 때문에, 광자와 달리 이 장들은 서로를 밀고 당긴다. 강한 상호작용이 가까이서는 약해지고 멀리서는 강해지는 기묘한 성질이 바로 여기서 나온다.
+</Gist>
+
+## 동기 · 왜 U(1) 로는 부족한가
+
+양성자와 중성자는 질량이 0.1% 남짓 차이 날 뿐이고 강한 상호작용에 대해 거의 같게 행동한다. 하이젠베르크는 이 둘을 한 이중항의 두 성분으로 보는 아이소스핀 대칭을 제안했다. 양과 밀스가 1954년에 던진 물음은 간단하다. 전역 아이소스핀 대칭을 국소화하면 무엇이 나오는가 [@yang1954].
+
+문제는 아이소스핀 군 SU(2) 의 생성자들이 서로 교환하지 않는다는 데 있다. 한 점에서 양성자를 중성자로 돌리는 조작과 다른 축으로 돌리는 조작은 순서를 바꾸면 결과가 다르다. 앞 단원의 유도는 위상이 그저 곱해졌다 나뉜다는 사실에 기대고 있었으므로, 그대로는 통하지 않는다.
+
+## 핵심 수식
+
+[리 대수](/wiki/lie-algebra)의 에르미트 생성자 $T^a$ 가 구조상수 $f^{abc}$ 로 닫힌다고 하자.
+
+$$
+[T^a, T^b] = i f^{abc} T^c , \qquad \tr\!\left(T^a T^b\right) = \tfrac12\,\delta^{ab} \label{algebra}
+$$
+
+장 $\psi$ 가 어떤 표현으로 $\psi \to U(x)\psi$, $U = \exp\!\left(i\alpha^a(x)T^a\right)$ 로 변환할 때 [공변 미분](/wiki/covariant-derivative)과 게이지 장의 변환은
+
+$$
+D_\mu = \partial_\mu - ig\,A^a_\mu T^a , \qquad
+A_\mu \to U A_\mu U^{-1} - \frac{i}{g}\left(\partial_\mu U\right)U^{-1} \label{nonabelian-gauge}
+$$
+
+이다. 여기서 $A_\mu \equiv A^a_\mu T^a$ 로 묶어 썼다. [장세기](/wiki/field-strength)는 교환자로 정의한다.
+
+$$
+[D_\mu, D_\nu] = -ig\,F_{\mu\nu} , \qquad
+F^a_{\mu\nu} = \partial_\mu A^a_\nu - \partial_\nu A^a_\mu + g f^{abc} A^b_\mu A^c_\nu \label{fieldstrength}
+$$
+
+[양-밀스 작용](/wiki/yang-mills-action)은 맥스웰 작용의 직접적 일반화다.
+
+$$
+S_{\text{YM}} = -\frac12\int \dd^4x\;\tr\!\left(F_{\mu\nu}F^{\mu\nu}\right)
+= -\frac14\int \dd^4x\; F^a_{\mu\nu}F^{a\,\mu\nu} \label{ym}
+$$
+
+## 유도 · 생략 없이
+
+먼저 @eq:nonabelian-gauge 의 변환 규칙이 어디서 오는지 본다. 요구는 $D_\mu\psi \to U D_\mu\psi$ 하나다. 좌변을 풀어 쓰면
+
+$$
+\left(\partial_\mu - igA'_\mu\right)U\psi = \left(\partial_\mu U\right)\psi + U\,\partial_\mu\psi - igA'_\mu U\psi
+$$
+
+이고, 이것이 $U\partial_\mu\psi - ig\,UA_\mu\psi$ 와 같아야 한다. $\partial_\mu\psi$ 항은 자동으로 맞으므로 남는 조건은 $\left(\partial_\mu U\right) - ig A'_\mu U = -ig\,UA_\mu$ 이다. 오른쪽에서 $U^{-1}$ 을 곱하면 @eq:nonabelian-gauge 의 둘째 식이 그대로 나온다.
+
+두 항의 성격이 다르다. 둘째 항 $-\tfrac{i}{g}(\partial_\mu U)U^{-1}$ 은 U(1) 에서 본 이동 항의 일반화다. 그러나 첫째 항 $UA_\mu U^{-1}$ 은 U(1) 에는 없던 것으로, $A_\mu$ 자신이 딸림표현으로 회전한다는 뜻이다. **게이지 장이 게이지 전하를 띤다.** 광자는 전기적으로 중성이지만 글루온은 색을 가진다는 사실이 이 한 항에서 나온다.
+
+이제 @eq:fieldstrength 을 계산한다. $A_\mu$ 를 행렬로 보고 교환자를 전개하면
+
+$$
+[D_\mu, D_\nu] = -ig\left(\partial_\mu A_\nu - \partial_\nu A_\mu\right) + (-ig)^2\left[A_\mu, A_\nu\right]
+= -ig\left(\partial_\mu A_\nu - \partial_\nu A_\mu - ig\left[A_\mu, A_\nu\right]\right)
+$$
+
+이다. 성분으로 내리려면 $[A_\mu, A_\nu] = A^b_\mu A^c_\nu\left[T^b, T^c\right] = i f^{bca} A^b_\mu A^c_\nu T^a$ 를 쓴다. $-ig \cdot i f^{bca} = g f^{abc}$ 이므로 @eq:fieldstrength 의 셋째 항을 얻는다. 여기서 U(1) 과의 차이가 하나로 압축된다. 구조상수가 0이 아니면 장세기가 게이지 장에 대해 비선형이다.
+
+@eq:nonabelian-gauge 에서 $F_{\mu\nu} \to U F_{\mu\nu} U^{-1}$ 이 따른다. 교환자 정의를 쓰면 바로 보인다. 그러므로 $F_{\mu\nu}F^{\mu\nu}$ 자체는 불변이 아니고, 대각합을 취한 @eq:ym 이 순환 성질 덕분에 불변이다. U(1) 에서는 $F_{\mu\nu}$ 가 아예 불변이었으므로 이 구분이 필요 없었다.
+
+운동 방정식은 @eq:ym 을 $A^a_\nu$ 로 변분해 얻는다. 비선형 항이 미분에도 걸리므로 결과의 미분은 보통 미분이 아니라 공변 미분이 된다.
+
+$$
+D_\mu F^{\mu\nu} = \partial_\mu F^{\mu\nu} - ig\left[A_\mu, F^{\mu\nu}\right] = J^\nu \label{ym-eom}
+$$
+
+여기에 $D_\nu$ 를 한 번 더 취하면 좌변이 $\tfrac12[D_\nu, D_\mu]F^{\mu\nu} \propto [F_{\mu\nu}, F^{\mu\nu}] = 0$ 이 되어 $D_\nu J^\nu = 0$ 이 나온다. 보존되는 것은 보통 발산이 아니라 공변 발산이며, 이 때문에 비가환 이론에서 게이지 전하를 정의하는 일은 U(1) 만큼 간단하지 않다.
+
+## 예제 1 · SU(2) 의 성분 계산
+
+$T^a = \sigma^a/2$, $f^{abc} = \epsilon^{abc}$ 이므로 게이지 장은 $W^1, W^2, W^3$ 세 개다. @eq:fieldstrength 은
+
+$$
+W^a_{\mu\nu} = \partial_\mu W^a_\nu - \partial_\nu W^a_\mu + g\,\epsilon^{abc} W^b_\mu W^c_\nu
+$$
+
+가 된다. @eq:ym 에 넣어 전개하면 $\partial W \cdot WW$ 형태의 3점 항과 $WWWW$ 형태의 4점 항이 나온다. 두 항의 결합상수가 각각 $g$ 와 $g^2$ 로 같은 $g$ 에 묶여 있다는 점이 중요하다. 자유 매개변수가 늘지 않는다. 대칭이 상호작용의 세기까지 고정한다.
+
+## 예제 2 · 부호가 뒤집히는 결합상수
+
+3점·4점 꼭짓점은 게이지 보손 자신이 진공편극에 기여하게 만든다. 이 기여는 물질 고리의 기여와 부호가 반대다. 1-루프 [베타 함수](/wiki/running-coupling)는
+
+$$
+\beta(g) = \mu\frac{\dd g}{\dd\mu}
+= -\frac{g^3}{16\pi^2}\left(\frac{11}{3}\,C_2(G) - \frac43\,n_f\,T(R)\right) \label{beta}
+$$
+
+이다. SU(3) 에서 $C_2(G) = 3$, 쿼크는 $T(R) = \tfrac12$ 이므로 맛깔 수 $n_f \le 16$ 이면 괄호가 양수, 즉 $\beta$ 가 음수다. 고에너지에서 결합이 0으로 간다는 이 점근적 자유가 1973년에 발견되면서 강한 상호작용의 게이지 이론이 확립되었다 [@grosswilczek1973; @politzer1973]. $C_2(G)$ 항이 게이지 보손의 자기상호작용에서만 오므로, @eq:fieldstrength 의 비선형 항이 없으면 이 현상도 없다. 세 결합상수가 높은 에너지에서 한 점으로 모일 가능성도 여기서 생긴다.
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+@eq:ym 의 두 표현이 @eq:algebra 의 규격화 아래에서 일치함을 보이시오.
+
+<Solution>
+$F_{\mu\nu} = F^a_{\mu\nu}T^a$ 이므로 $\tr(F_{\mu\nu}F^{\mu\nu}) = F^a_{\mu\nu}F^{b\,\mu\nu}\tr(T^aT^b) = \tfrac12 F^a_{\mu\nu}F^{a\,\mu\nu}$ 다. 앞의 $-\tfrac12$ 를 곱하면 $-\tfrac14 F^a F^a$ 가 된다.
+
+흔한 오류는 $\tr(T^aT^b) = \delta^{ab}$ 로 두어 계수를 두 배로 만드는 것이다. 그럴듯한 이유는 직교 기저라면 대각합이 1이 되는 것이 자연스러워 보이기 때문이다. 그러나 $T^a = \sigma^a/2$ 로 잡으면 $\tr(\sigma^a\sigma^b/4) = \tfrac12\delta^{ab}$ 이고, 이 규격화는 임의가 아니라 $f^{abc} = \epsilon^{abc}$ 와 짝을 이룬다. 규격화를 바꾸면 구조상수도 같이 바뀐다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="계산형">
+비앙키 항등식 $D_\mu F_{\nu\rho} + D_\nu F_{\rho\mu} + D_\rho F_{\mu\nu} = 0$ 을 야코비 항등식에서 유도하시오.
+
+<Solution>
+$F_{\mu\nu} \propto [D_\mu, D_\nu]$ 이므로, 세 개의 공변 미분에 대한 야코비 항등식 $\left[D_\mu,[D_\nu,D_\rho]\right] + \left[D_\nu,[D_\rho,D_\mu]\right] + \left[D_\rho,[D_\mu,D_\nu]\right] = 0$ 을 쓰면 된다. 안쪽 교환자를 $-igF$ 로 바꾸고, 바깥 교환자 $[D_\mu, \cdot]$ 가 딸림표현 위의 공변 미분과 같다는 사실을 쓰면 곧바로 항등식이 나온다.
+
+흔한 오류는 이 식을 @eq:ym-eom 처럼 운동 방정식으로 취급해 "원천이 없을 때만 성립한다"고 말하는 것이다. 그럴듯한 이유는 맥스웰 방정식 네 개가 교과서에서 한 묶음으로 제시되기 때문이다. 그러나 비앙키 항등식은 $F$ 가 $A$ 로부터 정의된다는 사실만 쓰므로 작용이나 원천과 무관하게 항등적으로 성립한다. 자기 홀극이 없다는 진술이 운동 방정식이 아닌 이유가 여기 있다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+"양-밀스 이론은 1954년에 나왔지만 20년 가까이 물리적으로 쓸모없다고 여겨졌다." 그 이유 두 가지를 쓰고, 각각이 어떻게 해결되었는지 300자 이내로 밝히시오.
+
+<Solution>
+첫째, 게이지 불변이 게이지 보손의 질량을 금지하므로 무질량 게이지 보손이 셋 이상 예측되는데 그런 입자는 관측되지 않았다. 파울리가 양에게 던진 질문이 정확히 이것이었다. 이 문제는 자발적 대칭붕괴와 힉스 기작으로 해결된다.
+
+둘째, 비선형 항 때문에 이론을 재규격화할 수 있는지가 불분명했다. 1971년에 비가환 게이지 이론이 자발적으로 깨진 경우까지 포함해 재규격화 가능함이 증명되면서 해소되었다.
+
+흔한 오류는 첫째 문제를 "질량항을 손으로 넣으면 된다"로 답하는 것이다. 그럴듯한 이유는 프로카 이론이 수학적으로 잘 정의되기 때문이다. 그러나 손으로 넣은 질량은 재규격화 가능성을 망가뜨리고 고에너지에서 산란 진폭의 유니타리성을 깨뜨린다. 질량은 넣는 것이 아니라 얻어져야 한다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 원논문 [@yang1954]는 짧고 지금 기호와 거의 같다. [요약](/research/papers/yang-mills-1954)을 함께 보라.
+- 비가환 게이지 이론의 양자화와 파인만 규칙은 [@peskin1995] 16장에 있다.
+- 점근적 자유의 원논문은 [@grosswilczek1973]과 [@politzer1973]이다. 현대적 유도는 [@schwartz2014] 26장에 있다.

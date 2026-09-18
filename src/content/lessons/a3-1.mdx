@@ -1,0 +1,155 @@
+---
+id: a3-1
+track: physics
+module: a3
+order: 1
+title: 국소 게이지 대칭
+summary: 전역 위상 대칭을 시공간의 점마다 따로 적용하도록 요구하면 라그랑지안이 깨지고, 그 깨짐을 상쇄하기 위해 벡터장 하나가 강제로 등장한다. 상호작용이 가정이 아니라 대칭의 귀결임을 보인다.
+level: intermediate
+status: review
+prereq: [a1-3]
+wikiRefs: [gauge-symmetry, covariant-derivative, noether-current, lagrangian-density, field-strength]
+citations: [weyl1929, peskin1995, schwartz2014, zee2016]
+estMinutes: 150
+author: Jun Lee
+created: 2026-09-19
+aiAssisted: draft
+tags: [게이지 대칭, 공변 미분, U(1)]
+---
+
+<Gist>
+앞 모듈에서 복소 장의 위상을 우주 전체에서 똑같이 돌려도 물리가 변하지 않는다는 것을 보았다. 이번에는 그 요구를 한 단계 세게 만든다. 여기서 돌리는 각도와 저기서 돌리는 각도가 달라도 물리가 같아야 한다고 요구하는 것이다. 이렇게 하면 원래의 이론은 곧바로 깨지는데, 깨진 부분을 정확히 메우는 새 장을 하나 넣으면 대칭이 되살아난다. 놀랍게도 그 장은 전자기장과 완전히 같은 성질을 갖는다. 즉 전자기 상호작용은 따로 가정한 것이 아니라 대칭을 국소화하라는 요구에서 유도된 결과다.
+</Gist>
+
+## 동기 · 전역 대칭만으로 설명하지 못한 것
+
+전역 대칭은 이상한 성질을 하나 갖는다. 위상 $\alpha$ 를 바꾸려면 우주의 모든 점에서 동시에 같은 값으로 바꾸어야 한다. 이것은 상대성 이론의 정신과 어울리지 않는다. 한 점에서 내린 규약이 빛보다 빠르게 온 우주에 전달되어야 하기 때문이다. 바일은 이 불편함을 이론을 고치는 **원리**로 삼았다 [@weyl1929].
+
+더 실용적인 이유도 있다. 뇌터 정리는 대칭에서 보존류를 준다. 그러나 그 보존류가 무엇과 어떻게 상호작용하는지는 말해 주지 않는다. 전하는 보존되지만 전하가 왜 광자와 결합하는지, 결합의 형태가 왜 $j^\mu A_\mu$ 인지는 따로 손으로 넣어야 했다. 국소 대칭을 요구하면 이 결합 형태까지 유일하게 결정된다.
+
+## 핵심 수식
+
+복소 스칼라 장의 자유 라그랑지안에서 출발한다.
+
+$$
+\lag_0 = \partial_\mu\phi^*\partial^\mu\phi - m^2\phi^*\phi \label{free}
+$$
+
+국소 변환 $\phi(x) \to e^{i\alpha(x)}\phi(x)$ 를 요구한다. 이때 [공변 미분](/wiki/covariant-derivative)과 게이지 장의 변환 규칙을 다음과 같이 정의한다.
+
+$$
+D_\mu\phi = \left(\partial_\mu + ieA_\mu\right)\phi , \qquad
+A_\mu \to A_\mu - \frac{1}{e}\,\partial_\mu\alpha \label{covd}
+$$
+
+그러면 $D_\mu\phi \to e^{i\alpha(x)}D_\mu\phi$ 로 장 자신과 똑같이 변한다. 이 성질 하나로 불변인 라그랑지안이 완성된다.
+
+$$
+\lag = (D_\mu\phi)^*(D^\mu\phi) - m^2\phi^*\phi - \frac14 F_{\mu\nu}F^{\mu\nu} , \qquad
+F_{\mu\nu} = \partial_\mu A_\nu - \partial_\nu A_\mu \label{gauged}
+$$
+
+[장세기](/wiki/field-strength)는 공변 미분의 교환자로도 쓸 수 있다.
+
+$$
+[D_\mu, D_\nu]\,\phi = ie\,F_{\mu\nu}\,\phi \label{comm}
+$$
+
+## 유도 · 생략 없이
+
+먼저 왜 깨지는지부터 본다. 국소 변환 아래에서 미분을 그대로 취하면
+
+$$
+\partial_\mu\left(e^{i\alpha(x)}\phi\right) = e^{i\alpha(x)}\left(\partial_\mu\phi + i\,\partial_\mu\alpha\,\phi\right) \label{broken}
+$$
+
+가 되어 $i\,\partial_\mu\alpha\,\phi$ 라는 여분 항이 남는다. $\alpha$ 가 상수였을 때 이 항이 없었던 것이 전역 대칭의 전부였다. 이제 @eq:free 에 이 결과를 넣으면 교차항 때문에 $\lag_0$ 이 불변이 아니다.
+
+여분 항의 구조를 보자. 그것은 $\partial_\mu\alpha$ 에 비례하고, 장 $\phi$ 에 선형이며, 지표 $\mu$ 를 하나 가진다. 따라서 이 항을 상쇄하려면 지표 $\mu$ 를 하나 갖고 변환할 때 $\partial_\mu\alpha$ 만큼 이동하는 새 장이 필요하다. 그것이 @eq:covd 의 $A_\mu$ 다. 필요한 장의 종류가 논리에서 결정된다는 점이 중요하다. 스칼라도 텐서도 아닌 벡터장 하나다.
+
+실제로 확인한다. 변환한 공변 미분은
+
+$$
+D'_\mu\left(e^{i\alpha}\phi\right)
+= \left(\partial_\mu + ieA_\mu - i\,\partial_\mu\alpha\right)\left(e^{i\alpha}\phi\right)
+= e^{i\alpha}\left(\partial_\mu\phi + i\,\partial_\mu\alpha\,\phi + ieA_\mu\phi - i\,\partial_\mu\alpha\,\phi\right)
+$$
+
+이고, 가운데 두 항이 서로 지워져 $e^{i\alpha}D_\mu\phi$ 만 남는다. 미분에서 생긴 @eq:broken 의 오염을 게이지 장의 이동이 정확히 먹어 치운 것이다.
+
+그러면 $(D_\mu\phi)^*(D^\mu\phi)$ 는 위상이 곱해졌다 나뉘며 상쇄되어 불변이다. 남은 것은 $A_\mu$ 자신의 운동항이다. $A_\mu$ 는 $\partial_\mu\alpha$ 만큼 이동하므로 $A_\mu A^\mu$ 같은 항은 불변이 아니다. 반면 @eq:gauged 의 $F_{\mu\nu}$ 는
+
+$$
+F_{\mu\nu} \to \partial_\mu\!\left(A_\nu - \tfrac1e\partial_\nu\alpha\right) - \partial_\nu\!\left(A_\mu - \tfrac1e\partial_\mu\alpha\right) = F_{\mu\nu}
+$$
+
+로 그대로다. 편미분이 교환하기 때문이다. 결국 $A_\mu$ 로 만들 수 있는 가장 낮은 차수의 불변량은 $F_{\mu\nu}F^{\mu\nu}$ 하나뿐이고, 계수 $-\tfrac14$ 는 정준 규격화가 정한다. 우리는 맥스웰 이론을 재발견했다.
+
+@eq:comm 은 같은 이야기를 기하학의 언어로 말한다. 공변 미분을 두 방향으로 차례로 취할 때 순서를 바꾸면 차이가 생기고, 그 차이가 장세기다. 이것이 곡률과 같은 구조라는 사실은 일반상대론과의 유비에서 되풀이된다 [@zee2016].
+
+## 예제 1 · 전자와 광자의 결합 형태
+
+디랙 장에 같은 절차를 적용한다. $\lag = \bar\psi\left(i\gamma^\mu\partial_\mu - m\right)\psi$ 에서 $\partial_\mu \to D_\mu = \partial_\mu + ieA_\mu$ 로 바꾸면
+
+$$
+\lag = \bar\psi\left(i\gamma^\mu D_\mu - m\right)\psi
+= \bar\psi\left(i\gamma^\mu\partial_\mu - m\right)\psi - e\,\bar\psi\gamma^\mu\psi\,A_\mu \label{qed}
+$$
+
+가 된다. 마지막 항이 상호작용이고, 거기 들어간 $\bar\psi\gamma^\mu\psi$ 는 전역 대칭에서 얻은 [뇌터 흐름](/wiki/noether-current) 바로 그것이다. 결합의 형태가 $j^\mu A_\mu$ 인 이유가 여기서 답해진다. 게이지 장은 대칭을 국소화할 때 생긴 결함을 메우므로, 그 대칭이 만든 흐름에만 결합할 수밖에 없다. 이 방식을 최소 결합이라 부른다 [@peskin1995].
+
+## 예제 2 · 광자가 질량을 가질 수 없는 이유
+
+프로카 질량항 $\tfrac12 m_A^2 A_\mu A^\mu$ 를 @eq:gauged 에 더해 보자. 게이지 변환을 하면
+
+$$
+\tfrac12 m_A^2\left(A_\mu - \tfrac1e\partial_\mu\alpha\right)\left(A^\mu - \tfrac1e\partial^\mu\alpha\right)
+\neq \tfrac12 m_A^2 A_\mu A^\mu
+$$
+
+이므로 대칭이 깨진다. 국소 게이지 대칭을 요구하는 한 게이지 보손은 무질량이다. 그런데 약한 상호작용을 매개하는 보손은 무겁다. 이 충돌이 이 모듈의 나머지 전체를 끌고 가는 문제이며, 답은 대칭을 포기하는 것이 아니라 진공을 비대칭으로 만드는 데 있다.
+
+## 연습문제
+
+<Problem n={1} type="유도형">
+@eq:comm 을 직접 계산해 $[D_\mu, D_\nu]\phi = ieF_{\mu\nu}\phi$ 를 확인하고, 이 교환자가 $\phi$ 의 미분을 포함하지 않는다는 사실이 왜 중요한지 설명하시오.
+
+<Solution>
+$D_\mu D_\nu\phi = (\partial_\mu + ieA_\mu)(\partial_\nu\phi + ieA_\nu\phi)$ 를 전개하면 $\partial_\mu\partial_\nu\phi + ie(\partial_\mu A_\nu)\phi + ieA_\nu\partial_\mu\phi + ieA_\mu\partial_\nu\phi - e^2A_\mu A_\nu\phi$ 다. $\mu \leftrightarrow \nu$ 로 바꾼 것을 빼면 앞뒤 대칭인 항이 모두 지워지고 $ie(\partial_\mu A_\nu - \partial_\nu A_\mu)\phi$ 만 남는다.
+
+미분이 남지 않는다는 것은 교환자가 미분 연산자가 아니라 곱셈 연산자라는 뜻이고, 따라서 $F_{\mu\nu}$ 는 장 $\phi$ 와 무관하게 정의되는 $A_\mu$ 만의 함수다. 그래서 장세기를 게이지 장 자체의 국소 성질로 쓸 수 있다.
+
+흔한 오류는 교환자에서 $A_\nu\partial_\mu\phi$ 항이 남는다고 계산하는 것이다. 그럴듯한 이유는 $A_\mu$ 와 $\partial_\nu$ 가 교환하지 않는다는 점에 지나치게 주의를 기울이다가, 반대 순서에도 똑같은 항이 있다는 사실을 놓치기 때문이다. 빼기의 상대가 무엇인지 끝까지 같이 써 두면 실수가 줄어든다.
+</Solution>
+</Problem>
+
+<Problem n={2} type="계산형">
+@eq:gauged 에서 $A_\mu$ 에 대한 오일러-라그랑주 방정식을 구하고, 원천 항이 @eq:free 의 전역 U(1) 뇌터 흐름과 같음을 확인하시오.
+
+<Solution>
+$A_\nu$ 로 변분하면 운동항에서 $\partial_\mu F^{\mu\nu}$ 가 나오고, $(D_\mu\phi)^*(D^\mu\phi)$ 에서 $A_\nu$ 에 선형인 항과 이차인 항이 함께 나온다. 결과는 $\partial_\mu F^{\mu\nu} = -j^\nu$ 이며
+$j^\nu = ie\left(\phi^*D^\nu\phi - \phi(D^\nu\phi)^*\right)$ 이다.
+
+$A_\mu \to 0$ 극한에서 이것은 전역 대칭의 뇌터 흐름 $ie(\phi^*\partial^\nu\phi - \phi\,\partial^\nu\phi^*)$ 로 돌아간다. 다만 일반적으로는 $\partial^\nu$ 가 아니라 $D^\nu$ 가 들어가야 한다.
+
+흔한 오류는 게이지 이론의 원천으로 전역 흐름 $ie(\phi^*\partial^\nu\phi - \phi\partial^\nu\phi^*)$ 를 그대로 쓰는 것이다. 그럴듯한 이유는 두 표현이 자유장 극한에서 일치하고 교과서가 자유장 계산을 먼저 보여 주기 때문이다. 그러나 전역 표현은 게이지 불변이 아니며, 그것을 원천으로 쓰면 $\partial_\mu\partial_\nu F^{\mu\nu} = 0$ 이 요구하는 보존 조건이 성립하지 않는다.
+</Solution>
+</Problem>
+
+<Problem n={3} type="개념 진술형">
+"게이지 대칭은 물리적 대칭이 아니라 기술의 잉여다"라는 주장과 "게이지 대칭이 상호작용을 결정한다"는 주장은 모순인가? 400자 이내로 답하시오.
+
+<Solution>
+모순이 아니다. 두 문장이 말하는 대상이 다르기 때문이다. 게이지 변환은 같은 물리 상태를 다른 좌표로 적는 방식이고, 서로 게이지 변환으로 이어지는 배위들은 물리적으로 구별되지 않는다. 이 뜻에서 게이지 대칭은 잉여다. 관측 가능한 대칭은 오히려 전역 U(1) 쪽이다.
+
+동시에, 잉여를 유지하라는 요구는 라그랑지안에 쓸 수 있는 항의 목록을 강하게 제한한다. 질량항은 금지되고, 결합은 $j^\mu A_\mu$ 형태로 고정되며, 게이지 장의 운동항은 $F_{\mu\nu}F^{\mu\nu}$ 로 유일해진다. 제약이 곧 예측력이다.
+
+흔한 오류는 "잉여이므로 내용이 없다"로 넘어가는 것이다. 그럴듯한 이유는 일상적으로 잉여란 버려도 되는 것을 뜻하기 때문이다. 그러나 여기서 잉여는 이론을 적는 언어의 성질이고, 언어에 부과된 제약은 그 언어로 적을 수 있는 물리를 실제로 줄인다.
+</Solution>
+</Problem>
+
+## 더 읽기
+
+- 게이지 원리를 이론 구성의 출발점으로 삼은 최초의 서술은 [@weyl1929]이다. 원래 시도는 척도 변환이었고 위상 변환으로 옮겨 오면서 성공했다.
+- 최소 결합과 QED 라그랑지안의 조립은 [@peskin1995] 4장과 15장에 있다.
+- 게이지 잉여를 경로적분에서 어떻게 다루는지는 [@schwartz2014] 25장이 정리가 잘 되어 있다.

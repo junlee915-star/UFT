@@ -1,0 +1,167 @@
+---
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import Backlinks from '@/components/Backlinks.astro';
+import ProgressCheck from '@/components/ProgressCheck.astro';
+import Badge from '@/components/Badge.astro';
+import { mdxComponents } from '@/components/mdx';
+import Prereq from '@/components/mdx/Prereq.astro';
+import { render } from 'astro:content';
+import {
+  getLessons,
+  getModules,
+  getTracks,
+  getWiki,
+  getAllListings,
+  findBacklinks,
+  lessonPath,
+  urls,
+  claimTypeLabel,
+  type TrackId,
+} from '@/lib/content';
+
+export async function getStaticPaths() {
+  const lessons = await getLessons();
+  return lessons.map((l) => ({
+    params: { track: l.data.track, module: l.data.module, lesson: l.id },
+    props: { lesson: l },
+  }));
+}
+const { lesson } = Astro.props;
+const d = lesson.data;
+const trackId = d.track as TrackId;
+
+const [modules, tracks, wiki, all] = await Promise.all([getModules(), getTracks(), getWiki(), getAllListings()]);
+const mod = modules.find((m) => m.id === d.module)!;
+const track = tracks.find((t) => t.id === trackId)!;
+
+const siblings = (await getLessons()).filter((l) => l.data.module === d.module);
+const idx = siblings.findIndex((l) => l.id === lesson.id);
+const prev = idx > 0 ? siblings[idx - 1] : undefined;
+const next = idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+
+const wikiById = new Map(wiki.map((w) => [w.id, w]));
+const linkedWiki = d.wikiRefs.map((s) => wikiById.get(s)).filter((w) => w !== undefined);
+
+const { Content, headings } = await render(lesson);
+const backlinks = findBacklinks(all, lessonPath(lesson), lessonPath(lesson));
+---
+
+<ArticleLayout
+  title={d.title}
+  summary={d.summary}
+  eyebrow={lesson.id.toUpperCase()}
+  kicker={`트랙 ${track.data.letter} ${track.data.title} · ${mod.id.toUpperCase()} ${mod.data.title}`}
+  kickerHref={urls.module(trackId, mod.id)}
+  created={d.created}
+  updated={d.updated}
+  author={d.author}
+  tags={d.tags}
+  level={d.level}
+  status={d.status}
+  aiAssisted={d.aiAssisted}
+  track={trackId}
+  headings={headings}
+>
+  <Fragment slot="meta">
+    <div class="mt-3 flex flex-wrap items-center gap-3 text-sm" style="color: var(--fg-muted)">
+      <span>예상 {d.estMinutes}분</span>
+      {d.claimType && <Badge kind="plain" value={claimTypeLabel[d.claimType] ?? d.claimType} />}
+    </div>
+    {d.prereq.length > 0 && <Prereq ids={d.prereq} />}
+    {
+      d.primarySources.length > 0 && (
+        <section class="mt-4 rounded-xl border p-4 text-sm" style="border-color: var(--line); background: var(--bg-2)">
+          <h2 class="text-sm font-semibold">지정 원전</h2>
+          <ul class="mt-2 space-y-1" style="color: var(--fg-muted)">
+            {d.primarySources.map((s) => (
+              <li>
+                <strong style="color: var(--fg)">{s.author}, 『{s.work}』</strong> {s.locus}
+                {s.edition && <span> · {s.edition}</span>}
+                {s.language && <span> · {s.language}</span>}
+              </li>
+            ))}
+          </ul>
+          <p class="mt-2 text-xs">번역본으로 읽어도 좋지만 해설서만 읽고 원전을 건너뛰지 않는다.</p>
+        </section>
+      )
+    }
+  </Fragment>
+
+  <Content components={mdxComponents} />
+
+  <Fragment slot="after">
+    <div class="no-print mt-10 flex flex-wrap items-center gap-4" data-pagefind-ignore>
+      <ProgressCheck id={lesson.id} />
+      <button type="button" class="text-sm underline" style="color: var(--fg-muted)" onclick="window.print()">PDF로 저장 / 인쇄</button>
+    </div>
+
+    {
+      linkedWiki.length > 0 && (
+        <section class="mt-10" data-pagefind-ignore>
+          <h2 class="text-base font-semibold">개념 연결</h2>
+          <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+            {linkedWiki.map((w) => (
+              <li>
+                <a href={urls.wiki(w.id)} class="block rounded-lg border p-3 no-underline hover:no-underline" style="border-color: var(--line)">
+                  <span class="font-medium" style="color: var(--fg)">{w.data.titleKo}</span>
+                  <span class="ml-1.5 text-xs" style="color: var(--fg-muted)">{w.data.titleEn}</span>
+                  <span class="block text-xs" style="color: var(--fg-muted)">{w.data.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="no-print mt-10 grid gap-4 sm:grid-cols-2" aria-label="단원 이동" data-pagefind-ignore>
+      {
+        prev ? (
+          <a href={urls.lesson(prev.data.track, prev.data.module, prev.id)} class="rounded-xl border p-4 no-underline hover:no-underline" style="border-color: var(--line)">
+            <span class="text-xs" style="color: var(--fg-muted)">← 이전 단원 {prev.id.toUpperCase()}</span>
+            <span class="mt-1 block font-semibold" style="color: var(--fg)">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next ? (
+          <a href={urls.lesson(next.data.track, next.data.module, next.id)} class="rounded-xl border p-4 text-right no-underline hover:no-underline" style="border-color: var(--line)">
+            <span class="text-xs" style="color: var(--fg-muted)">다음 단원 {next.id.toUpperCase()} →</span>
+            <span class="mt-1 block font-semibold" style="color: var(--fg)">{next.data.title}</span>
+          </a>
+        ) : (
+          <a href={urls.module(trackId, mod.id)} class="rounded-xl border p-4 text-right no-underline hover:no-underline" style="border-color: var(--line)">
+            <span class="text-xs" style="color: var(--fg-muted)">모듈 마지막 단원</span>
+            <span class="mt-1 block font-semibold" style="color: var(--fg)">체크포인트로 이동</span>
+          </a>
+        )
+      }
+    </nav>
+
+    <Backlinks entries={backlinks} title="이 단원을 근거나 참조로 쓰는 글" />
+  </Fragment>
+
+  <Fragment slot="aside">
+    <div class="mt-8 text-sm">
+      <p class="mb-2 font-semibold" style="color: var(--fg-muted)">{mod.id.toUpperCase()} 단원 목록</p>
+      <ol class="space-y-1">
+        {
+          siblings.map((l) => (
+            <li>
+              <a
+                href={urls.lesson(l.data.track, l.data.module, l.id)}
+                class:list={['block truncate no-underline hover:underline', l.id === lesson.id ? 'font-semibold' : '']}
+                style={l.id === lesson.id ? 'color: var(--fg)' : 'color: var(--fg-muted)'}
+                aria-current={l.id === lesson.id ? 'page' : undefined}
+              >
+                {l.data.order}. {l.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Fragment>
+</ArticleLayout>

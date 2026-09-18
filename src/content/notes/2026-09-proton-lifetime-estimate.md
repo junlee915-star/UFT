@@ -1,10 +1,13 @@
 ---
 title: 최소 SU(5) 양성자 수명의 차원 분석 추정
 summary: X 보손 교환으로 유도되는 p → e⁺π⁰ 수명을 차원 분석으로 추정하고 슈퍼카미오칸데 한계와 비교. 정밀 계산 전 어림값 확인용.
+date: 2026-09-16
 tags: [양성자 붕괴, SU(5), 대통일]
-difficulty: 고급
-status: 검토 중
-created: 2026-09-16
+wikiRefs: [running-coupling, gauge-symmetry]
+citations: [superk2020, georgi1974]
+status: review
+author: Jun Lee
+aiAssisted: draft
 ---
 
 ## 어림 계산

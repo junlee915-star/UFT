@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Card from '@/components/Card.astro';
+import { getEssays, urls } from '@/lib/content';
+const essays = await getEssays();
+---
+
+<BaseLayout title="개념 글" description="수식 없이 읽는 통일장이론 개념 글">
+  <PageHeader
+    title="개념 글"
+    lead="수식을 읽지 않는 독자를 위한 글. 학습 트랙의 단원과 달리 유도를 담지 않고, 무엇이 왜 문제인지만 다룬다."
+  />
+  <ul class="grid gap-4 sm:grid-cols-2">
+    {
+      essays.map((e) => (
+        <li><Card href={urls.essay(e.id)} kicker="개념 글" title={e.data.title} summary={e.data.summary} date={e.data.updated ?? e.data.date} status={e.data.status} tags={e.data.tags} /></li>
+      ))
+    }
+  </ul>
+  {essays.length === 0 && <p style="color: var(--fg-muted)">아직 발행된 개념 글이 없습니다.</p>}
+</BaseLayout>

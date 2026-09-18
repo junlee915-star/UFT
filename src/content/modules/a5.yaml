@@ -1,0 +1,8 @@
+track: physics
+order: 5
+title: 양자중력과 완전한 통일
+summary: 중력 양자화가 막히는 지점을 차원 분석으로 짚고, 칼루차-클라인, 끈이론, 초중력과 M이론, 고리양자중력, 홀로그래피를 개괄한 뒤 역사적 통일 시도의 실패 지점을 규명한다.
+goal: 통일 시도가 실패한 지점을 물리적으로 정확히 지목한다.
+level: advanced
+prereqModules: [a4]
+checkpoint: 문제 5개 세트. 마지막 단원 A5-7 은 트랙 C 의 선수 단원이다.

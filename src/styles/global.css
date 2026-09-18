@@ -6,6 +6,7 @@
 @theme {
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: 'Noto Serif KR', 'Apple SD Gothic Neo', 'Songti SC', 'Noto Serif', Georgia, serif;
   --color-ink: #1c1917;
   --color-ink-muted: #57534e;
   --color-paper: #fdfcfa;
@@ -13,6 +14,10 @@
   --color-line: #e7e2d9;
   --color-accent: #2f5d8a;
   --color-accent-2: #b4552d;
+  /* 트랙 색. A 물리학 파랑, B 종교·철학 황토, C 통합 보라 */
+  --color-track-physics: #2f5d8a;
+  --color-track-philosophy: #8a6320;
+  --color-track-synthesis: #6b4d8a;
 }
 
 :root {
@@ -24,6 +29,9 @@
   --line: var(--color-line);
   --accent: var(--color-accent);
   --accent-2: var(--color-accent-2);
+  --track-physics: var(--color-track-physics);
+  --track-philosophy: var(--color-track-philosophy);
+  --track-synthesis: var(--color-track-synthesis);
 }
 .dark {
   color-scheme: dark;
@@ -34,6 +42,9 @@
   --line: #2e3138;
   --accent: #8ab4e0;
   --accent-2: #e09a75;
+  --track-physics: #8ab4e0;
+  --track-philosophy: #d9b273;
+  --track-synthesis: #b79bd6;
 }
 
 @layer base {
@@ -307,5 +318,10 @@ a.cite {
   }
   details:not([open]) > *:not(summary) {
     display: block !important;
+  }
+  .refs,
+  .source,
+  .problem {
+    break-inside: avoid;
   }
 }

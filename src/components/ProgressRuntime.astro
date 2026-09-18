@@ -1,0 +1,136 @@
+---
+/**
+ * 학습 진도 런타임. BaseLayout 에서 한 번만 불러 페이지 전체를 훑는다.
+ *
+ * 서버가 없으므로 진도는 브라우저 localStorage 한 키에만 저장한다.
+ * 기기를 바꾸면 따라오지 않으며, JSON 내보내기·가져오기로 옮긴다.
+ *
+ * 마크업 계약
+ *   <input type="checkbox" data-progress-lesson="a1-3">      단원 이수 표시
+ *   <element data-progress-scope="a1" data-progress-ids="a1-1,a1-2">  진행률 표시 영역
+ *     └ [data-progress-count] 숫자, [data-progress-bar] 너비, [data-progress-percent] 퍼센트
+ *   <element data-progress-resume>  이어보기 영역 (data-progress-ids 순서대로 첫 미이수 단원)
+ *   <button data-progress-export> / <input type="file" data-progress-import> / <button data-progress-reset>
+ */
+---
+
+<script>
+  const KEY = 'uft:progress';
+  const VERSION = 1;
+
+  type Progress = { v: number; done: Record<string, string> };
+
+  function read(): Progress {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return { v: VERSION, done: {} };
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || typeof parsed.done !== 'object' || parsed.done === null) {
+        return { v: VERSION, done: {} };
+      }
+      // 스키마 버전이 올라가면 여기서 옮긴다. 지금은 1뿐이다.
+      return { v: VERSION, done: parsed.done as Record<string, string> };
+    } catch {
+      return { v: VERSION, done: {} };
+    }
+  }
+
+  function write(p: Progress): void {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(p));
+    } catch {
+      /* 사생활 보호 모드나 저장 공간 초과. 진도만 사라지고 읽기는 계속된다. */
+    }
+  }
+
+  function render(): void {
+    const { done } = read();
+
+    document.querySelectorAll<HTMLInputElement>('[data-progress-lesson]').forEach((box) => {
+      box.checked = Boolean(done[box.dataset.progressLesson!]);
+      box.disabled = false;
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-progress-scope]').forEach((scope) => {
+      const ids = (scope.dataset.progressIds ?? '').split(',').filter(Boolean);
+      const n = ids.filter((id) => done[id]).length;
+      const pct = ids.length ? Math.round((n / ids.length) * 100) : 0;
+      scope.querySelectorAll<HTMLElement>('[data-progress-count]').forEach((el) => (el.textContent = String(n)));
+      scope.querySelectorAll<HTMLElement>('[data-progress-percent]').forEach((el) => (el.textContent = `${pct}%`));
+      scope.querySelectorAll<HTMLElement>('[data-progress-bar]').forEach((el) => {
+        el.style.width = `${pct}%`;
+        el.parentElement?.setAttribute('aria-valuenow', String(pct));
+      });
+      scope.toggleAttribute('data-progress-started', n > 0);
+      scope.toggleAttribute('data-progress-complete', ids.length > 0 && n === ids.length);
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-progress-resume]').forEach((el) => {
+      const ids = (el.dataset.progressIds ?? '').split(',').filter(Boolean);
+      const next = ids.find((id) => !done[id]);
+      const started = ids.some((id) => done[id]);
+      const link = el.querySelector<HTMLAnchorElement>('a[data-resume-link]');
+      if (!started || !next || !link) {
+        el.hidden = true;
+        return;
+      }
+      const target = document.querySelector<HTMLAnchorElement>(`a[data-lesson-href="${next}"]`);
+      link.href = target?.href ?? link.href;
+      link.textContent = target?.dataset.lessonTitle ?? next.toUpperCase();
+      el.hidden = false;
+    });
+  }
+
+  document.addEventListener('change', (e) => {
+    const box = (e.target as HTMLElement)?.closest<HTMLInputElement>('[data-progress-lesson]');
+    if (!box) return;
+    const p = read();
+    const id = box.dataset.progressLesson!;
+    if (box.checked) p.done[id] = new Date().toISOString();
+    else delete p.done[id];
+    write(p);
+    render();
+  });
+
+  document.addEventListener('click', (e) => {
+    const el = e.target as HTMLElement;
+    if (el.closest('[data-progress-export]')) {
+      const blob = new Blob([JSON.stringify(read(), null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `uft-progress-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    if (el.closest('[data-progress-reset]')) {
+      if (confirm('이 브라우저에 저장된 학습 진도를 모두 지웁니다. 계속할까요?')) {
+        write({ v: VERSION, done: {} });
+        render();
+      }
+    }
+  });
+
+  document.addEventListener('change', async (e) => {
+    const input = (e.target as HTMLElement)?.closest<HTMLInputElement>('[data-progress-import]');
+    if (!input?.files?.[0]) return;
+    try {
+      const parsed = JSON.parse(await input.files[0].text());
+      const incoming = parsed?.done;
+      if (!incoming || typeof incoming !== 'object') throw new Error('형식이 맞지 않습니다.');
+      const p = read();
+      // 합치기. 같은 단원은 먼저 이수한 날짜를 남긴다.
+      for (const [id, at] of Object.entries(incoming as Record<string, string>)) {
+        if (!p.done[id] || String(at) < p.done[id]) p.done[id] = String(at);
+      }
+      write(p);
+      render();
+      alert(`진도를 가져왔습니다. 이수 ${Object.keys(p.done).length}단원.`);
+    } catch (err) {
+      alert(`진도 파일을 읽지 못했습니다: ${(err as Error).message}`);
+    } finally {
+      input.value = '';
+    }
+  });
+
+  render();
+</script>
