@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@/lib/content';
 const year = new Date().getFullYear();
 ---
 
@@ -6,8 +7,8 @@ const year = new Date().getFullYear();
   <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8" style="color: var(--fg-muted)">
     <p>© {year} 통일장이론 연구·학습. 본문은 CC BY-SA 4.0, 코드는 MIT.</p>
     <nav class="flex gap-4" aria-label="보조 메뉴">
-      <a href="/research/bibliography">참고문헌</a>
-      <a href="/rss.xml">RSS</a>
+      <a href={withBase('/research/bibliography')}>참고문헌</a>
+      <a href={withBase('/rss.xml')}>RSS</a>
       <a href="https://github.com/junlee915-star/UFT" rel="noopener">GitHub</a>
     </nav>
   </div>

@@ -2,21 +2,21 @@
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
 import { render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls } from '@/lib/content';
+import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
 
 export async function getStaticPaths() {
   return (await getPublished('notes')).map((n) => ({ params: { id: n.id }, props: { entry: n } }));
 }
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
-const backlinks = findBacklinks(await getAllArticles(), urls.note(entry.id), entry);
+const backlinks = findBacklinks(await getAllArticles(), paths.note(entry.id), entry);
 ---
 
 <ArticleLayout
   title={entry.data.title}
   summary={entry.data.summary}
   kicker="연구 노트"
-  kickerHref="/research/notes"
+  kickerHref={withBase('/research/notes')}
   created={entry.data.created}
   updated={entry.data.updated}
   author={entry.data.author}

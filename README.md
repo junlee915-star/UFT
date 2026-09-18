@@ -53,11 +53,12 @@ docs/templates/        새 글 템플릿 (복사해서 시작)
 
 ## 배포
 
-정적 출력(`dist/`)이므로 Cloudflare Pages, Vercel, GitHub Pages 어디든 올릴 수 있다.
+`main`에 푸시하면 GitHub Actions(`.github/workflows/deploy.yml`)가 빌드해 GitHub Pages에 배포한다.
 
-- 빌드 명령 `npm run build`, 출력 디렉터리 `dist`
-- 환경변수 `SITE_URL`에 실제 도메인을 넣으면 sitemap, RSS, canonical URL에 반영된다(기본값 `https://uft.example.com`).
-- `public/robots.txt`의 Sitemap 주소도 도메인 확정 후 바꾼다.
+- 주소: https://junlee915-star.github.io/UFT/
+- 프로젝트 사이트라 `/UFT` 하위 경로로 서비스된다. 워크플로가 `BASE_PATH=/UFT`, `SITE_URL`을 넣어 빌드하고, 템플릿은 `withBase()`, 마크다운 링크는 `rehype-base-links`가 경로를 붙인다. 콘텐츠 파일에는 항상 `/wiki/...`처럼 루트 기준으로 쓴다.
+- 로컬에서 같은 조건으로 확인: `BASE_PATH=/UFT npm run build && npm run preview` 후 http://localhost:4321/UFT
+- 커스텀 도메인이나 Vercel/Cloudflare Pages로 옮길 때는 `BASE_PATH`를 `/`로, `SITE_URL`을 실제 도메인으로 바꾸고 `public/robots.txt`의 Sitemap 주소를 고친다. 빌드 명령 `npm run build`, 출력 `dist`.
 
 ## 기술 스택
 

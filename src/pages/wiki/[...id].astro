@@ -2,7 +2,7 @@
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
 import { getEntry, render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls } from '@/lib/content';
+import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
 
 export async function getStaticPaths() {
   return (await getPublished('wiki')).map((w) => ({ params: { id: w.id }, props: { entry: w } }));
@@ -13,7 +13,7 @@ const all = await getAllArticles();
 const related = (await Promise.all(entry.data.related.map((id) => getEntry('wiki', id)))).filter(
   (e): e is NonNullable<typeof e> => e !== undefined && !e.data.draft,
 );
-const backlinks = findBacklinks(all, urls.wiki(entry.id), entry);
+const backlinks = findBacklinks(all, paths.wiki(entry.id), entry);
 for (const w of all) {
   if (w.collection === 'wiki' && w.id !== entry.id && w.data.related.includes(entry.id) && !backlinks.includes(w)) backlinks.push(w);
 }
@@ -23,7 +23,7 @@ for (const w of all) {
   title={entry.data.title}
   summary={entry.data.summary}
   kicker={entry.data.titleEn ? `수식 위키 · ${entry.data.titleEn}` : '수식 위키'}
-  kickerHref="/wiki"
+  kickerHref={withBase('/wiki')}
   created={entry.data.created}
   updated={entry.data.updated}
   author={entry.data.author}

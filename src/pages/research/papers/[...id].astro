@@ -2,14 +2,14 @@
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
 import { render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls } from '@/lib/content';
+import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
 
 export async function getStaticPaths() {
   return (await getPublished('papers')).map((p) => ({ params: { id: p.id }, props: { entry: p } }));
 }
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
-const backlinks = findBacklinks(await getAllArticles(), urls.paper(entry.id), entry);
+const backlinks = findBacklinks(await getAllArticles(), paths.paper(entry.id), entry);
 const d = entry.data;
 ---
 
@@ -17,7 +17,7 @@ const d = entry.data;
   title={d.title}
   summary={d.summary}
   kicker="논문 요약"
-  kickerHref="/research/papers"
+  kickerHref={withBase('/research/papers')}
   created={d.created}
   updated={d.updated}
   author={d.author}
@@ -38,7 +38,7 @@ const d = entry.data;
         {d.doi && <a href={`https://doi.org/${d.doi}`} rel="noopener">doi:{d.doi}</a>}
         {d.url && <a href={d.url} rel="noopener">{d.url}</a>}
       </dd>
-      {d.bibKey && <><dt style="color: var(--fg-muted)">인용 키</dt><dd><code>[@{d.bibKey}]</code> · <a href={`/research/bibliography#ref-${d.bibKey}`}>참고문헌에서 보기</a></dd></>}
+      {d.bibKey && <><dt style="color: var(--fg-muted)">인용 키</dt><dd><code>[@{d.bibKey}]</code> · <a href={withBase(`/research/bibliography#ref-${d.bibKey}`)}>참고문헌에서 보기</a></dd></>}
     </dl>
   </Fragment>
   <Content />

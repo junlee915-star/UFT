@@ -2,7 +2,7 @@
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import Backlinks from '@/components/Backlinks.astro';
 import { getEntry, render } from 'astro:content';
-import { getPublished, getAllArticles, findBacklinks, urls } from '@/lib/content';
+import { getPublished, getAllArticles, findBacklinks, urls, paths, withBase } from '@/lib/content';
 
 export async function getStaticPaths() {
   const units = await getPublished('learn');
@@ -21,7 +21,7 @@ const prereqs = (await Promise.all(entry.data.prerequisites.map((id) => getEntry
   (p): p is NonNullable<typeof p> => p !== undefined,
 );
 const { Content, headings } = await render(entry);
-const backlinks = findBacklinks(await getAllArticles(), urls.unit(entry.id), entry);
+const backlinks = findBacklinks(await getAllArticles(), paths.unit(entry.id), entry);
 ---
 
 <ArticleLayout
@@ -76,7 +76,7 @@ const backlinks = findBacklinks(await getAllArticles(), urls.unit(entry.id), ent
             <span class="mt-1 block font-semibold" style="color: var(--fg)">{next.data.title}</span>
           </a>
         ) : (
-          <a href="/learn" class="rounded-xl border p-4 text-right no-underline hover:no-underline" style="border-color: var(--line)">
+          <a href={withBase('/learn')} class="rounded-xl border p-4 text-right no-underline hover:no-underline" style="border-color: var(--line)">
             <span class="text-xs" style="color: var(--fg-muted)">모듈 완료</span>
             <span class="mt-1 block font-semibold" style="color: var(--fg)">학습 트랙으로 돌아가기</span>
           </a>

@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://uft.example.com/sitemap-index.xml
+Sitemap: https://junlee915-star.github.io/UFT/sitemap-index.xml

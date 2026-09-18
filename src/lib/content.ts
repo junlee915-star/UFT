@@ -24,13 +24,34 @@ export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-export const urls = {
+/** 배포 base 경로(예: GitHub Pages의 /UFT). 루트 배포면 빈 문자열. */
+export const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/** 루트 절대 경로에 base 를 붙인다. 템플릿의 모든 내부 링크는 이 함수를 거친다. */
+export function withBase(path: string): string {
+  if (!path.startsWith('/') || path.startsWith('//')) return path;
+  return BASE + path;
+}
+
+/** 콘텐츠 본문이 쓰는 루트 기준 경로(역링크 탐색용, base 없음) */
+export const paths = {
   unit: (id: string) => `/learn/${id}`,
   module: (id: string) => `/learn/${id}`,
   note: (id: string) => `/research/notes/${id}`,
   paper: (id: string) => `/research/papers/${id}`,
   wiki: (id: string) => `/wiki/${id}`,
   tag: (tag: string) => `/tags/${encodeURIComponent(tag)}`,
+};
+
+/** 템플릿에서 href 로 쓰는 경로(base 포함) */
+export const urls = {
+  unit: (id: string) => withBase(paths.unit(id)),
+  module: (id: string) => withBase(paths.module(id)),
+  note: (id: string) => withBase(paths.note(id)),
+  paper: (id: string) => withBase(paths.paper(id)),
+  wiki: (id: string) => withBase(paths.wiki(id)),
+  tag: (tag: string) => withBase(paths.tag(tag)),
+  home: () => withBase('/'),
 };
 
 export type AnyEntry =
